@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF8">
+    <title>triage++</title>
+    <style>
+        .seccion-panel { display: none; }
+        .seccion-panel.activa { display: block; }
+        .pestana { cursor: pointer; padding: 10px; display: inline-block; }
+        .pestana.activa { font-weight: bold; border-bottom: 2px solid #000; }
+    </style>
+</head>
+<body>
+    <header>
+        <span>TRIAGE ++</span>
+        <span> |</span>
+        <span>Jaime Rivera</span>
+        <span> |</span>
+        <span>Santiago Lopez</span>
+        <span> |</span>
+        <span>Esteban </span>
+        <span> |</span>
+        <span id="Hora">00:00:00</span>
+    </header>
+
+    <div class="barra pestanas"> 
+        <div class="pestana activa" id="tab-triage" onclick="irA('triage')">Triage</div>
+        <div class="pestana" id="tab-consulta" onclick="irA('consulta')">Consulta</div>
+        <div class="pestana" id="tab-altas" onclick="irA('altas')">Altas</div>
+    </div>
+    <div id="pantalla-triage" class="seccion-panel activa">
+        <div class="contenedor paneles">
+            <section class="panel izquierdo">
+                <fieldset>
+                    <legend>Información del paciente</legend>
+                    <label for="nombrePaciente">Nombre Paciente:</label>
+                    <input type="text" id="nombrePaciente" name="nombrePaciente">
+                    <label for="Tipo Documento Paciente">Tipo de documento:</label>
+                    <select id="Tipo Documento Paciente" name="documentoPaciente" required>
+                        <option value="" disabled selected>Seleccione una opcion...</option>
+                        <option value="CC">CC - Cedula de Ciudadania</option>
+                        <option value="TI">TI - Tarjeta de identidad</option>
+                        <option value="RC">RC - Registro civil</option>
+                        <option value="CN">CN - Certificado de nacido</option>
+                        <option value="CE">CE - Cedula de Extranjeria</option>
+                        <option valie="PA">PA - Pasaporte</option>
+                        <option value="PT">PT - Permiso por Protección Temporal (PPT)</option>
+                        <option value="PE">PE - Permiso Especial de Permanencia (PEP)</option>
+                        <option value="SC">SC - Salvoconducto de permanencia</option>
+                        <option value="CD">CD - Carné diplomático</option>
+                        <option value="DE">DE - Documento extranjero de identificación</option>
+                        <option valie="AS">AS - Adulto sin identificar</option>
+                        <option value="MS">MS - Menor sin identificar</option>
+                        <option value="SI">SI - Sin identificar</option>
+                    </select>
+                    <label for="Numero">Numero de documento:</label>
+                    <input type="text" id="Numero" name="documentoPaciente">;
+                    <label for="Edad">Edad:</label>
+                    <input type="text" id="Edad" name="edad" min="0" max="150">   
+                    <label for="Sexo">Sexo:</label>
+                    <select name="sexo" id="Sexo" requierd>
+                        <option value="" disabled selected>Seleccione una opcion...</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                    </select> 
+                    <label for="eps">EPS: </label>
+                    <input type="text" id="eps" name="eps">
+                    <label for="correoPaciente">Correo:</label>
+                    <input type="text" id="correoPaciente" name="correoPaciente">
+                    <label for="telefonoPaciente">Telefono:</label>
+                    <input type="text" id="telefonoPaciente" name="telefonoPaciente">
+                    <div class="femenino">
+                        <form>
+                            <span>¿Estas embarazada?:</span>
+                            <input type="radio" id="verdadero" name="embarazada" value="true">
+                            <label for="verdadero">Si</label>
+                            <input type="radio" id="falsa" name="embarazada" value="false">
+                            <label for="falsa">No</label>
+                            </label>
+                        </form>
+                    </div>
+                </fieldset>
+                <br>
+                <div class="DatosAcudiente">
+                    <fieldset>
+                        <legend>Informacion acudiente</legend>
+                        <div class="antes-parentesco">
+                            <label for="nombreAcudiente">Nombre acudiente:</label>
+                            <input type="text" id="nombreAcudiente" name="nombreAcudiente">
+                            <label for="Tipo Documento Acudiente">Tipo de documento:</label>
+                            <select id="Tipo Documento Acudiente" name="documentoAcudiente" required>
+                                <option value="" disabled selected>Seleccione una opcion...</option>
+                                <option value="CC">CC - Cedula de Ciudadania</option>
+                                <option value="TI">TI - Tarjeta de identidad</option>
+                                <option value="CE">CE - Cedula de Extranjeria</option>
+                                <option valie="PA">PA - Pasaporte</option>
+                                <option value="PT">PT - Permiso por Protección Temporal (PPT)</option>
+                                <option value="PE">PE - Permiso Especial de Permanencia (PEP)</option>
+                                <option value="SC">SC - Salvoconducto de permanencia</option>
+                                <option value="CD">CD - Carné diplomático</option>
+                                <option value="DE">DE - Documento extranjero de identificación</option>
+                            </select>
+                            <label for="documento">Numero de documento:</label>
+                            <input type="text" id="documento" name="documentoAcudiente">
+                        </div>
+                        <label for="parentesco">Parentesco:</label>
+                        <select id="parentesco" name="parentesco">
+                            <option value="" disabled selected>Seleccione una opcion...</option>
+                            <option value="mama">Madre</option>
+                            <option value="papa">Padre</option>
+                            <option value="padrastro">Padrastro/Madrastra</option>
+                            <option value="abuelo">Abuelo/a paterno/materno</option>
+                            <option value="hermano">Hermano/a</option>
+                            <option value="tio">Tio/a</option>
+                            <option value="tutor">Tutor</option>
+                            <option value="defensor">Defensor de familia/Autoridad</option>
+                            <option value="instructor">Profesor/Instructor</option>
+                            <option value="conocido">Vecino/Conocido/Amigo</option>
+                            <option value="nadie">Sin acompañante</option>
+                        </select>
+                        <div class="despues-parentesco">
+                            <label for="correo">Correo:</label>
+                            <input type="text" id="correo" name="correoAcudiente">
+                            <label for="telefono">Telefono:</label>
+                            <input type="text" id="telefono" name="telefonoAcudiente">
+                        </div>
+                    </fieldset>
+                </div>
+                <fieldset>
+                    <legend>Signos vitales y Sintomas</legend>
+                    <label for="arterial">Presion arterial:</label>
+                    <input type="text" id="arterial" name="presionArterial">
+                    <label for="frecuencia">Frecuencia cardiaca:</label>
+                    <input type="text" id="frecuencia" name="frecuencia">
+                    <label for="escala">Escala del dolor:</label>
+                    <input type="text" id="escala" name="escala" min="0" max="10">
+                    <label for="motivo">Motivo de venir a urgencias: </label>
+                    <input type="text" id="motivo" name="motivo">
+                    <label for="alergias">Alergias:</label>
+                    <input type="text" id="alergias" name="alergias">
+                    <label for="enfermedades">Enfermedades:</label>
+                    <input type="text" id="enfermedades" name="enfermedades">
+                    <label for="cirugias">Cirugias recientes: </label>
+                    <input type="text" id="cirugias" name="cirugias">
+                </fieldset>
+                <div id="pantalla-consulta" class="seccion-panel"><h2>Panel de consultas</h2></div>
+                <div id="pantalla-altas" class="seccion-panel"><h2>Panel de altas</h2></div>
+            </section>
+        </div>
+    </div>
+    <script>
+        function actualizarHora(){
+            const ahora = new Date();
+            let horas = ahora.getHours().toString().padStart(2, '0');
+            let minutos = ahora.getMinutes().toString().padStart(2, '0');
+            let segundos = ahora.getSeconds().toString().padStart(2, '0');
+            document.getElementById('Hora').textContent = `${horas}:${minutos}:${segundos}`;
+        }
+        actualizarHora();
+        setInterval(actualizarHora, 1000);
+        function irA(modulo){
+            document.querySelectorAll('.seccion-panel').forEach(pantalla => {
+                pantalla.classList.remove('activa');
+            });
+            document.querySelectorAll('.pestana').forEach(tab => {
+                tab.classList.remove('activa');
+            });
+            document.getElementById('pantalla-'+modulo).classList.add('activa');
+            document.getElementById('tab-'+modulo).classList.add('activa');
+        }
+        const selectParentesco = document.getElementById('parentesco');
+        const bloqueDespues = document.getElementById('despues-parentesco');
+        const camposAcudiente = document.querySelectorAll('.input-acudiente');
+        selectParentesco.addEventListener('change', function() {
+            if(this.value === 'nadie'){
+                camposAcudiente.forEach(campo => {
+                    campo.value = '';
+                    campo.disabled = true;
+                });
+                bloqueDespues.style.opacity = '0.5';
+            }else{
+                camposAcudiente.forEach( )
+            }
+        })
+    </script>
+</body>
+</html>
