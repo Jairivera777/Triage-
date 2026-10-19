@@ -3,7 +3,7 @@
 #include <string>
 #include <chrono>
 using namespace std;
-class Paciente{
+class Paciente{ //clase que guarda los datos del paciente
     private:
         string nombre;
         string tipoDocumento;
@@ -44,7 +44,7 @@ class Paciente{
             return edad;
         }
 };
-class AcudientePaciente{
+class AcudientePaciente{ //guarda los datos del acudiente si aplica
     private:
         string nombre;
         string tipoDocumento;
@@ -62,7 +62,7 @@ class AcudientePaciente{
             paciente = _paciente;
         }
 };
-class Triage{
+class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
     private:
         Paciente paciente;
         bool embarazo;
@@ -84,13 +84,13 @@ class Triage{
         time_t horaLlegada;
         time_t tiempoEspera;
         int triage;
-        int obtenerMinutosEspera(){
+        int obtenerMinutosEspera(){ //nos dice cuanto tiempo ha estado esperando el paciente
             auto ahora = chrono::system_clock::now();
             time_t horaActual = chrono::system_clock::to_time_t(ahora);
             double segundos = difftime(horaActual, horaLlegada);
             return (int)(segundos/60);
         }
-        bool buscarPalabras(string texto, string palabras[], int tamano){
+        bool buscarPalabras(string texto, string palabras[], int tamano){ //busca palabras
             for(int i = 0; i<tamano;i++){
                 if(texto.find(palabras[i])!=string::npos){
                     return true;
@@ -98,7 +98,7 @@ class Triage{
             }
             return false;
         }
-        string normalizar(string palabra){
+        string normalizar(string palabra){ //Normaliza los textos para evitar errores
             for(char &c : palabra){
                 c = toupper(c);
             }
@@ -114,7 +114,7 @@ class Triage{
             }
             return textoLimpio;
         }
-        int calcularTriage(){
+        int calcularTriage(){ //calcula el triage dependiendo del caso del paciente
             tiempoEspera = obtenerMinutosEspera();
             string texto = motivo+" "+observaciones;
             string palabrasNivel1[] = {"DISNEA DE REPOSO", "HABLA ENTRECORTADA", "USO MARCADO DE MUSCULOS ACCESORIOS", "CIANOSIS DISTAL", 
@@ -186,7 +186,7 @@ class Triage{
         }
 };
 int main(){
-    httplib::Server svr;
-    svr.listen("0.0.0.0", 8080);
+    httplib::Server svr; //crea el servidor
+    svr.listen("0.0.0.0", 8080); //le coloca una ip (local) y un puerto y lo manda por el chat de la consola
     return 0;
 }

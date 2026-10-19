@@ -23,7 +23,7 @@
         <span id="Hora">00:00:00</span>
     </header>
 
-    <div class="barra pestanas"> 
+    <div class="barra pestanas">  <!--Las 3 pestañas que aparecen salen de aqui-->
         <div class="pestana activa" id="tab-triage" onclick="irA('triage')">Triage</div>
         <div class="pestana" id="tab-consulta" onclick="irA('consulta')">Consulta</div>
         <div class="pestana" id="tab-altas" onclick="irA('altas')">Altas</div>
@@ -182,7 +182,7 @@
     <div id="pantalla-consulta" class="seccion-panel"><h2>Panel de consultas</h2></div>
     <div id="pantalla-altas" class="seccion-panel"><h2>Panel de altas</h2></div>
     <script>
-        function actualizarHora(){
+        function actualizarHora(){ // funcion encargada de actualizar la hora de la interfaz cada segundo
             const ahora = new Date();
             let horas = ahora.getHours().toString().padStart(2, '0');
             let minutos = ahora.getMinutes().toString().padStart(2, '0');
@@ -191,7 +191,7 @@
         }
         actualizarHora();
         setInterval(actualizarHora, 1000);
-        function irA(modulo){
+        function irA(modulo){ // funcion que se encarga de sobreescribir la pagina segun el click que de el usuario
             document.querySelectorAll('.seccion-panel').forEach(pantalla => {
                 pantalla.classList.remove('activa');
             });
@@ -204,7 +204,7 @@
         const selectParentesco = document.getElementById('parentesco');
         const bloqueAntes = document.getElementById('antes-parentesco')
         const bloqueDespues = document.getElementById('despues-parentesco');
-        selectParentesco.addEventListener('change', function() {
+        selectParentesco.addEventListener('change', function() { //se encarga de que si no tiene parentesco no aparezcan casillas
             if(this.value === 'nadie'){
                 bloqueAntes.style.display = 'none';
                 bloqueDespues.style.display = 'none';
@@ -215,7 +215,7 @@
         });
         const selectSexo = document.getElementById('Sexo');
         const seccionEmbarazo = document.getElementById('seccion-embarazo');
-        selectSexo.addEventListener('change', function(){
+        selectSexo.addEventListener('change', function(){ //Si no es mujer no aaprece la funcion de embarazo
             if(this.value === 'Femenino'){
                 seccionEmbarazo.style.display = 'block';
             }else{
@@ -225,7 +225,7 @@
         const selectDocumento = document.getElementById('tipoDocumentoPaciente');
         const antesDocumento = document.getElementById('antesDocumento');
         const despuesDocumento = document.getElementById('despuesDocumento');
-        selectDocumento.addEventListener('change', function(){
+        selectDocumento.addEventListener('change', function(){ //Si esta no identifiado no pide los demas datos
             if(this.value === 'AS' || this.value === 'MS' || this.value === 'SI'){
                 antesDocumento.style.display = 'none';
                 despuesDocumento.style.display = 'none';
@@ -234,7 +234,7 @@
                 despuesDocumento.style.display = 'block';
             }
         });
-        document.getElementById('formTriage').addEventListener('submit', function(e) {
+        document.getElementById('formTriage').addEventListener('submit', function(e) { // se encarga de conectar el front con c++
             e.preventDefault();
             const formData = new FormData(this);
 
