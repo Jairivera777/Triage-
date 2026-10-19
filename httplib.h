@@ -18,9 +18,12 @@ namespace httplib {
     struct Server {
         void Get(const char* r, std::function<void(const Request&, Response&)> f) {}
         void Post(const char* r, std::function<void(const Request&, Response&)> f) {
-            std::cout << "\n=================================\n¡NUEVO PACIENTE EN TRIAGE!\nDocumento: AS\nNombre:    N/A\nEdad:      N/A\nTeléfono:  N/A\n=================================\n";
+            
         }
-        void listen(const char* h, int p) { std::cout << "Servidor de Triage iniciado en http://localhost:8080\nSimulación activa. Presiona Ctrl+C para salir.\n"; while(true); }
+        void listen(const char* h, int p) { 
+            std::cout << "Servidor de Triage iniciado en http://localhost:8080\nSimulación activa. Presiona Ctrl+C para salir.\n"; 
+            while(true); 
+        }
     };
 }
 #endif
