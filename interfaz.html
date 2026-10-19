@@ -162,11 +162,22 @@
                         <label for="observaciones">Observaciones:</label>
                         <input type="text" id="observaciones" name="observaciones">
                     </fieldset>
-                    <button type="submit" class="boton">Guardar datos</button>
+                    <button type="submit" class="boton">Guardar datos y calcular triage</button>
                 </form>
             </section>
+            <section class="panel-derecho">
+                <h2 class="titulo-derecha">FILTRO DE PACIENTES</h2>
+                <label for="filtros">FILTROS: </label>
+                <select id="filtros" name="filtro">
+                    <option value="todos" selected>TODOS</option>
+                    <option value="1">TRIAGE 1</option>
+                    <option value="2">TRIAGE 2</option>
+                    <option value="3">TRIAGE 3</option>
+                    <option value="4">TRIAGE 4</option>
+                    <option value="5">TRIAGE 5</option>
+                </select>
+            </section>
         </div>
-
     </div>
     <div id="pantalla-consulta" class="seccion-panel"><h2>Panel de consultas</h2></div>
     <div id="pantalla-altas" class="seccion-panel"><h2>Panel de altas</h2></div>

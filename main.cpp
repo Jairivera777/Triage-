@@ -26,6 +26,17 @@ class Paciente{
             telefono = "NA";
             direccion = "NA";
         }
+        Paciente(string _nombre, string _documento, string _tipoDocumento, int _edad, string _sexo, string _eps, string _correo, string _telefono, string _direccion) {
+            nombre = _nombre;
+            documento = _documento;
+            tipoDocumento = _tipoDocumento;
+            edad = _edad;
+            sexo = _sexo;
+            eps = _eps;
+            correo = _correo;
+            telefono = _telefono;
+            direccion = _direccion;
+        }
         string getSexo(){
             return sexo;
         }
@@ -71,8 +82,40 @@ class Triage{
         string cirugias;
         string observaciones;
         time_t horaLlegada;
+        time_t tiempoEspera;
         int triage;
+        int obtenerMinutosEspera(){
+            auto ahora = chrono::system_clock::now();
+            time_t horaActual = chrono::system_clock::to_time_t(ahora);
+            double segundos = difftime(horaActual, horaLlegada);
+            return (int)(segundos/60);
+        }
+        bool buscarPalabras(string texto, string palabras[], int tamano){
+            for(int i = 0; i<tamano;i++){
+                if(texto.find(palabras[i])!=string::npos){
+                    return true;
+                }
+            }
+            return false;
+        }
+        string normalizar(string palabra){
+            for(char &c : palabra){
+                c = toupper(c);
+            }
+            string textoLimpio = "";
+            for(int i = 0; i < palabra.length(); i++){
+                char letra = palabra[i];
+                if(letra == 'Á') textoLimpio += 'A';
+                else if(letra== 'É') textoLimpio += 'E';
+                else if(letra=='Í') textoLimpio += 'I';
+                else if(letra=='Ó') textoLimpio += 'O';
+                else if(letra=='Ú'||letra=='Ü') textoLimpio += 'U';
+                else textoLimpio += letra;
+            }
+            return textoLimpio;
+        }
         int calcularTriage(){
+            tiempoEspera = obtenerMinutosEspera();
             string texto = motivo+" "+observaciones;
             string palabrasNivel1[] = {"DISNEA DE REPOSO", "HABLA ENTRECORTADA", "USO MARCADO DE MUSCULOS ACCESORIOS", "CIANOSIS DISTAL", 
                 "CIANOSIS PERIORAL", "ALTERACION DEL ESTADO DE ALERTA", "TRAUMA SEVERO", "POLITRAUMATISMO CRITICO", "PERDIDA DE CONSCIENCIA PROFUNDA", 
@@ -97,7 +140,9 @@ class Triage{
                 "GOLPE LEVE", "ESGUINCE MENOR", "HERIDA SUPERFICIAL", "RASPON", "ABSCESO PEQUEÑO", "INFECCION LOCALIZADA"};
             int tamano4 = sizeof(palabrasNivel4) / sizeof(palabrasNivel4[0]);
             int triage;
-            if(frecuenciaCardiaca == 0 || buscarPalabras(texto, palabrasNivel1, tamano1) || saturacion < 80 || glasgow <= 8) triage = 1;
+            if(frecuenciaCardiaca == 0 || buscarPalabras(texto, palabrasNivel1, tamano1) || saturacion < 80 || glasgow <= 8
+                || (triage==2&&tiempoEspera>30) || (triage==3&&tiempoEspera>180 || (triage==4&&tiempoEspera>420))
+                || (triage==5&&tiempoEspera>=720)) triage = 1;
             else if(presionSistolica>=180 || presionDiastolica>110 || presionSistolica<=90 || frecuenciaCardiaca>=120||
                 frecuenciaCardiaca<=50 || frecuenciaRespiratoria>24 || frecuenciaRespiratoria<10 || (saturacion < 90 && !encontroEpoc) 
                 ||(saturacion<=85&&encontroEpoc) || temperatura >=39.5 || (temperatura<=35&&buscarPalabras(texto, debilidad, 2)) 
@@ -108,30 +153,6 @@ class Triage{
             else if(buscarPalabras(texto, palabrasNivel4, tamano4)) triage = 4;
             else triage = 5;
             return triage;
-        }
-        string normalizar(string palabra){
-            for(char &c : palabra){
-                c = toupper(c);
-            }
-            string textoLimpio = "";
-            for(int i = 0; i < palabra.length(); i++){
-                char letra = palabra[i];
-                if(letra == 'Á') textoLimpio += 'A';
-                else if(letra== 'É') textoLimpio += 'E';
-                else if(letra=='Í') textoLimpio += 'I';
-                else if(letra=='Ó') textoLimpio += 'O';
-                else if(letra=='Ú'||letra=='Ü') textoLimpio += 'U';
-                else textoLimpio += letra;
-            }
-            return textoLimpio;
-        }
-        bool buscarPalabras(string texto, string palabras[], int tamano){
-            for(int i = 0; i<tamano;i++){
-                if(texto.find(palabras[i])!=string::npos){
-                    return true;
-                }
-            }
-            return false;
         }
     public:
         Triage(Paciente _paciente, bool _embarazo, float _temperatura, int _estatura, float _peso, int _presionSistolica, 
@@ -160,6 +181,7 @@ class Triage{
             triage = calcularTriage();
         }
         int getTriage(){
+            triage = calcularTriage();
             return triage;
         }
 };
