@@ -50,21 +50,23 @@ class AcudientePaciente{ //guarda los datos del acudiente si aplica
         string tipoDocumento;
         string documento;
         string parentesco;
+        string correo;
         string telefono;
-        Paciente paciente;
+        Paciente* paciente;
     public:
-        AcudientePaciente(string _nombre, string _tipoDocumento, string _documento, string _parentesco, string _telefono, Paciente _paciente){
+        AcudientePaciente(string _nombre, string _tipoDocumento, string _documento, string _parentesco, string _correo, string _telefono, Paciente* _paciente){
             nombre = _nombre;
             tipoDocumento = _tipoDocumento;
             documento = _documento;
             parentesco = _parentesco;
+            correo = _correo;
             telefono = _telefono;
             paciente = _paciente;
         }
 };
 class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
     private:
-        Paciente paciente;
+        Paciente* paciente;
         bool embarazo;
         float temperatura;
         int estatura;
@@ -149,17 +151,17 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
                 || buscarPalabras(texto, palabrasNivel2, tamano2) || temperatura <= 34) triage = 2;
             else if(temperatura>=38 || presionSistolica>=140 || frecuenciaCardiaca>=100 || frecuenciaRespiratoria>=21
             ||buscarPalabras(texto, palabrasNivel3, tamano3) || 
-            (paciente.getEdad()>=65 && buscarPalabras(enfermedades, factoresRiesgo, 5))) triage = 3;
+            (paciente->getEdad()>=65 && buscarPalabras(enfermedades, factoresRiesgo, 5))) triage = 3;
             else if(buscarPalabras(texto, palabrasNivel4, tamano4)) triage = 4;
             else triage = 5;
             return triage;
         }
     public:
-        Triage(Paciente _paciente, bool _embarazo, float _temperatura, int _estatura, float _peso, int _presionSistolica, 
+        Triage(Paciente* _paciente, bool _embarazo, float _temperatura, int _estatura, float _peso, int _presionSistolica, 
             int _presionDiastolica, int _frecuenciaCardiaca, int _frecuenciaRespiratoria, int _saturacion, int _escala, string _motivo, 
             string _alergias, string _enfermedades, string _cirugias, string _observaciones, int _glasgow){
             paciente = _paciente;
-            if(paciente.getSexo()=="Masculino") embarazo = 0;
+            if(paciente->getSexo()=="Masculino") embarazo = 0;
             else embarazo = _embarazo;
             temperatura = _temperatura;
             estatura = _estatura;
@@ -190,10 +192,51 @@ int main(){
     svr.Post("/pi/triage", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "+");
         //Aqui es donde se empieza lo tryhard
-        string nombre = req.tieneParametro("nombrePaciente") ? req.getParametro("nombrePaciente") : "Sin nombre";
-        string tipoDocumento = req.tieneParametro("documentoPaciente") ? req.getParametro("documentoPaciente") : "NA";
-        string sexo = req.tieneParametro("sexo") ? req.getParametro("sexo") : "No identificado";
+        Paciente* paciente = nullptr;
+        string tipoDocumentoPaciente = req.tieneParametro("tipoDocumentoPaciente") ? req.getParametro("tipoDocumentoPaciente") : "SI";
+        string sexo = req.tieneParametro("sexo") ? req.getParametro("sexo") : "NA";
+        if(tipoDocumentoPaciente=="AS"||tipoDocumentoPaciente=="MS"||tipoDocumentoPaciente=="SI") paciente = new Paciente(sexo, tipoDocumentoPaciente);
+        else{
+            string nombrePaciente = req.tieneParametro("nombrePaciente") ? req.getParametro("nombrePaciente") : "Sin nombre";
+            string tipoDocumentoPaciente = req.tieneParametro("tipoDocumentoPaciente") ? req.getParametro("tipoDocumentoPaciente") : "NA";
+            string sexo = req.tieneParametro("sexo") ? req.getParametro("sexo") : "NA";
+            string documentoPaciente = req.tieneParametro("documentoPaciente") ? req.getParametro("documentoPaciente") : "NA";
+            int edad = req.tieneParametro("edad") ? stoi(req.getParametro("edad")) : 0;
+            string eps = req.tieneParametro("eps") ? req.getParametro("eps") : "NA";
+            string correoPaciente = req.tieneParametro("correoPaciente") ? req.getParametro("correoPaciente") : "NA";
+            string telefonoPaciente = req.tieneParametro("telefono") ? req.getParametro("telefono") : "NA";
+            string direccion = req.tieneParametro("direccion") ? req.getParametro("direcccion") : "NA";
+            Paciente paciente(nombrePaciente, documentoPaciente, tipoDocumentoPaciente, edad, sexo, eps, correoPaciente, telefonoPaciente, direccion);
+        }
+        AcudientePaciente* acudiente = nullptr;
+        string parentesco = req.tieneParametro("parentesco") ? req.getParametro("parentesco") : "NA";
+        if(parentesco=="nadie"||"NA") {}
+        else{
+            string nombreAcudiente = req.tieneParametro("nombreAcudiente") ? req.getParametro("nombreAcudiente") : "NA";
+            string tipoDocumentoAcudiente = req.tieneParametro("tipoDocumentoAcudiente") ? req.getParametro("tipoDocumentoAcudiente") : "SI";
+            string documentoAcudiente = req.tieneParametro("documentoAcudiente") ? req.getParametro("documentoAcudiente") : "NA";
+            string correoAcudiente = req.tieneParametro("correoAcudiente") ? req.getParametro("correoAcudiente") : "NA";
+            string telefonoAcudiente = req.tieneParametro("telefonoAcudiente") ? req.getParametro("telefonoAcudiente") : "NA";
+            acudiente = new AcudientePaciente(nombreAcudiente, tipoDocumentoAcudiente, documentoAcudiente, parentesco, correoAcudiente, telefonoAcudiente, paciente);
+        }
+        int temperatura = req.tieneParametro("temperatura") ? stoi(req.getParametro("temperatura")) : 36;
         bool embarazo = req.tieneParametro("embarazada") ? req.pasarBool(req.getParametro("embarazada")) : false;
+        int estatura = req.tieneParametro("estatura") ? stoi(req.getParametro("estatura")) : 160;
+        float peso = req.tieneParametro("peso") ? stof(req.getParametro("peso")) : 60;
+        int presionSistolica = req.tieneParametro("presionSistolica") ? stoi(req.getParametro("presionSistolica")) : 100;
+        int presionDiastolica = req.tieneParametro("presionDiastolica") ? stoi(req.getParametro("presionDiastolica")) : 90;
+        int frecuenciaCardiaca = req.tieneParametro("frecuencia") ? stoi(req.getParametro("frecuencia")) : 60;
+        int frecuenciaRespiratoria = req.tieneParametro("presionRespiratoria") ? stoi(req.getParametro("presionRespiratoria")) : 15;
+        int saturacion = req.tieneParametro("saturacion") ? stoi(req.getParametro("saturacion")) : 90;
+        int escalaDolor = req.tieneParametro("escala") ? stoi(req.getParametro("escala")) : 0;
+        int escalaGlasgow = req.tieneParametro("escalaGlasgow") ? stoi(req.getParametro("escalaGlasgow")) : 15;
+        string motivo = req.tieneParametro("motivo") ? req.getParametro("motivo") : "NA";
+        string alergias = req.tieneParametro("alergias") ? req.getParametro("alergias") : "NA";
+        string enfermedades = req.tieneParametro("enfermedades") ? req.getParametro("enfermedades") : "NA";
+        string cirugias = req.tieneParametro("cirugias") ? req.getParametro("cirugias") : "NA";
+        string observaciones = req.tieneParametro("observaciones") ? req.getParametro("observaciones") : "NA";
+        Triage triage(paciente, embarazo, temperatura, estatura, peso, presionSistolica, presionDiastolica, frecuenciaCardiaca, 
+            frecuenciaRespiratoria, saturacion, escalaDolor, motivo, alergias, enfermedades, cirugias, observaciones, escalaGlasgow);
         res.set_content("{\"status\":\"ok\"}", "application/json");
     });
     svr.Get("/api/pacientes", [](const httplib::Request& req, httplib::Response& res) {
