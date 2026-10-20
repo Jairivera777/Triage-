@@ -187,6 +187,13 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
 };
 int main(){
     httplib::Server svr; //crea el servidor
+    svr.Post("/pi/triage", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "+");
+        res.set_content("{\"status\":\"ok\"}", "application/json");
+    });
+    svr.Get("/api/pacientes", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_content("[]", "applicaton/json");
+    });
     svr.listen("0.0.0.0", 8080); //le coloca una ip (local) y un puerto y lo manda por el chat de la consola
     return 0;
 }

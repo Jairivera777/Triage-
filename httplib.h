@@ -10,15 +10,38 @@
 namespace httplib {
     struct Request { 
         std::string body; 
-        struct FileResult{
-             std::string content; 
-        };
-        FileResult get_file_value(const char* name) const { return { "CC" }; } };
-    struct Response { void set_content(const std::string& s, const char* t) { std::cout << "Página cargada.\n"; } };
+        std::map<std::string, std::string> params;
+        bool has_param(const std::string& key) const {
+            return params.find(key) != params.end();
+        }
+        std::string get_param_value(const std::string& key) const {
+            auto it = params.find(key);
+            if(it != params.end()) {
+                return it->second;
+            }
+            return "";
+        }
+    };    
+    struct Response { 
+        std::string body;
+        std::string content_type;
+        void set_header(const std::string& key, const std::string& value){
+
+        }
+        void set_content(const std::string& s, const char* type) { 
+            body = s;
+            content_type = type; 
+        }
+    };
     struct Server {
-        void Get(const char* r, std::function<void(const Request&, Response&)> f) {}
-        void Post(const char* r, std::function<void(const Request&, Response&)> f) {
-            
+        std::function<void(const Request&, Response&)> handlerPost;
+        std::function<void(const Request&, Response&)> handlerGet;
+
+        void Get(const char* pattern, std::function<void(const Request&, Response&)> handler) {
+            handlerGet = handler;
+        }
+        void Post(const char* pattern, std::function<void(const Request&, Response&)> handler) {
+            handlerPost = handler;
         }
         void listen(const char* h, int p) { 
             std::cout << "Servidor de Triage iniciado en http://localhost:8080\nSimulación activa. Presiona Ctrl+C para salir.\n"; 
