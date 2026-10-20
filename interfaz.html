@@ -39,7 +39,7 @@
                             <input type="text" id="nombrePaciente" name="nombrePaciente">
                         </div>
                         <label for="tipoDocumentoPaciente">Tipo de documento:</label>
-                        <select id="tipoDocumentoPaciente" name="documentoPaciente" required>
+                        <select id="tipoDocumentoPaciente" name="tipoDocumentoPaciente" required>
                             <option value="" disabled selected>Seleccione una opcion...</option>
                             <option value="CC">CC - Cedula de Ciudadania</option>
                             <option value="TI">TI - Tarjeta de identidad</option>
@@ -92,7 +92,7 @@
                                 <label for="nombreAcudiente">Nombre acudiente:</label>
                                 <input type="text" id="nombreAcudiente" name="nombreAcudiente">
                                 <label for="tipoDocumentoAcudiente">Tipo de documento:</label>
-                                <select id="tipoDocumentoAcudiente" name="documentoAcudiente" required>
+                                <select id="tipoDocumentoAcudiente" name="tipoDocumentoAcudiente" required>
                                     <option value="" disabled selected>Seleccione una opcion...</option>
                                     <option value="CC">CC - Cedula de Ciudadania</option>
                                     <option value="TI">TI - Tarjeta de identidad</option>
@@ -245,6 +245,8 @@
             .then(response => response.json())
             .then(data => {
                 alert('C++ ha calculado el Triage exitosamente. Resultado: Nivel '+ data.triage);
+                document.getElementById('formTriage').reset();
+                document.getElementById('seccion-embarazo').style.display = 'none';
             })
             .catch(error => {
                 console.error('Error al conectar con C++: ', error);

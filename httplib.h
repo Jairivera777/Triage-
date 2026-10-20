@@ -11,15 +11,18 @@ namespace httplib {
     struct Request { 
         std::string body; 
         std::map<std::string, std::string> params;
-        bool has_param(const std::string& key) const {
+        bool tieneParametro(const std::string& key) const {
             return params.find(key) != params.end();
         }
-        std::string get_param_value(const std::string& key) const {
+        std::string getParametro(const std::string& key) const {
             auto it = params.find(key);
             if(it != params.end()) {
                 return it->second;
             }
             return "";
+        }
+        bool pasarBool(const std::string str) const {
+            return str=="true";
         }
     };    
     struct Response { 

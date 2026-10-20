@@ -189,6 +189,11 @@ int main(){
     httplib::Server svr; //crea el servidor
     svr.Post("/pi/triage", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "+");
+        //Aqui es donde se empieza lo tryhard
+        string nombre = req.tieneParametro("nombrePaciente") ? req.getParametro("nombrePaciente") : "Sin nombre";
+        string tipoDocumento = req.tieneParametro("documentoPaciente") ? req.getParametro("documentoPaciente") : "NA";
+        string sexo = req.tieneParametro("sexo") ? req.getParametro("sexo") : "No identificado";
+        bool embarazo = req.tieneParametro("embarazada") ? req.pasarBool(req.getParametro("embarazada")) : false;
         res.set_content("{\"status\":\"ok\"}", "application/json");
     });
     svr.Get("/api/pacientes", [](const httplib::Request& req, httplib::Response& res) {
