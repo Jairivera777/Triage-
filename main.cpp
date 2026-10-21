@@ -43,6 +43,12 @@ class Paciente{ //clase que guarda los datos del paciente
         int getEdad(){
             return edad;
         }
+        string getDocumento(){
+            return documento;
+        }
+        string getNombre(){
+            return nombre;
+        }
 };
 class AcudientePaciente{ //guarda los datos del acudiente si aplica
     private:
@@ -85,13 +91,8 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
         string observaciones;
         time_t horaLlegada;
         time_t tiempoEspera;
+        int turnoLlegada;
         int triage;
-        int obtenerMinutosEspera(){ //nos dice cuanto tiempo ha estado esperando el paciente
-            auto ahora = chrono::system_clock::now();
-            time_t horaActual = chrono::system_clock::to_time_t(ahora);
-            double segundos = difftime(horaActual, horaLlegada);
-            return (int)(segundos/60);
-        }
         bool buscarPalabras(string texto, string palabras[], int tamano){ //busca palabras
             for(int i = 0; i<tamano;i++){
                 if(texto.find(palabras[i])!=string::npos){
@@ -122,6 +123,7 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
         int calcularTriage(){ //calcula el triage dependiendo del caso del paciente
             tiempoEspera = obtenerMinutosEspera();
             string texto = motivo+" "+observaciones;
+            
             string palabrasNivel1[] = {"DISNEA DE REPOSO", "HABLA ENTRECORTADA", "USO MARCADO DE MUSCULOS ACCESORIOS", "CIANOSIS DISTAL", 
                 "CIANOSIS PERIORAL", "ALTERACION DEL ESTADO DE ALERTA", "TRAUMA SEVERO", "POLITRAUMATISMO CRITICO", "PERDIDA DE CONSCIENCIA PROFUNDA", 
                 "COMA", "ESTUPOR", "ACV", "ACCIDENTE CEREBRO VASCULAR", "HEMORRAGIA SEVERA", "QUEMADURAS EXTENSAS", "RIESGO DE PERDER UN MIEMBRO", 
@@ -144,10 +146,8 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
                 "GRIPA", "INFECCION URINARIA LEVE", "MOLESTIA AL ORINAR", "DIARREA SIMPLE", "DIARREA SIN DESHIDRATACION", "MOLESTIA DIGESTIVA", "CONTUSION LEVE",
                 "GOLPE LEVE", "ESGUINCE MENOR", "HERIDA SUPERFICIAL", "RASPON", "ABSCESO PEQUEÑO", "INFECCION LOCALIZADA"};
             int tamano4 = sizeof(palabrasNivel4) / sizeof(palabrasNivel4[0]);
-            int triage;
-            if(frecuenciaCardiaca == 0 || buscarPalabras(texto, palabrasNivel1, tamano1) || saturacion < 80 || glasgow <= 8
-                || (triage==2&&tiempoEspera>30) || (triage==3&&tiempoEspera>180 || (triage==4&&tiempoEspera>420))
-                || (triage==5&&tiempoEspera>=720)) triage = 1;
+            int triage = 5;
+            if(frecuenciaCardiaca == 0 || buscarPalabras(texto, palabrasNivel1, tamano1) || saturacion < 80 || glasgow <= 8) triage = 1;
             else if(presionSistolica>=180 || presionDiastolica>110 || presionSistolica<=90 || frecuenciaCardiaca>=120||
                 frecuenciaCardiaca<=50 || frecuenciaRespiratoria>24 || frecuenciaRespiratoria<10 || (saturacion < 90 && !encontroEpoc) 
                 ||(saturacion<=85&&encontroEpoc) || temperatura >=39.5 || (temperatura<=35&&buscarPalabras(texto, debilidad, 2)) 
@@ -157,12 +157,33 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             (paciente->getEdad()>=65 && buscarPalabras(enfermedades, factoresRiesgo, 5))) triage = 3;
             else if(buscarPalabras(texto, palabrasNivel4, tamano4)) triage = 4;
             else triage = 5;
+
+            if(triage==2 && tiempoEspera>30) triage = 1;
+            else if(triage==3 && tiempoEspera>100) triage = 1;
+            else if(triage==4 && tiempoEspera > 420) triage = 1;
+            else if(triage==5 && tiempoEspera > 720) triage = 1;
             return triage;
         }
     public:
+        Triage(){
+            paciente = nullptr; 
+            embarazo = false; 
+            temperatura = 36; 
+            estatura = 160; 
+            peso = 60;
+            presionSistolica = 120; 
+            presionDiastolica = 80; 
+            frecuenciaCardiaca = 75;
+            frecuenciaRespiratoria = 18; 
+            saturacion = 98; 
+            escala = 0; glasgow = 15;
+            horaLlegada = time(0); 
+            turnoLlegada = 0; 
+            triage = 5;
+        }
         Triage(Paciente* _paciente, bool _embarazo, float _temperatura, int _estatura, float _peso, int _presionSistolica, 
             int _presionDiastolica, int _frecuenciaCardiaca, int _frecuenciaRespiratoria, int _saturacion, int _escala, string _motivo, 
-            string _alergias, string _enfermedades, string _cirugias, string _observaciones, int _glasgow){
+            string _alergias, string _enfermedades, string _cirugias, string _observaciones, int _glasgow, int _turno){
             paciente = _paciente;
             if(paciente->getSexo()=="Masculino") embarazo = 0;
             else embarazo = _embarazo;
@@ -184,11 +205,28 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             auto ahora = chrono::system_clock::now();
             horaLlegada = chrono::system_clock::to_time_t(ahora);                    //Muchachos creo que vamos a tener que cambiar unas cosas de aqui (Triage), miro eso mañana
             triage = calcularTriage();
+            turnoLlegada = _turno;
         }
         int getTriage(){
             triage = calcularTriage();
             return triage;
         }
+        int getHoraLlegada(){
+            return horaLlegada;
+        }
+        int getTurnoLlegada(){
+            return turnoLlegada;
+        }
+        Paciente* getPaciente(){
+            return paciente;
+        }
+        int obtenerMinutosEspera(){ //nos dice cuanto tiempo ha estado esperando el paciente
+            auto ahora = chrono::system_clock::now();
+            time_t horaActual = chrono::system_clock::to_time_t(ahora);
+            double segundos = difftime(horaActual, horaLlegada);
+            return (int)(segundos/60);
+        }
+
 };
 
 class ColaPrioridad{
@@ -319,7 +357,8 @@ class ColaPrioridad{
       };
     };
 };
-
+int contadorTurno = 1;
+ColaPrioridad colaTriage;
 int main(){
     httplib::Server svr; //crea el servidor
     svr.Post("/api/triage", [](const httplib::Request& req, httplib::Response& res) {
@@ -337,11 +376,11 @@ int main(){
             string tipoDocumentoPaciente = req.tieneParametro("tipoDocumentoPaciente") ? req.getParametro("tipoDocumentoPaciente") : "NA";
             string sexo = req.tieneParametro("sexo") ? req.getParametro("sexo") : "NA";
             documentoPaciente = req.tieneParametro("documentoPaciente") ? req.getParametro("documentoPaciente") : "NA";
-            int edad = req.tieneParametro("edad") ? stoi(req.getParametro("edad")) : 0;
+            int edad = (req.tieneParametro("edad") && !req.getParametro("edad").empty()) ? stoi(req.getParametro("edad")) : 0;
             string eps = req.tieneParametro("eps") ? req.getParametro("eps") : "NA";
             string correoPaciente = req.tieneParametro("correoPaciente") ? req.getParametro("correoPaciente") : "NA";
             string telefonoPaciente = req.tieneParametro("telefono") ? req.getParametro("telefono") : "NA";
-            string direccion = req.tieneParametro("direccion") ? req.getParametro("direcccion") : "NA";
+            string direccion = req.tieneParametro("direccion") ? req.getParametro("direccion") : "NA";
             paciente = new Paciente(nombrePaciente, documentoPaciente, tipoDocumentoPaciente, edad, sexo, eps, correoPaciente, telefonoPaciente, direccion);
         }
         cout << "\n====================================" << endl;
@@ -349,7 +388,7 @@ int main(){
         cout << "Paciente de " << tipoDocumentoPaciente << ": " << documentoPaciente << " de sexo: " << sexo << endl;
         AcudientePaciente* acudiente = nullptr;
         string parentesco = req.tieneParametro("parentesco") ? req.getParametro("parentesco") : "NA";
-        if(parentesco=="nadie"||"NA") {}
+        if(parentesco=="nadie"||parentesco == "NA") {}
         else{
             string nombreAcudiente = req.tieneParametro("nombreAcudiente") ? req.getParametro("nombreAcudiente") : "NA";
             string tipoDocumentoAcudiente = req.tieneParametro("tipoDocumentoAcudiente") ? req.getParametro("tipoDocumentoAcudiente") : "SI";
@@ -358,24 +397,25 @@ int main(){
             string telefonoAcudiente = req.tieneParametro("telefonoAcudiente") ? req.getParametro("telefonoAcudiente") : "NA";
             acudiente = new AcudientePaciente(nombreAcudiente, tipoDocumentoAcudiente, documentoAcudiente, parentesco, correoAcudiente, telefonoAcudiente, paciente);
         }
-        int temperatura = req.tieneParametro("temperatura") ? stoi(req.getParametro("temperatura")) : 36;
+        int temperatura = (req.tieneParametro("temperatura") && !req.getParametro("temperatura").empty()) ? stoi(req.getParametro("temperatura")) : 36;
         bool embarazo = req.tieneParametro("embarazada") ? req.pasarBool(req.getParametro("embarazada")) : false;
-        int estatura = req.tieneParametro("estatura") ? stoi(req.getParametro("estatura")) : 160;
-        float peso = req.tieneParametro("peso") ? stof(req.getParametro("peso")) : 60;
-        int presionSistolica = req.tieneParametro("presionSistolica") ? stoi(req.getParametro("presionSistolica")) : 100;
-        int presionDiastolica = req.tieneParametro("presionDiastolica") ? stoi(req.getParametro("presionDiastolica")) : 90;
-        int frecuenciaCardiaca = req.tieneParametro("frecuencia") ? stoi(req.getParametro("frecuencia")) : 60;
-        int frecuenciaRespiratoria = req.tieneParametro("presionRespiratoria") ? stoi(req.getParametro("presionRespiratoria")) : 15;
-        int saturacion = req.tieneParametro("saturacion") ? stoi(req.getParametro("saturacion")) : 90;
-        int escalaDolor = req.tieneParametro("escala") ? stoi(req.getParametro("escala")) : 0;
-        int escalaGlasgow = req.tieneParametro("escalaGlasgow") ? stoi(req.getParametro("escalaGlasgow")) : 15;
+        int estatura = (req.tieneParametro("estatura") && !req.getParametro("estatura").empty()) ? stoi(req.getParametro("estatura")) : 160;
+        float peso = (req.tieneParametro("peso") && !req.getParametro("peso").empty()) ? stof(req.getParametro("peso")) : 60;
+        int presionSistolica = (req.tieneParametro("presionSistolica") && !req.getParametro("presionSistolica").empty()) ? stoi(req.getParametro("presionSistolica")) : 100;
+        int presionDiastolica =(req.tieneParametro("presionDiastolica") && !req.getParametro("presionDiastolica").empty()) ? stoi(req.getParametro("presionDiastolica")) : 90;
+        int frecuenciaCardiaca = (req.tieneParametro("frecuencia") && !req.getParametro("frecuencia").empty()) ? stoi(req.getParametro("frecuencia")) : 60;
+        int frecuenciaRespiratoria = (req.tieneParametro("frecuenciaRespiratoria") && !req.getParametro("frecuenciaRespiratoria").empty()) ? stoi(req.getParametro("frecuenciaRespiratoria")) : 15;
+        int saturacion = (req.tieneParametro("saturacion") && !req.getParametro("saturacion").empty()) ? stoi(req.getParametro("saturacion")) : 90;
+        int escalaDolor = (req.tieneParametro("escala") && !req.getParametro("escala").empty()) ? stoi(req.getParametro("escala")) : 0;
+        int escalaGlasgow = (req.tieneParametro("escalaGlasgow") && !req.getParametro("escalaGlasgow").empty()) ? stoi(req.getParametro("escalaGlasgow")) : 15;
         string motivo = req.tieneParametro("motivo") ? req.getParametro("motivo") : "NA";
         string alergias = req.tieneParametro("alergias") ? req.getParametro("alergias") : "NA";
         string enfermedades = req.tieneParametro("enfermedades") ? req.getParametro("enfermedades") : "NA";
         string cirugias = req.tieneParametro("cirugias") ? req.getParametro("cirugias") : "NA";
         string observaciones = req.tieneParametro("observaciones") ? req.getParametro("observaciones") : "NA";
         Triage triage(paciente, embarazo, temperatura, estatura, peso, presionSistolica, presionDiastolica, frecuenciaCardiaca, 
-            frecuenciaRespiratoria, saturacion, escalaDolor, motivo, alergias, enfermedades, cirugias, observaciones, escalaGlasgow);
+            frecuenciaRespiratoria, saturacion, escalaDolor, motivo, alergias, enfermedades, cirugias, observaciones, escalaGlasgow, contadorTurno++);
+        colaTriage.agregar(triage);
         int nivelCalculado = triage.getTriage();
         cout << "Triage calculado exitosamente: NIVEL " << nivelCalculado << endl;
         cout << "======================================" << endl;
@@ -383,7 +423,20 @@ int main(){
         res.set_content(jsonRespuesta, "application/json");
     });
     svr.Get("/api/pacientes", [](const httplib::Request& req, httplib::Response& res) {
-        res.set_content("[]", "applicaton/json");
+        res.set_header("Access-Control-Allow-Origin", "*");
+    string json = "[";
+    for(int i = 0; i < colaTriage.longitud(); i++) {
+        Triage t = colaTriage.obtener(i);
+        if(i > 0) json += ",";
+        json += "{";
+        json += "\"documento\":\"" + (t.getPaciente() ? t.getPaciente()->getDocumento() : "NA") + "\",";
+        json += "\"nombre\":\"" + (t.getPaciente() ? t.getPaciente()->getNombre() : "Anonimo") + "\",";
+        json += "\"triage\":" + to_string(t.getTriage()) + ",";
+        json += "\"minutosEspera\":" + to_string(t.obtenerMinutosEspera());
+        json += "}";
+    }
+    json += "]";
+    res.set_content(json, "application/json");
     });
     svr.listen("0.0.0.0", 8080); //le coloca una ip (local) y un puerto y lo manda por el chat de la consola
     return 0;
