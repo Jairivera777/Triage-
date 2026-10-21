@@ -177,7 +177,7 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             cirugias = normalizar(_cirugias);
             observaciones = normalizar(_observaciones);
             auto ahora = chrono::system_clock::now();
-            horaLlegada = chrono::system_clock::to_time_t(ahora);
+            horaLlegada = chrono::system_clock::to_time_t(ahora);                    //Muchachos creo que vamos a tener que cambiar unas cosas de aqui (Triage), miro eso mañana
             triage = calcularTriage();
         }
         int getTriage(){
@@ -185,8 +185,138 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             return triage;
         }
 };
+
+class ColaPrioridad{
+  public:
+    ColaPrioridad( int m = 10 ){    // Operaciones
+      N = 0;
+      tamano = m;
+      datos = new Triage[tamano];
+    };
+
+    ~ColaPrioridad(){
+      delete[] datos;
+    };
+
+    bool esvacia(){
+      return N == 0;
+    };
+
+    int longitud(){
+      return N;
+    };
+
+    Triage obtener( int i ){
+      if(0 <= i && i < N){
+        return datos[i];
+      }else{
+        throw -1;
+      };
+    };
+
+    void agregar( Triage d ){
+      grow();
+      datos[N] = d;
+      flotar(N);
+      N++;
+    };
+
+    Triage eliminar_primero(){
+      if(!esvacia()){
+        Triage d = datos[0];
+        N--;
+        if(N > 0){
+          datos[0] = datos[N];
+          hundir(0);
+        };
+        shrink();
+        return d;
+      };
+      throw 0;
+    };
+
+  protected:
+    Triage * datos;    // Producto Cartesiano
+    int N;
+    int tamano;
+    double aureo = 1.618;
+
+    void grow(){
+      if(N == tamano){
+        int ntamano = (int)(tamano * aureo);
+        if(ntamano <= tamano){ ntamano = tamano + 1; };
+        Triage * ndatos = new Triage[ntamano];
+        for( int i=0; i<tamano; i++ ){
+          ndatos[i] = datos[i];
+        };
+        delete[] datos;
+        datos = ndatos;
+        tamano = ntamano;
+      };
+    };
+
+    void shrink(){
+      if(tamano > 20 && N * aureo * aureo < tamano){
+        int ntamano = (int)(tamano / aureo);
+        Triage * ndatos = new Triage[ntamano];
+        for( int i=0; i<N; i++ ){
+          ndatos[i] = datos[i];
+        };
+        delete[] datos;
+        datos = ndatos;
+        tamano = ntamano;
+      };
+    };
+
+    bool esMenor( Triage & a, Triage & b ){
+      if(a.getTriage() != b.getTriage()){
+        return a.getTriage() < b.getTriage();
+      };
+      if(a.getHoraLlegada() != b.getHoraLlegada()){
+        return a.getHoraLlegada() < b.getHoraLlegada();
+      };
+      return a.getTurnoLlegada() < b.getTurnoLlegada();
+    };
+
+    void flotar( int i ){
+      while(i > 0){
+        int p = (i - 1) / 2;
+        if(esMenor(datos[i], datos[p])){
+          Triage t = datos[i];
+          datos[i] = datos[p];
+          datos[p] = t;
+          i = p;
+        }else{
+          return;
+        };
+      };
+    };
+
+    void hundir( int i ){
+      while(true){
+        int izq = 2 * i + 1;
+        int der = 2 * i + 2;
+        int m = i;
+        if(izq < N && esMenor(datos[izq], datos[m])){
+          m = izq;
+        };
+        if(der < N && esMenor(datos[der], datos[m])){
+          m = der;
+        };
+        if(m != i){
+          Triage t = datos[i];
+          datos[i] = datos[m];
+          datos[m] = t;
+          i = m;
+        }else{
+          return;
+        };
+      };
+    };
+};
+
 int main(){
     httplib::Server svr; //crea el servidor
     svr.listen("0.0.0.0", 8080); //le coloca una ip (local) y un puerto y lo manda por el chat de la consola
     return 0;
-}
+};
