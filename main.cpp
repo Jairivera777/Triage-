@@ -362,15 +362,13 @@ int main(){
         res.set_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
         res.set_header("Access-Control-Allow-Headers", "Content-Type");
         //Aqui es donde se empieza lo tryhard
-        Paciente* paciente = nullptr;
+        Paciente* paciente = NULL;
         string tipoDocumentoPaciente = req.tieneParametro("tipoDocumentoPaciente") ? req.getParametro("tipoDocumentoPaciente") : "SI";
         string sexo = req.tieneParametro("sexo") ? req.getParametro("sexo") : "NA";
         string documentoPaciente = "NA";
         if(tipoDocumentoPaciente=="AS"||tipoDocumentoPaciente=="MS"||tipoDocumentoPaciente=="SI") paciente = new Paciente(sexo, tipoDocumentoPaciente);
         else{
             string nombrePaciente = req.tieneParametro("nombrePaciente") ? req.getParametro("nombrePaciente") : "Sin nombre";
-            string tipoDocumentoPaciente = req.tieneParametro("tipoDocumentoPaciente") ? req.getParametro("tipoDocumentoPaciente") : "NA";
-            string sexo = req.tieneParametro("sexo") ? req.getParametro("sexo") : "NA";
             documentoPaciente = req.tieneParametro("documentoPaciente") ? req.getParametro("documentoPaciente") : "NA";
             int edad = (req.tieneParametro("edad") && !req.getParametro("edad").empty()) ? stoi(req.getParametro("edad")) : 0;
             string eps = req.tieneParametro("eps") ? req.getParametro("eps") : "NA";
@@ -382,7 +380,7 @@ int main(){
         cout << "\n====================================" << endl;
         cout << "NUEVA PETICION DE TRIAGE RECIBIDA!" << endl;
         cout << "Paciente de " << tipoDocumentoPaciente << ": " << documentoPaciente << " de sexo: " << sexo << endl;
-        AcudientePaciente* acudiente = nullptr;
+        AcudientePaciente* acudiente = NULL;
         string parentesco = req.tieneParametro("parentesco") ? req.getParametro("parentesco") : "NA";
         if(parentesco=="nadie"||parentesco == "NA") {}
         else{
@@ -424,16 +422,16 @@ int main(){
         for (int i = 0; i<colaTriage.longitud();i++){
           listaOrdenada.insertarOrdenado(colaTriage.obtener(i));
         }
-    string json = "[";
-    Nodo * actual = listaOrdenada.getCabeza();
-    bool primero = true;
-    while(actual != NULL) {
+      string json = "[";
+      Nodo * actual = listaOrdenada.getCabeza();
+      bool primero = true;
+      while(actual != NULL) {
         Triage t = actual->dato;
         if(!primero) json += ",";
         string doc = "NA";
         string nom = "Anonimo";
 
-        if (t.getPaciente() != nullptr) {
+        if (t.getPaciente() != NULL) {
             if (!t.getPaciente()->getDocumento().empty()) doc = t.getPaciente()->getDocumento();
             if (!t.getPaciente()->getNombre().empty()) nom = t.getPaciente()->getNombre();
         }

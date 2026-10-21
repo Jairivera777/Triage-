@@ -205,7 +205,7 @@
     <script>
         document.getElementById('formTriage').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
-                e.preventDefault(); // Cancela la acción por defecto de la tecla Enter
+                e.preventDefault(); 
                 return false;
             }
         });
@@ -291,7 +291,6 @@
             });
         });
         let listaGlobalPacientes = [];
-
         function cargarPacientes(){
             fetch('http://localhost:8080/api/pacientes')
                 .then(response => response.json())
