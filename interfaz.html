@@ -185,7 +185,7 @@
             <section class="panel-derecho">
                 <h2 class="titulo-derecha">FILTRO DE PACIENTES</h2>
                 <label for="filtros">FILTROS: </label>
-                <select id="filtros" name="filtro">
+                <select id="filtros" name="filtro" onchange="renderizarPacientes()">
                     <option value="todos" selected>TODOS</option>
                     <option value="1">TRIAGE 1</option>
                     <option value="2">TRIAGE 2</option>
@@ -193,6 +193,10 @@
                     <option value="4">TRIAGE 4</option>
                     <option value="5">TRIAGE 5</option>
                 </select>
+
+            <h3>Pacientes Activos</h3>
+            <ul id="listaPacientes"></ul>
+            <div id="totalesPorNivel" class="totales-container"></div>
             </section>
         </div>
     </div>
@@ -272,12 +276,58 @@
                     }, 4000);
                     document.getElementById('formTriage').reset();
                     document.getElementById('seccion-embarazo').style.display = 'none';
+                    cargarPacientes();
                 }
             })
             .catch(error => {
                 console.error('Error al conectar con C++: ', error);
                 alert("No se logro conectar con C++");
             });
+        });
+        let listaGlobalPacientes = [];
+
+        function cargarPacientes(){
+            fetch('http://localhost:8080/api/pacientes')
+                .then(response => response.json())
+                .then(data=> {
+                    listaGlobalPacientes = data;
+                    renderizarPacientes();
+                })
+                .catch(err => console.error("Error al cargar pacientes", err));
+        }
+        function renderizarPacientes(){
+            const selector = document.getElementById('filtros');
+            const filtroValor = selector ? selector.value : 'TODOS';
+            const contenedorLista = document.getElementById('listaPacientes');
+            const contenedorTotales = document.getElementById('totalesPorNivel');
+            if(!contenedorLista) return;
+            contenedorLista.innerHTML = '';
+            const pacientesFiltrados = listaGlobalPacientes.filter(p => {
+                if(filtroValor === 'TODOS') return true;
+                return String(p.triage) === String(filtroValor);
+            });
+            if (pacientesFiltrados.length === 0){
+                contenedorLista.innerHTML = `<li>No hay pacientes en esta categoria</li>`;
+            } else {
+                pacientesFiltrados.forEach(p => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>[T${p.triage}]</strong> ${p.nombre} (${p.documento}) - Espera: ${p.minutosEspera} min`;
+                    contenedorLista.appendChild(li);
+                });
+            }
+            const totales = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+            listaGlobalPacientes.forEach(p => {
+                if(totales[p.triage]!== undefined){
+                    totales[p.triage]++;
+                }
+            });
+            contenedorTotales.innerHTML = `
+                <strong>Totales por nivel:</strong><br>
+                T1: ${totales[1]} | T2: ${totales[2]} | T3: ${totales[3]} | T4: ${totales[4]} | T5: ${totales[5]}`;
+                setInterval(cargarPacientes, 60000);
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            cargarPacientes();
         });
     </script>
 </body>
