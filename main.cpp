@@ -10,7 +10,7 @@ void manejarSignal(int signal){
     cout << "Cerrando servidor mediante Ctrl+C"<< endl;
     servidorGlobal->stop();
   }
-}
+};
 class Paciente{ //clase que guarda los datos del paciente
     private:
         string nombre;
@@ -162,7 +162,7 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
                 || buscarPalabras(texto, palabrasNivel2, tamano2) || temperatura <= 34) triage = 2;
             else if(temperatura>=38 || presionSistolica>=140 || frecuenciaCardiaca>=100 || frecuenciaRespiratoria>=21
             ||buscarPalabras(texto, palabrasNivel3, tamano3) || 
-            (paciente->getEdad()>=65 && buscarPalabras(enfermedades, factoresRiesgo, 5))) triage = 3;
+            (paciente!= NULL && paciente->getEdad()>=65 && buscarPalabras(enfermedades, factoresRiesgo, 5))) triage = 3;
             else if(buscarPalabras(texto, palabrasNivel4, tamano4)) triage = 4;
             else triage = 5;
 
@@ -211,7 +211,7 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             cirugias = normalizar(_cirugias);
             observaciones = normalizar(_observaciones);
             auto ahora = chrono::system_clock::now();
-            horaLlegada = chrono::system_clock::to_time_t(ahora);                    //Muchachos creo que vamos a tener que cambiar unas cosas de aqui (Triage), miro eso mañana
+            horaLlegada = chrono::system_clock::to_time_t(ahora);
             triage = calcularTriage();
             turnoLlegada = _turno;
         }
@@ -234,10 +234,55 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             double segundos = difftime(horaActual, horaLlegada);
             return (int)(segundos/60);
         }
-
 };
-
-class ColaPrioridad{
+bool esMenor(Triage& a, Triage& b) {
+  if (a.getTriage() != b.getTriage()) return a.getTriage() < b.getTriage(); 
+  if (a.getHoraLlegada() != b.getHoraLlegada()) return a.getHoraLlegada() < b.getHoraLlegada();
+  return a.getTurnoLlegada() < b.getTurnoLlegada();
+};
+struct Nodo{
+  public:
+    Triage dato;
+    Nodo * siguiente;
+    Nodo(Triage t){
+      dato = t;
+      siguiente = NULL;
+    }
+};
+struct Lista{
+  private:
+    Nodo * cabeza;
+  public:
+    Lista(){
+      cabeza = NULL;
+    }
+    ~Lista() {
+      Nodo* actual = cabeza;
+      while (actual != nullptr) {
+        Nodo* siguiente = actual->siguiente;
+        delete actual;
+        actual = siguiente;
+      }
+    }
+    void insertarOrdenado(Triage t){
+      Nodo * nuevo = new Nodo(t);
+      if(cabeza == NULL || esMenor(t, cabeza->dato)){
+        nuevo->siguiente = cabeza;
+        cabeza = nuevo;
+        return;
+      }
+      Nodo * actual = cabeza;
+      while(actual->siguiente != NULL && !esMenor(t, actual->siguiente->dato)){
+        actual = actual->siguiente;
+      }
+      nuevo->siguiente = actual->siguiente;
+      actual->siguiente = nuevo;
+    }
+    Nodo * getCabeza(){
+      return cabeza;
+    }
+};
+struct ColaPrioridad{
   public:
     ColaPrioridad( int m = 10 ){    // Operaciones
       N = 0;
@@ -318,17 +363,6 @@ class ColaPrioridad{
         tamano = ntamano;
       };
     };
-
-    bool esMenor( Triage & a, Triage & b ){
-      if(a.getTriage() != b.getTriage()){
-        return a.getTriage() < b.getTriage();
-      };
-      if(a.getHoraLlegada() != b.getHoraLlegada()){
-        return a.getHoraLlegada() < b.getHoraLlegada();
-      };
-      return a.getTurnoLlegada() < b.getTurnoLlegada();
-    };
-
     void flotar( int i ){
       while(i > 0){
         int p = (i - 1) / 2;
@@ -434,16 +468,31 @@ int main(){
     });
     svr.Get("/api/pacientes", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
+        Lista listaOrdenada;
+        for (int i = 0; i<colaTriage.longitud();i++){
+          listaOrdenada.insertarOrdenado(colaTriage.obtener(i));
+        }
     string json = "[";
-    for(int i = 0; i < colaTriage.longitud(); i++) {
-        Triage t = colaTriage.obtener(i);
-        if(i > 0) json += ",";
+    Nodo * actual = listaOrdenada.getCabeza();
+    bool primero = true;
+    while(actual != NULL) {
+        Triage t = actual->dato;
+        if(!primero) json += ",";
+        string doc = "NA";
+        string nom = "Anonimo";
+
+        if (t.getPaciente() != nullptr) {
+            if (!t.getPaciente()->getDocumento().empty()) doc = t.getPaciente()->getDocumento();
+            if (!t.getPaciente()->getNombre().empty()) nom = t.getPaciente()->getNombre();
+        }
         json += "{";
-        json += "\"documento\":\"" + (t.getPaciente() ? t.getPaciente()->getDocumento() : "NA") + "\",";
-        json += "\"nombre\":\"" + (t.getPaciente() ? t.getPaciente()->getNombre() : "Anonimo") + "\",";
+        json += "\"documento\":\"" + doc + "\",";
+        json += "\"nombre\":\"" + nom + "\",";
         json += "\"triage\":" + to_string(t.getTriage()) + ",";
         json += "\"minutosEspera\":" + to_string(t.obtenerMinutosEspera());
         json += "}";
+        primero = false;
+        actual = actual->siguiente;
     }
     json += "]";
     res.set_content(json, "application/json");

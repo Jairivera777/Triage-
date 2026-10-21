@@ -203,7 +203,6 @@ namespace httplib {
                         "Content-Type: application/json\r\n"
                         "Content-Length: " + std::to_string(res.body.length()) + "\r\n"
                         "Connection: close\r\n\r\n" + res.body;
-
                     send(clientSocket, resp.c_str(), static_cast<int>(resp.length()), 0);
                 }
 
