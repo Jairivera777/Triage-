@@ -8,6 +8,19 @@
         .seccion-panel.activa { display: block; }
         .pestana { cursor: pointer; padding: 10px; display: inline-block; }
         .pestana.activa { font-weight: bold; border-bottom: 2px solid #000; }
+        .notificacionExito {
+                display: none;
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #4CAF50;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 4px, 8px rgb(0,0,0,0,2);
+                z-index: 1000;
+                font-family: sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -22,7 +35,9 @@
         <span> |</span>
         <span id="Hora">00:00:00</span>
     </header>
-
+    <div id="notificacionExito" class="notificacionExito">
+        <strong>¡Exito!</strong> Datos guardados correctamente. Nivel de Triage <span id="nivelTriageExito"></span>
+    </div>
     <div class="barra pestanas">  <!--Las 3 pestañas que aparecen salen de aqui-->
         <div class="pestana activa" id="tab-triage" onclick="irA('triage')">Triage</div>
         <div class="pestana" id="tab-consulta" onclick="irA('consulta')">Consulta</div>
@@ -92,7 +107,7 @@
                                 <label for="nombreAcudiente">Nombre acudiente:</label>
                                 <input type="text" id="nombreAcudiente" name="nombreAcudiente">
                                 <label for="tipoDocumentoAcudiente">Tipo de documento:</label>
-                                <select id="tipoDocumentoAcudiente" name="tipoDocumentoAcudiente" required>
+                                <select id="tipoDocumentoAcudiente" name="tipoDocumentoAcudiente">
                                     <option value="" disabled selected>Seleccione una opcion...</option>
                                     <option value="CC">CC - Cedula de Ciudadania</option>
                                     <option value="TI">TI - Tarjeta de identidad</option>
@@ -246,12 +261,21 @@
             })
             .then(response => response.json())
             .then(data => {
-                alert('C++ ha calculado el Triage exitosamente. Resultado: Nivel '+ data.triage);
-                document.getElementById('formTriage').reset();
-                document.getElementById('seccion-embarazo').style.display = 'none';
+                if (data.status === "ok") {
+                    const notif = document.getElementById('notificacionExito');
+                    document.getElementById('nivelTriageExito').textContent = data.triage;
+                    notif.style.display = 'block';
+
+                    setTimeout(() => {
+                        notif.style.display = 'none';
+                    }, 4000);
+                    document.getElementById('formTriage').reset();
+                    document.getElementById('seccion-embarazo').style.display = 'none';
+                }
             })
             .catch(error => {
                 console.error('Error al conectar con C++: ', error);
+                alert("No se logro conectar con C++");
             });
         });
     </script>

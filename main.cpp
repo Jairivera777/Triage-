@@ -104,17 +104,20 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             for(char &c : palabra){
                 c = toupper(c);
             }
-            string textoLimpio = "";
-            for(int i = 0; i < palabra.length(); i++){
-                char letra = palabra[i];
-                if(letra == 'Á') textoLimpio += 'A';
-                else if(letra== 'É') textoLimpio += 'E';
-                else if(letra=='Í') textoLimpio += 'I';
-                else if(letra=='Ó') textoLimpio += 'O';
-                else if(letra=='Ú'||letra=='Ü') textoLimpio += 'U';
-                else textoLimpio += letra;
+            struct Reemplazo { string conTilde; string sinTilde; };
+            Reemplazo lista[] = {
+                {"Á", "A"}, {"É", "E"}, {"Í", "I"}, {"Ó", "O"}, {"Ú", "U"},
+                {"á", "A"}, {"é", "E"}, {"í", "I"}, {"ó", "O"}, {"ú", "U"}, {"ü", "U"}, {"Ü", "U"}
+            };
+
+            for (const auto& r : lista) {
+                size_t pos = 0;
+                while ((pos = palabra.find(r.conTilde, pos)) != string::npos) {
+                    palabra.replace(pos, r.conTilde.length(), r.sinTilde);
+                    pos += r.sinTilde.length();
+                }
             }
-            return textoLimpio;
+            return palabra;
         }
         int calcularTriage(){ //calcula el triage dependiendo del caso del paciente
             tiempoEspera = obtenerMinutosEspera();
@@ -319,25 +322,31 @@ class ColaPrioridad{
 
 int main(){
     httplib::Server svr; //crea el servidor
-    svr.Post("/pi/triage", [](const httplib::Request& req, httplib::Response& res) {
-        res.set_header("Access-Control-Allow-Origin", "+");
+    svr.Post("/api/triage", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        res.set_header("Access-Control-Allow-Headers", "Content-Type");
         //Aqui es donde se empieza lo tryhard
         Paciente* paciente = nullptr;
         string tipoDocumentoPaciente = req.tieneParametro("tipoDocumentoPaciente") ? req.getParametro("tipoDocumentoPaciente") : "SI";
         string sexo = req.tieneParametro("sexo") ? req.getParametro("sexo") : "NA";
+        string documentoPaciente = "NA";
         if(tipoDocumentoPaciente=="AS"||tipoDocumentoPaciente=="MS"||tipoDocumentoPaciente=="SI") paciente = new Paciente(sexo, tipoDocumentoPaciente);
         else{
             string nombrePaciente = req.tieneParametro("nombrePaciente") ? req.getParametro("nombrePaciente") : "Sin nombre";
             string tipoDocumentoPaciente = req.tieneParametro("tipoDocumentoPaciente") ? req.getParametro("tipoDocumentoPaciente") : "NA";
             string sexo = req.tieneParametro("sexo") ? req.getParametro("sexo") : "NA";
-            string documentoPaciente = req.tieneParametro("documentoPaciente") ? req.getParametro("documentoPaciente") : "NA";
+            documentoPaciente = req.tieneParametro("documentoPaciente") ? req.getParametro("documentoPaciente") : "NA";
             int edad = req.tieneParametro("edad") ? stoi(req.getParametro("edad")) : 0;
             string eps = req.tieneParametro("eps") ? req.getParametro("eps") : "NA";
             string correoPaciente = req.tieneParametro("correoPaciente") ? req.getParametro("correoPaciente") : "NA";
             string telefonoPaciente = req.tieneParametro("telefono") ? req.getParametro("telefono") : "NA";
             string direccion = req.tieneParametro("direccion") ? req.getParametro("direcccion") : "NA";
-            Paciente paciente(nombrePaciente, documentoPaciente, tipoDocumentoPaciente, edad, sexo, eps, correoPaciente, telefonoPaciente, direccion);
+            paciente = new Paciente(nombrePaciente, documentoPaciente, tipoDocumentoPaciente, edad, sexo, eps, correoPaciente, telefonoPaciente, direccion);
         }
+        cout << "\n====================================" << endl;
+        cout << "NUEVA PETICION DE TRIAGE RECIBIDA!" << endl;
+        cout << "Paciente de " << tipoDocumentoPaciente << ": " << documentoPaciente << " de sexo: " << sexo << endl;
         AcudientePaciente* acudiente = nullptr;
         string parentesco = req.tieneParametro("parentesco") ? req.getParametro("parentesco") : "NA";
         if(parentesco=="nadie"||"NA") {}
@@ -367,7 +376,11 @@ int main(){
         string observaciones = req.tieneParametro("observaciones") ? req.getParametro("observaciones") : "NA";
         Triage triage(paciente, embarazo, temperatura, estatura, peso, presionSistolica, presionDiastolica, frecuenciaCardiaca, 
             frecuenciaRespiratoria, saturacion, escalaDolor, motivo, alergias, enfermedades, cirugias, observaciones, escalaGlasgow);
-        res.set_content("{\"status\":\"ok\"}", "application/json");
+        int nivelCalculado = triage.getTriage();
+        cout << "Triage calculado exitosamente: NIVEL " << nivelCalculado << endl;
+        cout << "======================================" << endl;
+        string jsonRespuesta = "{\"status\":\"ok\", \"triage\":" +to_string(nivelCalculado) + "}";
+        res.set_content(jsonRespuesta, "application/json");
     });
     svr.Get("/api/pacientes", [](const httplib::Request& req, httplib::Response& res) {
         res.set_content("[]", "applicaton/json");
