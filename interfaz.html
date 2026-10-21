@@ -253,11 +253,12 @@
         });
         document.getElementById('formTriage').addEventListener('submit', function(e) { // se encarga de conectar el front con c++
             e.preventDefault();
-            const formData = new FormData(this);
+            const formData = new FormData(document.getElementById('formTriage'));
+            const params = new URLSearchParams(formData);
 
             fetch('http://localhost:8080/api/triage' , {
                 method: 'POST',
-                body: new URLSearchParams(formData)
+                body: params
             })
             .then(response => response.json())
             .then(data => {
