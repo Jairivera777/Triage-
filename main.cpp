@@ -284,7 +284,7 @@ struct Lista{
 };
 struct ColaPrioridad{
   public:
-    ColaPrioridad( int m = 10 ){    // Operaciones
+    ColaPrioridad( int m = 8 ){    // Operaciones
       N = 0;
       tamano = m;
       datos = new Triage[tamano];
@@ -311,27 +311,27 @@ struct ColaPrioridad{
     };
 
     void agregar( Triage d ){
-      grow();
-      datos[N] = d;
-      flotar(N);
+      grow(); 
+      int i = N - 1;
+      while (i >= 0 && esMenor(d, datos[i])) {
+        datos[i + 1] = datos[i];
+        i--;
+      }
+      datos[i + 1] = d;
       N++;
     };
 
     Triage eliminar_primero(){
-      if(!esvacia()){
-        Triage d = datos[0];
-        N--;
-        if(N > 0){
-          datos[0] = datos[N];
-          hundir(0);
-        };
-        shrink();
-        return d;
-      };
-      throw 0;
+      if (esvacia()) throw 0;
+      Triage primero = datos[0];
+      for (int i = 1; i < N; i++) {
+        datos[i - 1] = datos[i];
+      }
+      N--; 
+      return primero;
     };
 
-  protected:
+  private:
     Triage * datos;    // Producto Cartesiano
     int N;
     int tamano;
@@ -348,54 +348,6 @@ struct ColaPrioridad{
         delete[] datos;
         datos = ndatos;
         tamano = ntamano;
-      };
-    };
-
-    void shrink(){
-      if(tamano > 20 && N * aureo * aureo < tamano){
-        int ntamano = (int)(tamano / aureo);
-        Triage * ndatos = new Triage[ntamano];
-        for( int i=0; i<N; i++ ){
-          ndatos[i] = datos[i];
-        };
-        delete[] datos;
-        datos = ndatos;
-        tamano = ntamano;
-      };
-    };
-    void flotar( int i ){
-      while(i > 0){
-        int p = (i - 1) / 2;
-        if(esMenor(datos[i], datos[p])){
-          Triage t = datos[i];
-          datos[i] = datos[p];
-          datos[p] = t;
-          i = p;
-        }else{
-          return;
-        };
-      };
-    };
-
-    void hundir( int i ){
-      while(true){
-        int izq = 2 * i + 1;
-        int der = 2 * i + 2;
-        int m = i;
-        if(izq < N && esMenor(datos[izq], datos[m])){
-          m = izq;
-        };
-        if(der < N && esMenor(datos[der], datos[m])){
-          m = der;
-        };
-        if(m != i){
-          Triage t = datos[i];
-          datos[i] = datos[m];
-          datos[m] = t;
-          i = m;
-        }else{
-          return;
-        };
       };
     };
 };
