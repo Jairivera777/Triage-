@@ -2,7 +2,15 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include <csignal>
 using namespace std;
+httplib::Server* servidorGlobal = nullptr;
+void manejarSignal(int signal){
+  if(servidorGlobal){
+    cout << "Cerrando servidor mediante Ctrl+C"<< endl;
+    servidorGlobal->stop();
+  }
+}
 class Paciente{ //clase que guarda los datos del paciente
     private:
         string nombre;
@@ -361,6 +369,8 @@ int contadorTurno = 1;
 ColaPrioridad colaTriage;
 int main(){
     httplib::Server svr; //crea el servidor
+    servidorGlobal = &svr;
+    std::signal(SIGINT, manejarSignal);
     svr.Post("/api/triage", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
@@ -397,7 +407,7 @@ int main(){
             string telefonoAcudiente = req.tieneParametro("telefonoAcudiente") ? req.getParametro("telefonoAcudiente") : "NA";
             acudiente = new AcudientePaciente(nombreAcudiente, tipoDocumentoAcudiente, documentoAcudiente, parentesco, correoAcudiente, telefonoAcudiente, paciente);
         }
-        int temperatura = (req.tieneParametro("temperatura") && !req.getParametro("temperatura").empty()) ? stoi(req.getParametro("temperatura")) : 36;
+        int temperatura = (req.tieneParametro("temperatura") && !req.getParametro("temperatura").empty()) ? stof(req.getParametro("temperatura")) : 36;
         bool embarazo = req.tieneParametro("embarazada") ? req.pasarBool(req.getParametro("embarazada")) : false;
         int estatura = (req.tieneParametro("estatura") && !req.getParametro("estatura").empty()) ? stoi(req.getParametro("estatura")) : 160;
         float peso = (req.tieneParametro("peso") && !req.getParametro("peso").empty()) ? stof(req.getParametro("peso")) : 60;
@@ -437,6 +447,11 @@ int main(){
     }
     json += "]";
     res.set_content(json, "application/json");
+    });
+    svr.Get("/api/stop", [&svr](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content("{\"status\":\"servidor deteniendose\"}", "application/json");
+        svr.stop();
     });
     svr.listen("0.0.0.0", 8080); //le coloca una ip (local) y un puerto y lo manda por el chat de la consola
     return 0;

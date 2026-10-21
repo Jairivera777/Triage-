@@ -155,16 +155,16 @@
                         <label for="peso">Peso (kg):</label>
                         <input type="number" id="peso" name="peso">
                         <label for="frecuencia">Frecuencia cardiaca:</label>
-                        <input type="text" id="frecuencia" name="presionArterial">
+                        <input type="text" id="frecuencia" name="frecuencia">
                         <label for="presionSistolica">Presion Sistolica:</label>
-                        <input type="number" id="presionSistolica" name="frecuenciaSistolica">
+                        <input type="number" id="presionSistolica" name="presionSistolica">
                         <label for="presionDiastolica">Presion Diastolica:</label>
-                        <input type="number" id="presionDiastolica" name="frecuenciaDiastolica">
+                        <input type="number" id="presionDiastolica" name="presionDiastolica">
                         <label for="frecuenciaRespiratoria">Frecuencia respiratoria por minuto:</label>
                         <input type="number" id="frecuenciaRespiratoria" name="frecuenciaRespiratoria">
                         <label for="saturacion">SpO2%:</label>
                         <input type="number" id="saturacion" name="saturacion" min="0" max="100">
-                        <label for="escalaGlasgow">Escala de Glasgow</label>
+                        <label for="escalaGlasgow">Escala de Glasgow:</label>
                         <input type="number" id="escalaGlasgow" name="escalaGlasgow" min="3" max="15">
                         <label for="escala">Escala del dolor:</label>
                         <input type="number" id="escala" name="escala" min="0" max="10">
@@ -186,7 +186,7 @@
                 <h2 class="titulo-derecha">FILTRO DE PACIENTES</h2>
                 <label for="filtros">FILTROS: </label>
                 <select id="filtros" name="filtro" onchange="renderizarPacientes()">
-                    <option value="todos" selected>TODOS</option>
+                    <option value="TODOS" selected>TODOS</option>
                     <option value="1">TRIAGE 1</option>
                     <option value="2">TRIAGE 2</option>
                     <option value="3">TRIAGE 3</option>
@@ -203,6 +203,12 @@
     <div id="pantalla-consulta" class="seccion-panel"><h2>Panel de consultas</h2></div>
     <div id="pantalla-altas" class="seccion-panel"><h2>Panel de altas</h2></div>
     <script>
+        document.getElementById('formTriage').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Cancela la acción por defecto de la tecla Enter
+                return false;
+            }
+        });
         function actualizarHora(){ // funcion encargada de actualizar la hora de la interfaz cada segundo
             const ahora = new Date();
             let horas = ahora.getHours().toString().padStart(2, '0');

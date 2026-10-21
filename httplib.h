@@ -47,14 +47,26 @@ namespace httplib {
     };
 
     struct Server {
-        std::function<void(const Request&, Response&)> handlerPost;
-        std::function<void(const Request&, Response&)> handlerGet;
+        std::map<std::string, std::function<void(const Request&, Response&)>> handlersGet;
+        std::map<std::string, std::function<void(const Request&, Response&)>> handlersPost;
 
+        SOCKET serverSocket = INVALID_SOCKET;
+        bool is_running = false;
+        void stop(){
+            if(is_running){
+                is_running = false;
+                    if(serverSocket!= INVALID_SOCKET){
+                        shutdown(serverSocket, SD_BOTH);
+                        closesocket(serverSocket);
+                        serverSocket = INVALID_SOCKET;
+                    }
+            }
+        }
         void Get(const char* pattern, std::function<void(const Request&, Response&)> handler) {
-            handlerGet = handler;
+            handlersGet[pattern] = handler;
         }
         void Post(const char* pattern, std::function<void(const Request&, Response&)> handler) {
-            handlerPost = handler;
+            handlersPost[pattern] = handler;
         }
 
         std::string urlDecode(std::string str) {
@@ -83,13 +95,12 @@ namespace httplib {
                 return;
             }
 
-            SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-            if (serverSocket == INVALID_SOCKET) {
+            serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+            if(serverSocket == INVALID_SOCKET){
                 std::cout << "Error al crear el socket\n";
                 WSACleanup();
-                return;
+                return; 
             }
-
             // Permitir reutilizar el puerto inmediatamente si se reinicia
             int opt = 1;
             setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt));
@@ -107,15 +118,17 @@ namespace httplib {
             }
 
             ::listen(serverSocket, SOMAXCONN);
-
+            is_running = true;
             std::cout << "==========================================" << std::endl;
             std::cout << "Servidor C++ activo en http://localhost:" << puerto << std::endl;
             std::cout << "==========================================" << std::endl;
 
-            while (true) {
+            while (is_running) {
                 SOCKET clientSocket = accept(serverSocket, NULL, NULL);
-                if (clientSocket == INVALID_SOCKET) continue;
-
+                if(!is_running || clientSocket == INVALID_SOCKET){
+                    if(clientSocket != INVALID_SOCKET) closesocket(clientSocket);
+                    break;
+                }
                 char buffer[8192] = {0};
                 int bytesRead = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
                 if (bytesRead <= 0) {
@@ -139,7 +152,7 @@ namespace httplib {
                     send(clientSocket, resp.c_str(), static_cast<int>(resp.length()), 0);
                 }
                 // 2. Petición POST
-                else if (peticion.find("POST") != std::string::npos && handlerPost) {
+                else if (peticion.find("POST") == 0) {
                     size_t bodyPos = peticion.find("\r\n\r\n");
                     if (bodyPos != std::string::npos) {
                         req.body = peticion.substr(bodyPos + 4);
@@ -155,8 +168,12 @@ namespace httplib {
                             }
                         }
                     }
-
-                    handlerPost(req, res);
+                    for(auto& pair : handlersPost) {
+                        if (peticion.find(pair.first) != std::string::npos){
+                            pair.second(req, res);
+                            break;
+                        }
+                    }
 
                     std::string resp = 
                         "HTTP/1.1 200 OK\r\n"
@@ -170,8 +187,13 @@ namespace httplib {
                     send(clientSocket, resp.c_str(), static_cast<int>(resp.length()), 0);
                 }
                 // 3. Petición GET
-                else if (peticion.find("GET") != std::string::npos && handlerGet) {
-                    handlerGet(req, res);
+                else if (peticion.find("GET") == 0) {
+                    for (auto& pair : handlersGet) {
+                        if (peticion.find(pair.first) != std::string::npos) {
+                            pair.second(req, res);
+                            break;
+                        }
+                    }
 
                     std::string resp = 
                         "HTTP/1.1 200 OK\r\n"
@@ -187,7 +209,12 @@ namespace httplib {
 
                 closesocket(clientSocket);
             }
+            if(serverSocket!= INVALID_SOCKET){
+                closesocket(serverSocket);
+                serverSocket = INVALID_SOCKET;
+            }
             WSACleanup();
+            std::cout << "Servidor cerrado y puerto liberado";
         }
     };
 }
