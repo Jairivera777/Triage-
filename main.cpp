@@ -467,7 +467,7 @@ struct PilaAtendidos{
       if(cantidad==1){
         temp = cabeza;
         Triage paciente = temp->dato;
-        delete[] temp;
+        delete temp;
         cabeza = NULL;
         cantidad = 0;
         return paciente;
@@ -475,7 +475,7 @@ struct PilaAtendidos{
       temp = cabeza;
       Triage paciente = temp->dato;
       cabeza = cabeza->siguiente;
-      delete[] temp;
+      delete temp;
       return paciente;
     }  
     Nodo * getTope(){
@@ -654,6 +654,7 @@ int main(){
         Triage cabeza = colaTriage.obtener(0);
         Paciente * paciente = cabeza.getPaciente();
         string json = "{"; 
+        json += "\"hayPaciente\": true,";
           json += "\"nombre\": \""+paciente->getNombre()+"\",";
           json += "\"tipoDocumento\": \""+paciente->getTipoDocumento()+"\",";
           json += "\"documento\": \""+paciente->getDocumento()+"\",";
@@ -663,7 +664,7 @@ int main(){
           json += "\"correo\": \""+paciente->getCorreo()+"\",";
           json += "\"telefono\": \""+paciente->getTelefono()+"\",";
           json += "\"embarazo\": ";
-          if(cabeza.getEmbarazo()) json += "Si\",";
+          if(cabeza.getEmbarazo()) json += "\"Si\",";
           else json += "\"No\",";
           json += "\"temperatura\": \""+to_string(cabeza.getTemperatura())+"\",";
           json += "\"estatura\": \""+to_string(cabeza.getEstatura())+"\",";
@@ -712,7 +713,6 @@ int main(){
         string doc = (paciente != nullptr) ? paciente->getDocumento() : "NA";
 
         string json = "{"; 
-        json += "\"hayPaciente\": true,";
         json += "\"nombre\": \"" + escaparJson(nom) + "\",";
         json += "\"documento\": \"" + escaparJson(doc) + "\",";
         json += "\"triage\": " + to_string(cabeza.getTriage()) + ",";

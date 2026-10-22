@@ -401,7 +401,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'ok') {
-                    cargarPacienteConsulta();
+                    cargarPaciente();
                     cargarPacientes();
                     alert("Se reinsertó el último paciente al sistema.");
                 } else alert("El historial de altas está vacío.");

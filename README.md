@@ -25,3 +25,5 @@ Estructuras de datos utilizadas:
 *ARREGLOS DINAMICOS:* Los arreglos dinamicos se usaron para poder implementar las colas con prioridad. Estos arreglos van creciendo o decreciendo en base a la cantidad de pacientes que hay. Como tal la cola con prioridad se encarga de organizar este arreglo de tal manera que entre menor nivel de Triage tenga, va a estar mucho mas cerca del primer paciente que es el siguiente en ser atendido.
 
 *PILAS:* Se utilizaron para llevar el registro en donde logramos ver el historial de los pacientes atendidos. Tambien en caso de que algun medico atienda a un paciente y termine la consulta con error, pueda volver a entrar en la fila y como conserva sus datos entraria en primer lugar, para que asi el doctor lo termine de atender.
+
+Video de la explicacion: https://drive.google.com/file/d/1n5tRtFyYfwISSGVO1AOK5GSxBt7eewju/view?usp=drive_link
