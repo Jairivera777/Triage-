@@ -42,6 +42,7 @@
         <div class="pestana activa" id="tab-triage" onclick="irA('triage')">Triage</div>
         <div class="pestana" id="tab-consulta" onclick="irA('consulta')">Consulta</div>
         <div class="pestana" id="tab-altas" onclick="irA('altas')">Altas</div>
+        <div class="pestana" id="tab-historial" onclick="irA('historial')">Historial</div>
     </div>
     <div id="pantalla-triage" class="seccion-panel activa">
         <div class="contenedor-paneles">
@@ -202,6 +203,10 @@
     </div>
     <div id="pantalla-consulta" class="seccion-panel"><h2>Panel de consultas</h2></div>
     <div id="pantalla-altas" class="seccion-panel"><h2>Panel de altas</h2></div>
+    <div id="pantalla-historial" class="seccion-panel">
+        <h2>Pacientes atendidos</h2>
+        <ul id="listaAtendidos"></h2>
+    </div>
     <script>
         document.getElementById('formTriage').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
@@ -227,6 +232,8 @@
             });
             document.getElementById('pantalla-'+modulo).classList.add('activa');
             document.getElementById('tab-'+modulo).classList.add('activa');
+            if(modulo==='triage') cargarPacientes();
+            if(modulo==='historial') cargarHistorial();
         };
         const selectParentesco = document.getElementById('parentesco');
         const bloqueAntes = document.getElementById('antes-parentesco')
@@ -334,6 +341,28 @@
         document.addEventListener("DOMContentLoaded", function() {
             cargarPacientes();
         });
+        function cargarHistorial(){
+            fetch('http://localhost:8080/api/historialPacientes')
+            .then(response => response.json())
+            .then(data => {
+                listaGlobalPacientes = data;
+                renderizarListasPacientes();
+            })
+            .catch(err => console.error("Error al cargar pacientes", err));
+        }
+        function renderizarListasPacientes(){
+            const contenedorLista = document.getElementById('listaAtendidos');
+            if(!contenedorLista) return;
+            contenedorLista.innerHTML = '';
+            if(listaGlobalPacientes.length === 0) contenedorLista.innerHTML= `<li>No hay pacientes en esta categoria</li>`;
+            else {
+                listaGlobalPacientes.forEach(p => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>[T${p.triage}]</strong> ${p.nombre} (${p.documento}) - Espera: ${p.minutosEspera} min`;
+                    contenedorLista.appendChild(li);
+                });
+            }
+        }
     </script>
 </body>
 </html>

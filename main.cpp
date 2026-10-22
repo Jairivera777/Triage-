@@ -345,6 +345,48 @@ struct Lista{
       return cabeza;
     }
 };
+struct PilaAtendidos{
+  private:
+  Nodo * cabeza;
+  int cantidad;
+  public:
+    PilaAtendidos(){
+      cabeza = NULL;
+      cantidad = 0;
+    }
+    void agregarPacienteAtendido(Triage t){
+      Nodo * nuevo = new Nodo(t);
+      if(cabeza==NULL) {
+        cabeza = nuevo;
+        nuevo->siguiente = NULL;
+        cantidad = 1;
+        return;
+      }
+      nuevo->siguiente = cabeza;
+      cabeza = nuevo;
+      cantidad++;
+    };
+    Triage deshacerAccion(){
+      Nodo * temp = cabeza;
+      if(cabeza==NULL) throw -1;
+      if(cantidad==1){
+        temp = cabeza;
+        Triage paciente = temp->dato;
+        delete[] temp;
+        cabeza = NULL;
+        cantidad = 0;
+        return paciente;
+      }
+      temp = cabeza;
+      Triage paciente = temp->dato;
+      cabeza = cabeza->siguiente;
+      delete[] temp;
+      return paciente;
+    }  
+    Nodo * getTope(){
+      return cabeza;
+    }
+};
 struct ColaPrioridad{
   public:
     ColaPrioridad( int m = 8 ){    
@@ -416,6 +458,7 @@ struct ColaPrioridad{
 };
 int contadorTurno = 1;
 ColaPrioridad colaTriage;
+PilaAtendidos pilaAlta;
 int main(){
     httplib::Server svr; //crea el servidor
     servidorGlobal = &svr;
@@ -543,6 +586,40 @@ int main(){
         json += "\"observaciones\": \""+cabeza.getObservaciones()+"\",";
         json += "}";
         res.set_content(json, "application/json");
+    });
+    svr.Post("/api/atenderPaciente", [](const httplib::Request& req, httplib::Response res) {
+      res.set_header("Access-Control-Allow-Origin", "*");
+      if(!colaTriage.esvacia()){
+        Triage paciente = colaTriage.eliminar_primero();
+        pilaAlta.agregarPacienteAtendido(paciente);
+        res.set_content("{\"status\": \"ok\"}", "application/json");
+      }else res.set_content("{\"status\": \"vacio\"}", "application/json");
+    });
+    svr.Get("/api/historialPacientes", [](const httplib::Request& req, httplib::Response res){
+      res.set_header("Access-Control-Allow-Origin", "*");
+      string json = "[";
+      Nodo * actual = pilaAlta.getTope();
+      bool primero = true;
+      while(actual != NULL){
+        json += "{";
+        Triage t = actual->dato;
+        if(!primero) json += ",";
+        string doc = "NA";
+        string nom = "Anonimo";
+        if (t.getPaciente() != NULL) {
+          if (!t.getPaciente()->getDocumento().empty()) doc = t.getPaciente()->getDocumento();
+          if (!t.getPaciente()->getNombre().empty()) nom = t.getPaciente()->getNombre();
+        }
+        json += "\"documento\":\"" + doc + "\",";
+        json += "\"nombre\":\"" + nom + "\",";
+        json += "\"triage\":" + to_string(t.getTriage()) + ",";
+        json += "\"minutosEspera\":" + to_string(t.obtenerMinutosEspera());
+        json += "}";
+        primero = false;
+        actual = actual->siguiente;
+      }
+      json += "]";
+      res.set_content(json, "application/json"); 
     });
     svr.Get("/api/stop", [&svr](const httplib::Request& req, httplib::Response& res) { //cierra el servidor
         res.set_header("Access-Control-Allow-Origin", "*");
