@@ -6,7 +6,7 @@ Nuestro proyecto se basa en un Triage hospitalario, en donde diligencias tus dat
 
 Tambien tiene un filtro en donde puedes consultar los pacientes que estan en fila y los puedes filtrar por triage o puedes mostrar todos los pacientes. 
 
-Por ultimo en el panel consultas puedes ver el paciente que tienes que antender, ver sus datos y despues de eso diagnosticarlo y decir que se hizo para en un futuro agregarlo en la historia clinica. El proyecto sigue en desarrollo y espero les guste d:
+Por ultimo en el panel consultas puedes ver el paciente que tienes que antender, ver sus datos y despues de eso diagnosticarlo y decir que se hizo para en un futuro agregarlo en la historia clinica. El proyecto sigue en desarrollo y espero les guste d: Como tal creemos que hubo en 50% de codigo generado por IA.
 
 Estructuras de datos utilizadas:
 
