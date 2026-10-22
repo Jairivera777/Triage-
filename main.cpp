@@ -174,9 +174,9 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             else if(presionSistolica>=180 || presionDiastolica>110 || presionSistolica<=90 || frecuenciaCardiaca>=120||
                 frecuenciaCardiaca<=50 || frecuenciaRespiratoria>24 || frecuenciaRespiratoria<10 || (saturacion < 90 && !encontroEpoc) 
                 ||(saturacion<=85&&encontroEpoc) || temperatura >=39.5 || (temperatura<=35&&buscarPalabras(texto, debilidad, 2)) 
-                || buscarPalabras(texto, palabrasNivel2, tamano2) || temperatura <= 34) triage = 2;
+                || buscarPalabras(texto, palabrasNivel2, tamano2) || temperatura <= 34 || escala >= 7) triage = 2;
             else if(temperatura>=38 || presionSistolica>=140 || frecuenciaCardiaca>=100 || frecuenciaRespiratoria>=21
-            ||buscarPalabras(texto, palabrasNivel3, tamano3) || 
+            ||buscarPalabras(texto, palabrasNivel3, tamano3) || escala >= 4;
             (paciente!= NULL && paciente->getEdad()>=65 && buscarPalabras(enfermedades, factoresRiesgo, 5))) triage = 3;
             else if(buscarPalabras(texto, palabrasNivel4, tamano4)) triage = 4;
             else triage = 5;
