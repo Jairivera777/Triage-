@@ -201,7 +201,22 @@
             </section>
         </div>
     </div>
-    <div id="pantalla-consulta" class="seccion-panel"><h2>Panel de consultas</h2></div>
+    <div id="pantalla-consulta" class="seccion-panel">
+        <h2>Panel de Consultas</h2>
+        <div id="infoConsulta" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; max-width: 500px;">
+            <p><strong>Paciente actual:</strong> <span id="cNombre">Cargando...</span></p>
+            <p><strong>Documento:</strong> <span id="cDocumento">-</span></p>
+            <p><strong>Nivel Triage:</strong> <span id="cTriage">-</span></p>
+            <p><strong>Motivo de consulta:</strong> <span id="cMotivo">-</span></p>
+        
+            <button type="button" onclick="atenderPaciente()" class="boton" style="background-color: #2196F3; color: white; padding: 10px; border: none; cursor: pointer; border-radius: 4px;">
+                Atender / Siguiente Paciente
+            </button>
+            <button type="button" onclick="deshacerAlta()" class="boton" style="background-color: #ff9800; color: white; padding: 10px; border: none; cursor: pointer; border-radius: 4px; margin-left: 10px;">
+                Deshacer Última Alta
+            </button>
+        </div>
+    </div>
     <div id="pantalla-altas" class="seccion-panel"><h2>Panel de altas</h2></div>
     <div id="pantalla-historial" class="seccion-panel">
         <h2>Pacientes atendidos</h2>
@@ -233,6 +248,7 @@
             document.getElementById('pantalla-'+modulo).classList.add('activa');
             document.getElementById('tab-'+modulo).classList.add('activa');
             if(modulo==='triage') cargarPacientes();
+            if(modulo==='consulta') cargarPaciente();
             if(modulo==='historial') cargarHistorial();
         };
         const selectParentesco = document.getElementById('parentesco');
@@ -341,6 +357,57 @@
         document.addEventListener("DOMContentLoaded", function() {
             cargarPacientes();
         });
+        let siguiente = [];
+        function cargarPaciente(){
+            fetch('http://localhost:8080/api/datosPaciente')
+        .then(response => response.json())
+        .then(data => {
+            const elNombre = document.getElementById('cNombre');
+            const elDoc = document.getElementById('cDocumento');
+            const elTriage = document.getElementById('cTriage');
+            const elMotivo = document.getElementById('cMotivo');
+
+            if (data.hayPaciente) {
+                if (elNombre) elNombre.textContent = data.nombre || "Sin nombre";
+                if (elDoc) elDoc.textContent = data.documento || "NA";
+                if (elTriage) elTriage.textContent = 'T' + data.triage;
+                if (elMotivo) elMotivo.textContent = data.motivo || "NA";
+            } else {
+                if (elNombre) elNombre.textContent = "No hay pacientes en espera";
+                if (elDoc) elDoc.textContent = "-";
+                if (elTriage) elTriage.textContent = "-";
+                if (elMotivo) elMotivo.textContent = "-";
+            }
+        })
+        .catch(err => {
+            console.error("Error al cargar paciente en consulta:", err);
+        });
+        }
+        function atenderPaciente() {
+            fetch('http://localhost:8080/api/atenderPaciente', { 
+                method: 'POST' 
+            })
+            .then(response => response.json())
+            .then(data => {
+            if (data.status === 'ok') {
+                cargarPaciente();
+                cargarPacientes();
+            }else alert("No hay pacientes para atender en la cola.");
+            })
+            .catch(err => console.error("Error al atender paciente:", err));
+        }
+        function deshacerAlta() {
+            fetch('http://localhost:8080/api/deshacerAlta', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    cargarPacienteConsulta();
+                    cargarPacientes();
+                    alert("Se reinsertó el último paciente al sistema.");
+                } else alert("El historial de altas está vacío.");
+        })
+        .catch(err => console.error("Error al deshacer alta:", err));
+        }
         function cargarHistorial(){
             fetch('http://localhost:8080/api/historialPacientes')
             .then(response => response.json())

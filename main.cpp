@@ -39,11 +39,6 @@ class Paciente{ //clase que guarda los datos del paciente
     public:
         Paciente(){}
         Paciente(string _sexo, string _tipoDocumento){
-        string getTipoDocumento(){ return tipoDocumento; }
-        string getEps(){ return eps; }
-        string getCorreo(){ return correo; }
-        string getTelefono(){ return telefono; }
-        string getDireccion(){ return direccion; }
             nombre = "NA";
             tipoDocumento = _tipoDocumento;
             sexo = _sexo;
@@ -103,12 +98,6 @@ class AcudientePaciente{ //guarda los datos del acudiente si aplica
         Paciente* paciente;
     public:
         AcudientePaciente(string _nombre, string _tipoDocumento, string _documento, string _parentesco, string _correo, string _telefono, Paciente* _paciente){
-        string getNombre(){ return nombre; }
-        string getTipoDocumento(){ return tipoDocumento; }
-        string getDocumento(){ return documento; }
-        string getParentesco(){ return parentesco; }
-        string getCorreo(){ return correo; }
-        string getTelefono(){ return telefono; }
             nombre = _nombre;
             tipoDocumento = _tipoDocumento;
             documento = _documento;
@@ -117,6 +106,12 @@ class AcudientePaciente{ //guarda los datos del acudiente si aplica
             telefono = _telefono;
             paciente = _paciente;
         }
+        string getNombre(){ return nombre; }
+        string getTipoDocumento(){ return tipoDocumento; }
+        string getDocumento(){ return documento; }
+        string getParentesco(){ return parentesco; }
+        string getCorreo(){ return correo; }
+        string getTelefono(){ return telefono; }
 };
 class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
     private:
@@ -332,7 +327,6 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
 
 class HistoriaClinica{
   private:
-    // Producto Cartesiano
     Triage triageIngreso;
     string anamnesis;
     string diagnostico;
@@ -340,7 +334,6 @@ class HistoriaClinica{
     string indicaciones;
     string fechaHoraAtencion;
   public:
-    // Operaciones
     HistoriaClinica(){}
     HistoriaClinica(Triage _triage, string _anamnesis, string _diagnostico, string _tratamiento, string _indicaciones, string _fechaHora){
       triageIngreso = _triage;
@@ -657,39 +650,41 @@ int main(){
     });
     svr.Get("/api/datosPaciente", [&svr](const httplib::Request& req, httplib::Response& res) { //enviar los daos para la consulta
       res.set_header("Access-Control-Allow-Origin", "*");
-      Triage cabeza = colaTriage.obtener(0);
-      Paciente * paciente = cabeza.getPaciente();
-      string json = "{"; 
-        json += "\"nombre\": \""+paciente->getNombre()+"\",";
-        json += "\"tipoDocumento\": \""+paciente->getTipoDocumento()+"\",";
-        json += "\"documento\": \""+paciente->getDocumento()+"\",";
-        json += "\"sexo\": \""+paciente->getSexo()+"\",";
-        json += "\"edad\": \""+to_string(paciente->getEdad())+"\",";
-        json += "\"eps\": \""+paciente->getEps()+"\","; 
-        json += "\"correo\": \""+paciente->getCorreo()+"\",";
-        json += "\"telefono\": \""+paciente->getTelefono()+"\",";
-        json += "\"embarazo\": \"";
-        if(cabeza.getEmbarazo()) json += "\"Si\",";
-        else json += "\"No\",";
-        json += "\"temperatura\": \""+to_string(cabeza.getTemperatura())+"\",";
-        json += "\"estatura\": \""+to_string(cabeza.getEstatura())+"\",";
-        json += "\"peso\": \""+to_string(cabeza.getPeso())+"\",";
-        json += "\"frecuenciaCardiaca\": \""+to_string(cabeza.getFrecuenciaCardiaca())+"\",";
-        json += "\"presionSistolica\": \""+to_string(cabeza.getPresionSistolica())+"\",";
-        json += "\"presionDiastolica\": \""+to_string(cabeza.getPresionDiastolica())+"\",";
-        json += "\"frecuenciaRespiratoria\": \""+to_string(cabeza.getFrecuenciaRespiratoria())+"\",";
-        json += "\"saturacion\": \""+to_string(cabeza.getSaturacion())+"\",";
-        json += "\"glasgow\": \""+to_string(cabeza.getGlasgow())+"\",";
-        json += "\"escala\": \""+to_string(cabeza.getEscala())+"\",";
-        json += "\"motivo\": \""+cabeza.getMotivo()+"\",";
-        json += "\"alergias\": \""+cabeza.getAlergias()+"\",";
-        json += "\"enfermedades\": \""+cabeza.getEnfermedades()+"\",";
-        json += "\"cirugias\": \""+cabeza.getCirugias()+"\",";
-        json += "\"observaciones\": \""+cabeza.getObservaciones()+"\",";
-        json += "}";
+      if(!colaTriage.esvacia()){
+        Triage cabeza = colaTriage.obtener(0);
+        Paciente * paciente = cabeza.getPaciente();
+        string json = "{"; 
+          json += "\"nombre\": \""+paciente->getNombre()+"\",";
+          json += "\"tipoDocumento\": \""+paciente->getTipoDocumento()+"\",";
+          json += "\"documento\": \""+paciente->getDocumento()+"\",";
+          json += "\"sexo\": \""+paciente->getSexo()+"\",";
+          json += "\"edad\": \""+to_string(paciente->getEdad())+"\",";
+          json += "\"eps\": \""+paciente->getEps()+"\","; 
+          json += "\"correo\": \""+paciente->getCorreo()+"\",";
+          json += "\"telefono\": \""+paciente->getTelefono()+"\",";
+          json += "\"embarazo\": ";
+          if(cabeza.getEmbarazo()) json += "Si\",";
+          else json += "\"No\",";
+          json += "\"temperatura\": \""+to_string(cabeza.getTemperatura())+"\",";
+          json += "\"estatura\": \""+to_string(cabeza.getEstatura())+"\",";
+          json += "\"peso\": \""+to_string(cabeza.getPeso())+"\",";
+          json += "\"frecuenciaCardiaca\": \""+to_string(cabeza.getFrecuenciaCardiaca())+"\",";
+          json += "\"presionSistolica\": \""+to_string(cabeza.getPresionSistolica())+"\",";
+          json += "\"presionDiastolica\": \""+to_string(cabeza.getPresionDiastolica())+"\",";
+          json += "\"frecuenciaRespiratoria\": \""+to_string(cabeza.getFrecuenciaRespiratoria())+"\",";
+          json += "\"saturacion\": \""+to_string(cabeza.getSaturacion())+"\",";
+          json += "\"glasgow\": \""+to_string(cabeza.getGlasgow())+"\",";
+          json += "\"escala\": \""+to_string(cabeza.getEscala())+"\",";
+          json += "\"motivo\": \""+cabeza.getMotivo()+"\",";
+          json += "\"alergias\": \""+cabeza.getAlergias()+"\",";
+          json += "\"enfermedades\": \""+cabeza.getEnfermedades()+"\",";
+          json += "\"cirugias\": \""+cabeza.getCirugias()+"\",";
+          json += "\"observaciones\": \""+cabeza.getObservaciones()+"\"";
+          json += "}";
         res.set_content(json, "application/json");
+      }else res.set_content("{\"hayPaciente\": false, \"nombre\": \"No hay pacientes en espera\"}", "application/json");
     });
-    svr.Post("/api/atenderPaciente", [](const httplib::Request& req, httplib::Response res) {
+    svr.Post("/api/atenderPaciente", [](const httplib::Request& req, httplib::Response& res) {
       res.set_header("Access-Control-Allow-Origin", "*");
       if(!colaTriage.esvacia()){
         Triage paciente = colaTriage.eliminar_primero();
@@ -697,32 +692,37 @@ int main(){
         res.set_content("{\"status\": \"ok\"}", "application/json");
       }else res.set_content("{\"status\": \"vacio\"}", "application/json");
     });
-    svr.Get("/api/historialPacientes", [](const httplib::Request& req, httplib::Response res){
+    svr.Post("/api/deshacerAlta", [](const httplib::Request& req, httplib::Response& res) {
       res.set_header("Access-Control-Allow-Origin", "*");
-      string json = "[";
-      Nodo * actual = pilaAlta.getTope();
-      bool primero = true;
-      while(actual != NULL){
-        json += "{";
-        Triage t = actual->dato;
-        if(!primero) json += ",";
-        string doc = "NA";
-        string nom = "Anonimo";
-        if (t.getPaciente() != NULL) {
-          if (!t.getPaciente()->getDocumento().empty()) doc = t.getPaciente()->getDocumento();
-          if (!t.getPaciente()->getNombre().empty()) nom = t.getPaciente()->getNombre();
+      try {
+          Triage recuperado = pilaAlta.deshacerAccion();
+          colaTriage.agregar(recuperado);
+          res.set_content("{\"status\": \"ok\"}", "application/json");
+      } catch (...) {
+          res.set_content("{\"status\": \"vacio\"}", "application/json");
         }
-        json += "\"documento\":\"" + doc + "\",";
-        json += "\"nombre\":\"" + nom + "\",";
-        json += "\"triage\":" + to_string(t.getTriage()) + ",";
-        json += "\"minutosEspera\":" + to_string(t.obtenerMinutosEspera());
-        json += "}";
-        primero = false;
-        actual = actual->siguiente;
-      }
-      json += "]";
-      res.set_content(json, "application/json"); 
     });
+    svr.Get("/api/historialPacientes", [](const httplib::Request& req, httplib::Response& res){
+      res.set_header("Access-Control-Allow-Origin", "*");
+      if (!colaTriage.esvacia()) {
+        Triage cabeza = colaTriage.obtener(0);
+        Paciente * paciente = cabeza.getPaciente();
+        
+        string nom = (paciente != nullptr) ? paciente->getNombre() : "Sin nombre";
+        string doc = (paciente != nullptr) ? paciente->getDocumento() : "NA";
+
+        string json = "{"; 
+        json += "\"hayPaciente\": true,";
+        json += "\"nombre\": \"" + escaparJson(nom) + "\",";
+        json += "\"documento\": \"" + escaparJson(doc) + "\",";
+        json += "\"triage\": " + to_string(cabeza.getTriage()) + ",";
+        json += "\"motivo\": \"" + escaparJson(cabeza.getMotivo()) + "";
+        json += "}";
+        res.set_content(json, "application/json");
+      } else {
+        res.set_content("{\"hayPaciente\": false, \"nombre\": \"No hay pacientes en espera\"}", "application/json");
+      }
+    }); 
     svr.Get("/api/stop", [&svr](const httplib::Request& req, httplib::Response& res) { //cierra el servidor
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("{\"status\":\"servidor deteniendose\"}", "application/json");
