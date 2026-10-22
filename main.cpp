@@ -230,7 +230,7 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             triage = calcularTriage();
             turnoLlegada = _turno;
         }
-        int getTriage(){
+        int getTriage(){ //getters
             triage = calcularTriage();
             return triage;
         }
@@ -298,7 +298,7 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             return (int)(segundos/60);
         }
 };
-bool esMenor(Triage& a, Triage& b) {
+bool esMenor(Triage& a, Triage& b) { //Se usan por referencia en la memoria para que no gaste mas memoria
   if (a.getTriage() != b.getTriage()) return a.getTriage() < b.getTriage(); 
   if (a.getHoraLlegada() != b.getHoraLlegada()) return a.getHoraLlegada() < b.getHoraLlegada();
   return a.getTurnoLlegada() < b.getTurnoLlegada();
@@ -347,7 +347,7 @@ struct Lista{
 };
 struct ColaPrioridad{
   public:
-    ColaPrioridad( int m = 8 ){    // Operaciones
+    ColaPrioridad( int m = 8 ){    
       N = 0;
       tamano = m;
       datos = new Triage[tamano];
@@ -395,12 +395,12 @@ struct ColaPrioridad{
     };
 
   private:
-    Triage * datos;    // Producto Cartesiano
+    Triage * datos;
     int N;
     int tamano;
     double aureo = 1.618;
 
-    void grow(){
+    void grow(){ //Se encarga de hacer crecer el arreglo dinamico
       if(N == tamano){
         int ntamano = (int)(tamano * aureo);
         if(ntamano <= tamano){ ntamano = tamano + 1; };
@@ -424,7 +424,7 @@ int main(){
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
         res.set_header("Access-Control-Allow-Headers", "Content-Type");
-        //Aqui es donde se empieza lo tryhard
+        //Aqui es donde se reciben los datos de la interfaz
         Paciente* paciente = NULL;
         string tipoDocumentoPaciente = req.tieneParametro("tipoDocumentoPaciente") ? req.getParametro("tipoDocumentoPaciente") : "SI";
         string sexo = req.tieneParametro("sexo") ? req.getParametro("sexo") : "NA";
@@ -482,7 +482,7 @@ int main(){
     svr.Get("/api/pacientes", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         Lista listaOrdenada;
-        for (int i = 0; i<colaTriage.longitud();i++){
+        for (int i = 0; i<colaTriage.longitud();i++){ //la copia del arreglo dinamico en una lista
           listaOrdenada.insertarOrdenado(colaTriage.obtener(i));
         }
       string json = "[";
@@ -510,7 +510,7 @@ int main(){
     json += "]";
     res.set_content(json, "application/json");
     });
-    svr.Get("/api/datosPaciente", [&svr](const httplib::Request& req, httplib::Response& res) {
+    svr.Get("/api/datosPaciente", [&svr](const httplib::Request& req, httplib::Response& res) { //enviar los daos para la consulta
       res.set_header("Access-Control-Allow-Origin", "*");
       Triage cabeza = colaTriage.obtener(0);
       Paciente * paciente = cabeza.getPaciente();
@@ -544,7 +544,7 @@ int main(){
         json += "}";
         res.set_content(json, "application/json");
     });
-    svr.Get("/api/stop", [&svr](const httplib::Request& req, httplib::Response& res) {
+    svr.Get("/api/stop", [&svr](const httplib::Request& req, httplib::Response& res) { //cierra el servidor
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("{\"status\":\"servidor deteniendose\"}", "application/json");
         svr.stop();
