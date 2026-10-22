@@ -298,6 +298,77 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             return (int)(segundos/60);
         }
 };
+
+class HistoriaClinica{
+  private:
+    // Producto Cartesiano
+    Triage triageIngreso;
+    string anamnesis;
+    string diagnostico;
+    string tratamiento;
+    string indicaciones;
+    string fechaHoraAtencion;
+  public:
+    // Operaciones
+    HistoriaClinica(){}
+    HistoriaClinica(Triage _triage, string _anamnesis, string _diagnostico, string _tratamiento, string _indicaciones, string _fechaHora){
+      triageIngreso = _triage;
+      anamnesis = _anamnesis;
+      diagnostico = _diagnostico;
+      tratamiento = _tratamiento;
+      indicaciones = _indicaciones;
+      fechaHoraAtencion = _fechaHora;
+    };
+    Triage getTriageIngreso(){ return triageIngreso; };
+    string getAnamnesis(){ return anamnesis; };
+    string getDiagnostico(){ return diagnostico; };
+    string getTratamiento(){ return tratamiento; };
+    string getIndicaciones(){ return indicaciones; };
+    string getFechaHoraAtencion(){ return fechaHoraAtencion; };
+};
+
+struct NodoHistoria{
+  public:
+    HistoriaClinica dato;
+    NodoHistoria * siguiente;
+    NodoHistoria(HistoriaClinica h){
+      dato = h;
+      siguiente = NULL;
+    };
+};
+
+class ListaHistorias{
+  private:
+    NodoHistoria * cabeza;
+    NodoHistoria * ultimo;
+  public:
+    ListaHistorias(){
+      cabeza = NULL;
+      ultimo = NULL;
+    };
+    ~ListaHistorias(){
+      NodoHistoria * actual = cabeza;
+      while(actual != NULL){
+        NodoHistoria * sig = actual->siguiente;
+        delete actual;
+        actual = sig;
+      };
+    };
+    void insertarAlFinal(HistoriaClinica h){
+      NodoHistoria * nuevo = new NodoHistoria(h);
+      if(cabeza == NULL){
+        cabeza = nuevo;
+        ultimo = cabeza;
+      }else{
+        ultimo->siguiente = nuevo;
+        ultimo = nuevo;
+      };
+    };
+    NodoHistoria * getCabeza(){
+      return cabeza;
+    };
+};
+
 bool esMenor(Triage& a, Triage& b) { //Se usan por referencia en la memoria para que no gaste mas memoria
   if (a.getTriage() != b.getTriage()) return a.getTriage() < b.getTriage(); 
   if (a.getHoraLlegada() != b.getHoraLlegada()) return a.getHoraLlegada() < b.getHoraLlegada();
