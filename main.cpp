@@ -57,6 +57,21 @@ class Paciente{ //clase que guarda los datos del paciente
         string getNombre(){
             return nombre;
         }
+        string getTipoDocumento(){
+          return tipoDocumento;
+        }
+        string getEps(){
+          return eps;
+        }
+        string getCorreo(){
+          return correo;
+        }
+        string getTelefono(){
+          return telefono;
+        }
+        string getDireccion(){
+          return direccion;
+        }
 };
 class AcudientePaciente{ //guarda los datos del acudiente si aplica
     private:
@@ -227,6 +242,54 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
         }
         Paciente* getPaciente(){
             return paciente;
+        }
+        float getTemperatura(){
+          return temperatura;
+        }
+        bool getEmbarazo() { 
+          return embarazo; 
+        }
+        int getEstatura() { 
+          return estatura; 
+        }
+        float getPeso() { 
+          return peso; 
+        }
+        int getPresionSistolica() { 
+          return presionSistolica; 
+        }
+        int getPresionDiastolica() { 
+          return presionDiastolica; 
+        }
+        int getFrecuenciaCardiaca() { 
+          return frecuenciaCardiaca; 
+        }
+        int getFrecuenciaRespiratoria() { 
+          return frecuenciaRespiratoria; 
+        }
+        int getSaturacion() { 
+          return saturacion; 
+        }
+        int getEscala() { 
+          return escala; 
+        }
+        int getGlasgow() { 
+          return glasgow; 
+        }
+        string getMotivo() { 
+          return motivo; 
+        }
+        string getAlergias() { 
+          return alergias; 
+        }
+        string getEnfermedades() { 
+          return enfermedades; 
+        }
+        string getCirugias() { 
+          return cirugias; 
+        }
+        string getObservaciones() { 
+          return observaciones; 
         }
         int obtenerMinutosEspera(){ //nos dice cuanto tiempo ha estado esperando el paciente
             auto ahora = chrono::system_clock::now();
@@ -446,6 +509,40 @@ int main(){
     }
     json += "]";
     res.set_content(json, "application/json");
+    });
+    svr.Get("/api/datosPaciente", [&svr](const httplib::Request& req, httplib::Response& res) {
+      res.set_header("Access-Control-Allow-Origin", "*");
+      Triage cabeza = colaTriage.obtener(0);
+      Paciente * paciente = cabeza.getPaciente();
+      string json = "{"; 
+        json += "\"nombre\": \""+paciente->getNombre()+"\",";
+        json += "\"tipoDocumento\": \""+paciente->getTipoDocumento()+"\",";
+        json += "\"documento\": \""+paciente->getDocumento()+"\",";
+        json += "\"sexo\": \""+paciente->getSexo()+"\",";
+        json += "\"edad\": \""+to_string(paciente->getEdad())+"\",";
+        json += "\"eps\": \""+paciente->getEps()+"\","; 
+        json += "\"correo\": \""+paciente->getCorreo()+"\",";
+        json += "\"telefono\": \""+paciente->getTelefono()+"\",";
+        json += "\"embarazo\": \"";
+        if(cabeza.getEmbarazo()) json += "\"Si\",";
+        else json += "\"No\",";
+        json += "\"temperatura\": \""+to_string(cabeza.getTemperatura())+"\",";
+        json += "\"estatura\": \""+to_string(cabeza.getEstatura())+"\",";
+        json += "\"peso\": \""+to_string(cabeza.getPeso())+"\",";
+        json += "\"frecuenciaCardiaca\": \""+to_string(cabeza.getFrecuenciaCardiaca())+"\",";
+        json += "\"presionSistolica\": \""+to_string(cabeza.getPresionSistolica())+"\",";
+        json += "\"presionDiastolica\": \""+to_string(cabeza.getPresionDiastolica())+"\",";
+        json += "\"frecuenciaRespiratoria\": \""+to_string(cabeza.getFrecuenciaRespiratoria())+"\",";
+        json += "\"saturacion\": \""+to_string(cabeza.getSaturacion())+"\",";
+        json += "\"glasgow\": \""+to_string(cabeza.getGlasgow())+"\",";
+        json += "\"escala\": \""+to_string(cabeza.getEscala())+"\",";
+        json += "\"motivo\": \""+cabeza.getMotivo()+"\",";
+        json += "\"alergias\": \""+cabeza.getAlergias()+"\",";
+        json += "\"enfermedades\": \""+cabeza.getEnfermedades()+"\",";
+        json += "\"cirugias\": \""+cabeza.getCirugias()+"\",";
+        json += "\"observaciones\": \""+cabeza.getObservaciones()+"\",";
+        json += "}";
+        res.set_content(json, "application/json");
     });
     svr.Get("/api/stop", [&svr](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
