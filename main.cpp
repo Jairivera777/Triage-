@@ -11,6 +11,20 @@ void manejarSignal(int signal){
     servidorGlobal->stop();
   }
 };
+
+string escaparJson(string texto){
+  string limpio = "";
+  for(size_t i = 0; i < texto.length(); i++){
+    char c = texto[i];
+    if(c == '\"') limpio += "\\\"";
+    else if(c == '\\') limpio += "\\\\";
+    else if(c == '\n') limpio += "\\n";
+    else if(c == '\r') continue;
+    else limpio += c;
+  };
+  return limpio;
+};
+
 class Paciente{ //clase que guarda los datos del paciente
     private:
         string nombre;
@@ -25,6 +39,11 @@ class Paciente{ //clase que guarda los datos del paciente
     public:
         Paciente(){}
         Paciente(string _sexo, string _tipoDocumento){
+        string getTipoDocumento(){ return tipoDocumento; }
+        string getEps(){ return eps; }
+        string getCorreo(){ return correo; }
+        string getTelefono(){ return telefono; }
+        string getDireccion(){ return direccion; }
             nombre = "NA";
             tipoDocumento = _tipoDocumento;
             sexo = _sexo;
@@ -84,6 +103,12 @@ class AcudientePaciente{ //guarda los datos del acudiente si aplica
         Paciente* paciente;
     public:
         AcudientePaciente(string _nombre, string _tipoDocumento, string _documento, string _parentesco, string _correo, string _telefono, Paciente* _paciente){
+        string getNombre(){ return nombre; }
+        string getTipoDocumento(){ return tipoDocumento; }
+        string getDocumento(){ return documento; }
+        string getParentesco(){ return parentesco; }
+        string getCorreo(){ return correo; }
+        string getTelefono(){ return telefono; }
             nombre = _nombre;
             tipoDocumento = _tipoDocumento;
             documento = _documento;
@@ -96,6 +121,7 @@ class AcudientePaciente{ //guarda los datos del acudiente si aplica
 class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
     private:
         Paciente* paciente;
+        AcudientePaciente* acudiente;
         bool embarazo;
         float temperatura;
         int estatura;
@@ -206,8 +232,9 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
         }
         Triage(Paciente* _paciente, bool _embarazo, float _temperatura, int _estatura, float _peso, int _presionSistolica, 
             int _presionDiastolica, int _frecuenciaCardiaca, int _frecuenciaRespiratoria, int _saturacion, int _escala, string _motivo, 
-            string _alergias, string _enfermedades, string _cirugias, string _observaciones, int _glasgow, int _turno){
+            string _alergias, string _enfermedades, string _cirugias, string _observaciones, int _glasgow, int _turno, AcudientePaciente* _acudiente = nullptr){
             paciente = _paciente;
+            acudiente = _acudiente;
             if(paciente->getSexo()=="Masculino") embarazo = 0;
             else embarazo = _embarazo;
             temperatura = _temperatura;
@@ -229,6 +256,10 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             horaLlegada = chrono::system_clock::to_time_t(ahora);
             triage = calcularTriage();
             turnoLlegada = _turno;
+        }
+        AcudientePaciente* getAcudiente(){
+          return acudiente;
+          
         }
         int getTriage(){ //getters
             triage = calcularTriage();
