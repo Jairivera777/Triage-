@@ -11,6 +11,20 @@ void manejarSignal(int signal){
     servidorGlobal->stop();
   }
 };
+
+string escaparJson(string texto){
+  string limpio = "";
+  for(size_t i = 0; i < texto.length(); i++){
+    char c = texto[i];
+    if(c == '\"') limpio += "\\\"";
+    else if(c == '\\') limpio += "\\\\";
+    else if(c == '\n') limpio += "\\n";
+    else if(c == '\r') continue;
+    else limpio += c;
+  };
+  return limpio;
+};
+
 class Paciente{ //clase que guarda los datos del paciente
     private:
         string nombre;
@@ -25,6 +39,11 @@ class Paciente{ //clase que guarda los datos del paciente
     public:
         Paciente(){}
         Paciente(string _sexo, string _tipoDocumento){
+        string getTipoDocumento(){ return tipoDocumento; }
+        string getEps(){ return eps; }
+        string getCorreo(){ return correo; }
+        string getTelefono(){ return telefono; }
+        string getDireccion(){ return direccion; }
             nombre = "NA";
             tipoDocumento = _tipoDocumento;
             sexo = _sexo;
@@ -84,6 +103,12 @@ class AcudientePaciente{ //guarda los datos del acudiente si aplica
         Paciente* paciente;
     public:
         AcudientePaciente(string _nombre, string _tipoDocumento, string _documento, string _parentesco, string _correo, string _telefono, Paciente* _paciente){
+        string getNombre(){ return nombre; }
+        string getTipoDocumento(){ return tipoDocumento; }
+        string getDocumento(){ return documento; }
+        string getParentesco(){ return parentesco; }
+        string getCorreo(){ return correo; }
+        string getTelefono(){ return telefono; }
             nombre = _nombre;
             tipoDocumento = _tipoDocumento;
             documento = _documento;
@@ -96,6 +121,7 @@ class AcudientePaciente{ //guarda los datos del acudiente si aplica
 class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
     private:
         Paciente* paciente;
+        AcudientePaciente* acudiente;
         bool embarazo;
         float temperatura;
         int estatura;
@@ -206,8 +232,9 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
         }
         Triage(Paciente* _paciente, bool _embarazo, float _temperatura, int _estatura, float _peso, int _presionSistolica, 
             int _presionDiastolica, int _frecuenciaCardiaca, int _frecuenciaRespiratoria, int _saturacion, int _escala, string _motivo, 
-            string _alergias, string _enfermedades, string _cirugias, string _observaciones, int _glasgow, int _turno){
+            string _alergias, string _enfermedades, string _cirugias, string _observaciones, int _glasgow, int _turno, AcudientePaciente* _acudiente = nullptr){
             paciente = _paciente;
+            acudiente = _acudiente;
             if(paciente->getSexo()=="Masculino") embarazo = 0;
             else embarazo = _embarazo;
             temperatura = _temperatura;
@@ -229,6 +256,10 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             horaLlegada = chrono::system_clock::to_time_t(ahora);
             triage = calcularTriage();
             turnoLlegada = _turno;
+        }
+        AcudientePaciente* getAcudiente(){
+          return acudiente;
+          
         }
         int getTriage(){ //getters
             triage = calcularTriage();
@@ -298,6 +329,77 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             return (int)(segundos/60);
         }
 };
+
+class HistoriaClinica{
+  private:
+    // Producto Cartesiano
+    Triage triageIngreso;
+    string anamnesis;
+    string diagnostico;
+    string tratamiento;
+    string indicaciones;
+    string fechaHoraAtencion;
+  public:
+    // Operaciones
+    HistoriaClinica(){}
+    HistoriaClinica(Triage _triage, string _anamnesis, string _diagnostico, string _tratamiento, string _indicaciones, string _fechaHora){
+      triageIngreso = _triage;
+      anamnesis = _anamnesis;
+      diagnostico = _diagnostico;
+      tratamiento = _tratamiento;
+      indicaciones = _indicaciones;
+      fechaHoraAtencion = _fechaHora;
+    };
+    Triage getTriageIngreso(){ return triageIngreso; };
+    string getAnamnesis(){ return anamnesis; };
+    string getDiagnostico(){ return diagnostico; };
+    string getTratamiento(){ return tratamiento; };
+    string getIndicaciones(){ return indicaciones; };
+    string getFechaHoraAtencion(){ return fechaHoraAtencion; };
+};
+
+struct NodoHistoria{
+  public:
+    HistoriaClinica dato;
+    NodoHistoria * siguiente;
+    NodoHistoria(HistoriaClinica h){
+      dato = h;
+      siguiente = NULL;
+    };
+};
+
+class ListaHistorias{
+  private:
+    NodoHistoria * cabeza;
+    NodoHistoria * ultimo;
+  public:
+    ListaHistorias(){
+      cabeza = NULL;
+      ultimo = NULL;
+    };
+    ~ListaHistorias(){
+      NodoHistoria * actual = cabeza;
+      while(actual != NULL){
+        NodoHistoria * sig = actual->siguiente;
+        delete actual;
+        actual = sig;
+      };
+    };
+    void insertarAlFinal(HistoriaClinica h){
+      NodoHistoria * nuevo = new NodoHistoria(h);
+      if(cabeza == NULL){
+        cabeza = nuevo;
+        ultimo = cabeza;
+      }else{
+        ultimo->siguiente = nuevo;
+        ultimo = nuevo;
+      };
+    };
+    NodoHistoria * getCabeza(){
+      return cabeza;
+    };
+};
+
 bool esMenor(Triage& a, Triage& b) { //Se usan por referencia en la memoria para que no gaste mas memoria
   if (a.getTriage() != b.getTriage()) return a.getTriage() < b.getTriage(); 
   if (a.getHoraLlegada() != b.getHoraLlegada()) return a.getHoraLlegada() < b.getHoraLlegada();
