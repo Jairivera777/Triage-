@@ -360,28 +360,27 @@
         let siguiente = [];
         function cargarPaciente(){
             fetch('http://localhost:8080/api/datosPaciente')
-        .then(response => response.json())
-        .then(data => {
-            const elNombre = document.getElementById('cNombre');
-            const elDoc = document.getElementById('cDocumento');
-            const elTriage = document.getElementById('cTriage');
-            const elMotivo = document.getElementById('cMotivo');
-
-            if (data.hayPaciente) {
-                if (elNombre) elNombre.textContent = data.nombre || "Sin nombre";
-                if (elDoc) elDoc.textContent = data.documento || "NA";
-                if (elTriage) elTriage.textContent = 'T' + data.triage;
-                if (elMotivo) elMotivo.textContent = data.motivo || "NA";
-            } else {
-                if (elNombre) elNombre.textContent = "No hay pacientes en espera";
-                if (elDoc) elDoc.textContent = "-";
-                if (elTriage) elTriage.textContent = "-";
-                if (elMotivo) elMotivo.textContent = "-";
-            }
-        })
-        .catch(err => {
-            console.error("Error al cargar paciente en consulta:", err);
-        });
+                .then(response => response.json())
+                .then(data => {
+                    const elNombre = document.getElementById('cNombre');
+                    const elDoc = document.getElementById('cDocumento');
+                    const elTriage = document.getElementById('cTriage');
+                    const elMotivo = document.getElementById('cMotivo');
+                    if (data.hayPaciente) {
+                        if (elNombre) elNombre.textContent = data.nombre || "Sin nombre";
+                        if (elDoc) elDoc.textContent = data.documento || "NA";
+                        if (elTriage) elTriage.textContent = 'T' + data.triage;
+                        if (elMotivo) elMotivo.textContent = data.motivo || "NA";
+                    } else {
+                        if (elNombre) elNombre.textContent = "No hay pacientes en espera";
+                        if (elDoc) elDoc.textContent = "-";
+                    if (elTriage) elTriage.textContent = "-";
+                    if (elMotivo) elMotivo.textContent = "-";
+                }
+                })
+                .catch(err => {
+                    console.error("Error al cargar paciente en consulta:", err);
+                });
         }
         function atenderPaciente() {
             fetch('http://localhost:8080/api/atenderPaciente', { 

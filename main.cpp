@@ -522,6 +522,15 @@ struct ColaPrioridad{
       }
       return true;
     }
+    Cola getCola(int i){
+      return colas[i];
+    }
+    Nodo * getSiguientePaciente(){
+      for(int i = 0; i<5; i++){
+        if(!colas[i].isVacia()) return colas[i].getCabeza();
+      }
+      return NULL;
+    }
 };
 int contadorTurno = 1;
 ColaPrioridad colaTriage;
@@ -590,20 +599,22 @@ int main(){
         res.set_content(jsonRespuesta, "application/json");
     });
     svr.Get("/api/pacientes", [](const httplib::Request& req, httplib::Response& res) {
-        res.set_header("Access-Control-Allow-Origin", "*");
-        Lista listaOrdenada;
-        for (int i = 0; i<colaTriage.longitud();i++){ //la copia del arreglo dinamico en una lista
-          listaOrdenada.insertarOrdenado(colaTriage.obtener(i));
-        }
+      res.set_header("Access-Control-Allow-Origin", "*");
+      Cola cola;
+      Nodo * actual;
       string json = "[";
-      Nodo * actual = listaOrdenada.getCabeza();
+      string doc = "NA";
+      string nom = "Anonimo";
+      Triage t;
       bool primero = true;
-      while(actual != NULL) {
-        Triage t = actual->dato;
+      for (int i = 0; i<5; i++){
+        cola = colaTriage.getCola(i);
+        actual = cola.getCabeza();
+      while(actual!=NULL){
+        t = actual->dato;
         if(!primero) json += ",";
-        string doc = "NA";
-        string nom = "Anonimo";
-
+        doc = "NA";
+        t = actual->dato;
         if (t.getPaciente() != NULL) {
             if (!t.getPaciente()->getDocumento().empty()) doc = t.getPaciente()->getDocumento();
             if (!t.getPaciente()->getNombre().empty()) nom = t.getPaciente()->getNombre();
@@ -616,14 +627,16 @@ int main(){
         json += "}";
         primero = false;
         actual = actual->siguiente;
+      }
     }
     json += "]";
     res.set_content(json, "application/json");
     });
     svr.Get("/api/datosPaciente", [&svr](const httplib::Request& req, httplib::Response& res) { //enviar los daos para la consulta
       res.set_header("Access-Control-Allow-Origin", "*");
-      if(!colaTriage.esvacia()){
-        Triage cabeza = colaTriage.obtener(0);
+      if(!colaTriage.isVacia()){
+        Nodo * nodo = colaTriage.getSiguientePaciente();
+        Triage cabeza = nodo->dato;
         Paciente * paciente = cabeza.getPaciente();
         string json = "{"; 
         json += "\"hayPaciente\": true,";
@@ -659,8 +672,8 @@ int main(){
     });
     svr.Post("/api/atenderPaciente", [](const httplib::Request& req, httplib::Response& res) {
       res.set_header("Access-Control-Allow-Origin", "*");
-      if(!colaTriage.esvacia()){
-        Triage paciente = colaTriage.eliminar_primero();
+      if(!colaTriage.isVacia()){
+        Triage paciente = colaTriage.atender();
         pilaAlta.agregarPacienteAtendido(paciente);
         res.set_content("{\"status\": \"ok\"}", "application/json");
       }else res.set_content("{\"status\": \"vacio\"}", "application/json");
@@ -677,13 +690,13 @@ int main(){
     });
     svr.Get("/api/historialPacientes", [](const httplib::Request& req, httplib::Response& res){
       res.set_header("Access-Control-Allow-Origin", "*");
-      if (!colaTriage.esvacia()) {
-        Triage cabeza = colaTriage.obtener(0);
-        Paciente * paciente = cabeza.getPaciente();
-        
+      if (!colaTriage.isVacia()) {
+        Cola cola = colaTriage.getCola(0);
+        Nodo * nodo = cola.getCabeza();
+        Triage cabeza = nodo->dato;
+        Paciente * paciente = cabeza.getPaciente();  
         string nom = (paciente != nullptr) ? paciente->getNombre() : "Sin nombre";
         string doc = (paciente != nullptr) ? paciente->getDocumento() : "NA";
-
         string json = "{"; 
         json += "\"nombre\": \"" + escaparJson(nom) + "\",";
         json += "\"documento\": \"" + escaparJson(doc) + "\",";
@@ -691,9 +704,7 @@ int main(){
         json += "\"motivo\": \"" + escaparJson(cabeza.getMotivo()) + "";
         json += "}";
         res.set_content(json, "application/json");
-      } else {
-        res.set_content("{\"hayPaciente\": false, \"nombre\": \"No hay pacientes en espera\"}", "application/json");
-      }
+      } else   res.set_content("{\"hayPaciente\": false, \"nombre\": \"No hay pacientes en espera\"}", "application/json");
     }); 
     svr.Get("/api/stop", [&svr](const httplib::Request& req, httplib::Response& res) { //cierra el servidor
         res.set_header("Access-Control-Allow-Origin", "*");
