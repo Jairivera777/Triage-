@@ -407,39 +407,6 @@ struct Nodo{
       siguiente = NULL;
     }
 };
-struct Lista{
-  private:
-    Nodo * cabeza;
-  public:
-    Lista(){
-      cabeza = NULL;
-    }
-    ~Lista() {
-      Nodo* actual = cabeza;
-      while (actual != nullptr) {
-        Nodo* siguiente = actual->siguiente;
-        delete actual;
-        actual = siguiente;
-      }
-    }
-    void insertarOrdenado(Triage t){
-      Nodo * nuevo = new Nodo(t);
-      if(cabeza == NULL || esMenor(t, cabeza->dato)){
-        nuevo->siguiente = cabeza;
-        cabeza = nuevo;
-        return;
-      }
-      Nodo * actual = cabeza;
-      while(actual->siguiente != NULL && !esMenor(t, actual->siguiente->dato)){
-        actual = actual->siguiente;
-      }
-      nuevo->siguiente = actual->siguiente;
-      actual->siguiente = nuevo;
-    }
-    Nodo * getCabeza(){
-      return cabeza;
-    }
-};
 struct PilaAtendidos{
   private:
   Nodo * cabeza;
@@ -482,74 +449,79 @@ struct PilaAtendidos{
       return cabeza;
     }
 };
-struct ColaPrioridad{
+struct Cola{
+ private:
+    Nodo * cabeza;
+    Nodo * ultimo;
   public:
-    ColaPrioridad( int m = 8 ){    
-      N = 0;
-      tamano = m;
-      datos = new Triage[tamano];
-    };
-
-    ~ColaPrioridad(){
-      delete[] datos;
-    };
-
-    bool esvacia(){
-      return N == 0;
-    };
-
-    int longitud(){
-      return N;
-    };
-
-    Triage obtener( int i ){
-      if(0 <= i && i < N){
-        return datos[i];
-      }else{
-        throw -1;
-      };
-    };
-
-    void agregar( Triage d ){
-      grow(); 
-      int i = N - 1;
-      while (i >= 0 && esMenor(d, datos[i])) {
-        datos[i + 1] = datos[i];
-        i--;
+    Cola(){
+      cabeza = NULL;
+      ultimo = NULL;
+    }
+    bool isVacia(){
+      return cabeza==NULL;
+    }
+    void insertarUltimo(Triage t){
+      Nodo * nuevo = new Nodo(t);
+      if(isVacia()) {
+        cabeza = nuevo;
+        ultimo = cabeza;
+        return;
       }
-      datos[i + 1] = d;
-      N++;
-    };
-
-    Triage eliminar_primero(){
-      if (esvacia()) throw 0;
-      Triage primero = datos[0];
-      for (int i = 1; i < N; i++) {
-        datos[i - 1] = datos[i];
+      ultimo->siguiente = nuevo;
+      ultimo = nuevo;
+    }
+    void insertarPrimero(Triage t){
+      Nodo * nuevo = new Nodo(t);
+      if(cabeza==NULL){
+        cabeza = nuevo;
+        ultimo = cabeza;
+        return;
       }
-      N--; 
-      return primero;
-    };
-
-  private:
-    Triage * datos;
-    int N;
-    int tamano;
-    double aureo = 1.618;
-
-    void grow(){ //Se encarga de hacer crecer el arreglo dinamico
-      if(N == tamano){
-        int ntamano = (int)(tamano * aureo);
-        if(ntamano <= tamano){ ntamano = tamano + 1; };
-        Triage * ndatos = new Triage[ntamano];
-        for( int i=0; i<tamano; i++ ){
-          ndatos[i] = datos[i];
-        };
-        delete[] datos;
-        datos = ndatos;
-        tamano = ntamano;
-      };
-    };
+      nuevo->siguiente = cabeza;
+      cabeza = nuevo;
+    }
+    Triage atenderPaciente(){
+      if(isVacia()) throw -1;
+      Nodo * aux = cabeza;
+      Triage paciente = aux->dato;
+      cabeza = cabeza->siguiente;
+      aux->siguiente = NULL;
+      if(cabeza== NULL) ultimo = NULL;
+      delete aux;
+      return paciente;
+    }
+    Nodo * getCabeza(){
+      return cabeza;
+    }
+};
+struct ColaPrioridad{
+  private:  
+    Cola colas[5];
+  public:
+    ColaPrioridad(){
+      
+    }
+    void agregar(Triage t){
+      int prioridad = t.getTriage();
+      colas[prioridad-1].insertarUltimo(t);
+    }
+    void deshacer(Triage t){
+      int prioridad = t.getTriage();
+      colas[prioridad-1].insertarPrimero(t);
+    }
+    Triage atender(){
+      for(int i = 0; i<5;i++){
+        if(!colas[i].isVacia()) return colas[i].atenderPaciente();
+      }
+      throw -1;
+    }
+    bool isVacia(){
+      for(int i = 0; i<5; i++){
+        if(!colas[i].isVacia()) return false;
+      }
+      return true;
+    }
 };
 int contadorTurno = 1;
 ColaPrioridad colaTriage;
