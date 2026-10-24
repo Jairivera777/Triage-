@@ -136,7 +136,9 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
         time_t horaLlegada;
         time_t tiempoEspera;
         int turnoLlegada;
-        int triage;
+        int triageActual;
+        int triageOriginal;
+        bool isPrimero;
         bool buscarPalabras(string texto, string palabras[], int tamano){ //busca palabras
             for(int i = 0; i<tamano;i++){
                 if(texto.find(palabras[i])!=string::npos){
@@ -191,22 +193,25 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
                 "GOLPE LEVE", "ESGUINCE MENOR", "HERIDA SUPERFICIAL", "RASPON", "ABSCESO PEQUEÑO", "INFECCION LOCALIZADA"};
             int tamano4 = sizeof(palabrasNivel4) / sizeof(palabrasNivel4[0]);
             int triage = 5;
-            if(frecuenciaCardiaca == 0 || buscarPalabras(texto, palabrasNivel1, tamano1) || saturacion < 80 || glasgow <= 8) triage = 1;
+            if(frecuenciaCardiaca == 0 || buscarPalabras(texto, palabrasNivel1, tamano1) || saturacion < 80 || glasgow <= 8) triageActual = 1;
             else if(presionSistolica>=180 || presionDiastolica>110 || presionSistolica<=90 || frecuenciaCardiaca>=120||
                 frecuenciaCardiaca<=50 || frecuenciaRespiratoria>24 || frecuenciaRespiratoria<10 || (saturacion < 90 && !encontroEpoc) 
                 ||(saturacion<=85&&encontroEpoc) || temperatura >=39.5 || (temperatura<=35&&buscarPalabras(texto, debilidad, 2)) 
-                || buscarPalabras(texto, palabrasNivel2, tamano2) || temperatura <= 34 || escala >= 7) triage = 2;
+                || buscarPalabras(texto, palabrasNivel2, tamano2) || temperatura <= 34 || escala >= 7) triageActual = 2;
             else if(temperatura>=38 || presionSistolica>=140 || frecuenciaCardiaca>=100 || frecuenciaRespiratoria>=21
             ||buscarPalabras(texto, palabrasNivel3, tamano3) || escala >= 4;
-            (paciente!= NULL && paciente->getEdad()>=65 && buscarPalabras(enfermedades, factoresRiesgo, 5))) triage = 3;
-            else if(buscarPalabras(texto, palabrasNivel4, tamano4)) triage = 4;
-            else triage = 5;
-
-            if(triage==2 && tiempoEspera>30) triage = 1;
-            else if(triage==3 && tiempoEspera>100) triage = 1;
-            else if(triage==4 && tiempoEspera > 420) triage = 1;
-            else if(triage==5 && tiempoEspera > 720) triage = 1;
-            return triage;
+            (paciente!= NULL && paciente->getEdad()>=65 && buscarPalabras(enfermedades, factoresRiesgo, 5))) triageActual = 3;
+            else if(buscarPalabras(texto, palabrasNivel4, tamano4)) triageActual = 4;
+            else triageActual = 5;
+            if(isPrimero) {
+              triageOriginal = triageActual;
+              isPrimero = false;
+            }
+            if(triage==2 && tiempoEspera>30) triageActual = 1;
+            else if(triage==3 && tiempoEspera>100) triageActual = 1;
+            else if(triage==4 && tiempoEspera > 420) triageActual = 1;
+            else if(triage==5 && tiempoEspera > 720) triageActual = 1;
+            return triageActual;
         }
     public:
         Triage(){
@@ -223,7 +228,8 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             escala = 0; glasgow = 15;
             horaLlegada = time(0); 
             turnoLlegada = 0; 
-            triage = 5;
+            triageActual = triageOriginal = 5;
+            isPrimero = false;
         }
         Triage(Paciente* _paciente, bool _embarazo, float _temperatura, int _estatura, float _peso, int _presionSistolica, 
             int _presionDiastolica, int _frecuenciaCardiaca, int _frecuenciaRespiratoria, int _saturacion, int _escala, string _motivo, 
@@ -249,16 +255,20 @@ class Triage{ //clase que viene siendo donde se guardan los datos de la consulta
             observaciones = normalizar(_observaciones);
             auto ahora = chrono::system_clock::now();
             horaLlegada = chrono::system_clock::to_time_t(ahora);
-            triage = calcularTriage();
+            isPrimero = true;
+            triageActual = calcularTriage();
             turnoLlegada = _turno;
         }
         AcudientePaciente* getAcudiente(){
           return acudiente;
           
         }
-        int getTriage(){ //getters
-            triage = calcularTriage();
-            return triage;
+        int getTriageActual(){ //getters
+            triageActual = calcularTriage();
+            return triageActual;
+        }
+        int getTriageOriginal(){
+          return triageOriginal;
         }
         int getHoraLlegada(){
             return horaLlegada;
@@ -394,7 +404,7 @@ class ListaHistorias{
 };
 
 bool esMenor(Triage& a, Triage& b) { //Se usan por referencia en la memoria para que no gaste mas memoria
-  if (a.getTriage() != b.getTriage()) return a.getTriage() < b.getTriage(); 
+  if (a.getTriageActual() != b.getTriageActual()) return a.getTriageActual() < b.getTriageActual(); 
   if (a.getHoraLlegada() != b.getHoraLlegada()) return a.getHoraLlegada() < b.getHoraLlegada();
   return a.getTurnoLlegada() < b.getTurnoLlegada();
 };
@@ -503,11 +513,11 @@ struct ColaPrioridad{
       
     }
     void agregar(Triage t){
-      int prioridad = t.getTriage();
+      int prioridad = t.getTriageActual();
       colas[prioridad-1].insertarUltimo(t);
     }
     void deshacer(Triage t){
-      int prioridad = t.getTriage();
+      int prioridad = t.getTriageActual();
       colas[prioridad-1].insertarPrimero(t);
     }
     Triage atender(){
@@ -592,7 +602,7 @@ int main(){
         Triage triage(paciente, embarazo, temperatura, estatura, peso, presionSistolica, presionDiastolica, frecuenciaCardiaca, 
             frecuenciaRespiratoria, saturacion, escalaDolor, motivo, alergias, enfermedades, cirugias, observaciones, escalaGlasgow, contadorTurno++);
         colaTriage.agregar(triage);
-        int nivelCalculado = triage.getTriage();
+        int nivelCalculado = triage.getTriageActual();
         cout << "Triage calculado exitosamente: NIVEL " << nivelCalculado << endl;
         cout << "======================================" << endl;
         string jsonRespuesta = "{\"status\":\"ok\", \"triage\":" +to_string(nivelCalculado) + "}";
@@ -622,7 +632,7 @@ int main(){
         json += "{";
         json += "\"documento\":\"" + doc + "\",";
         json += "\"nombre\":\"" + nom + "\",";
-        json += "\"triage\":" + to_string(t.getTriage()) + ",";
+        json += "\"triage\":" + to_string(t.getTriageActual()) + ",";
         json += "\"minutosEspera\":" + to_string(t.obtenerMinutosEspera());
         json += "}";
         primero = false;
@@ -700,11 +710,11 @@ int main(){
         string json = "{"; 
         json += "\"nombre\": \"" + escaparJson(nom) + "\",";
         json += "\"documento\": \"" + escaparJson(doc) + "\",";
-        json += "\"triage\": " + to_string(cabeza.getTriage()) + ",";
+        json += "\"triage\": " + to_string(cabeza.getTriageActual()) + ",";
         json += "\"motivo\": \"" + escaparJson(cabeza.getMotivo()) + "";
         json += "}";
         res.set_content(json, "application/json");
-      } else   res.set_content("{\"hayPaciente\": false, \"nombre\": \"No hay pacientes en espera\"}", "application/json");
+      } else res.set_content("{\"hayPaciente\": false, \"nombre\": \"No hay pacientes en espera\"}", "application/json");
     }); 
     svr.Get("/api/stop", [&svr](const httplib::Request& req, httplib::Response& res) { //cierra el servidor
         res.set_header("Access-Control-Allow-Origin", "*");
