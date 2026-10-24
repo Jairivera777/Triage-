@@ -1,5 +1,5 @@
 #include "backend.h"
-
+using namespace std;
 httplib::Server* servidorGlobal = nullptr;
 
 // Maneja la señal Ctrl+C para cerrar el servidor limpio
