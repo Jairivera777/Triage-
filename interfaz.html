@@ -6,8 +6,34 @@
     <style>
         .seccion-panel { display: none; }
         .seccion-panel.activa { display: block; }
-        .pestana { cursor: pointer; padding: 10px; display: inline-block; }
-        .pestana.activa { font-weight: bold; border-bottom: 2px solid #000; }
+        * {
+            margin: 0;
+            padding : 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .pestana { 
+            display: inline-block !important;
+            padding: 10px 25px;
+            align-items: center;
+            justify-content: center;
+            background-color: #949494;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border: 2.5px solid #00A2E8 !important;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        .pestana.activa {
+            background-color: white !important;
+            color: #00A2E8 !important;
+            border: 2px solid #00A2E8 !important;
+            border-bottom: none;
+            font-size: 1rem;
+        }
         .notificacionExito {
                 display: none;
                 position: fixed;
@@ -21,32 +47,147 @@
                 z-index: 1000;
                 font-family: sans-serif;
         }
+        .encabezado {
+            background-color: #00A2E8;
+            color: white;
+            display: flex;
+            width: 100%;
+        }   
+        .columna-encabezado{
+            flex: 1;
+            text-align: center;
+            padding: 15px 10px;
+            border-right: 2px solid white;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .columna-encabezado-perfil{
+            background-color: #3F48CC;
+            border-right: none;
+            flex: 1;
+            text-align: center;
+            padding: 15px 10px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .texto-secundario {
+            font-size: 0.85rem;
+            font-weight: normal;
+        }
+        .barraMovil {
+            background-color: #7F7F7F;
+            color: white;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 8px 0;
+            font-size: 0.85rem;
+            font-weight: bold;
+            position: relative;
+            width: 100%;
+        }
+        .contenido-marquesina {
+            display: inline-flex;
+            gap: 40px;
+            padding-left: 100%;
+            animation: moverIzquierda 15s linear infinite;
+        }
+        @keyframes moverIzquierda {
+            0% {
+                transform: translate(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        .item-barraMovil{
+            color: white;
+            display: inline-block;
+            border-right: 1px solid #8888;
+            padding-right: 20px;
+        }
+        .contenedor-pestanas{
+            background-color: #C3C3C3 !important;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: flex-end;
+            padding-top: 6px;
+            padding-left: 20px;
+            gap: 15px;
+            width: 100% !important;
+            border-bottom: border-box;
+        }
+        .contenedor-paneles-consulta {
+            display : flex;
+            width: 100%;
+            min-height: calc(100vh -120px);
+        }
+        .seccion-izquierda-consulta{
+            flex: 7;
+            background-color: #c3c3c3;
+            padding: 15px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .grupo-formulario {
+            border: 2px solid white;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: white;
+        }
+        .grupo-formulario legend{
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 0 8px;
+            background-color: white;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <span>TRIAGE ++</span>
-        <span> |</span>
-        <span>Jaime Rivera</span>
-        <span> |</span>
-        <span>Santiago Lopez</span>
-        <span> |</span>
-        <span>Esteban Miranda</span>
-        <span> |</span>
-        <span id="Hora">00:00:00</span>
+    <header class="encabezado">
+        <span class="columna-encabezado">
+            TRIAGE++ <br>
+           <div class="texto-secundario">HOSPITAL EJEMPLO</div>
+        </span>
+        <span class="columna-encabezado">
+            Jaime Rivera <br>
+            <div style="margin-top: 4px;">Santiago Lopez</div> 
+        </span>
+        <span class="columna-encabezado">Esteban Miranda</span>
+        <span id="Hora" class="columna-encabezado">00:00:00</span>
+        <span class="columna-encabezado-perfil" id="perfil">Usuario Ejemplo</span>
     </header>
     <div id="notificacionExito" class="notificacionExito">
         <strong>¡Exito!</strong> Datos guardados correctamente. Nivel de Triage <span id="nivelTriageExito"></span>
     </div>
-    <div class="barra pestanas">  <!--Las 3 pestañas que aparecen salen de aqui-->
+    <div class="barraMovil">
+        <div class="contenido-marquesina">
+            <div class="item-barraMovil">PACIENTES EN ESPERA:</div>
+            <div class="item-barraMovil">T1: 0</div>
+            <div class="item-barraMovil">T2: 0</div>
+            <div class="item-barraMovil">T3: 0</div>
+            <div class="item-barraMovil">T4: 0</div>
+            <div class="item-barraMovil">T5: 0</div>
+            <div class="item-barraMovil">TOTAL PACIENTES: 0</div>
+        </div>
+    </div>
+    <nav class="contenedor-pestanas">  <!--Las 4 pestañas que aparecen salen de aqui-->
         <div class="pestana activa" id="tab-triage" onclick="irA('triage')">Triage</div>
         <div class="pestana" id="tab-consulta" onclick="irA('consulta')">Consulta</div>
         <div class="pestana" id="tab-altas" onclick="irA('altas')">Altas</div>
+        <div class="pestana" id="tab-cuartos" onclick="irA('cuartos')">Cuartos</div>
         <div class="pestana" id="tab-historial" onclick="irA('historial')">Historial</div>
-    </div>
+    </nav>
     <div id="pantalla-triage" class="seccion-panel activa">
-        <div class="contenedor-paneles">
-            <section class="panel-izquierdo">
+        <div class="contenedor-paneles-triage">
+            <section class="panel-izquierdo-triage">
                 <form id="formTriage">
                     <fieldset>
                         <legend>Información del paciente</legend>
@@ -183,7 +324,7 @@
                     <button type="submit" class="boton">Guardar datos y calcular triage</button>
                 </form>
             </section>
-            <section class="panel-derecho">
+            <section class="panel-derecho-triage">
                 <h2 class="titulo-derecha">FILTRO DE PACIENTES</h2>
                 <label for="filtros">FILTROS: </label>
                 <select id="filtros" name="filtro" onchange="renderizarPacientes()">
@@ -202,22 +343,58 @@
         </div>
     </div>
     <div id="pantalla-consulta" class="seccion-panel">
-        <h2>Panel de Consultas</h2>
-        <div id="infoConsulta" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; max-width: 500px;">
-            <p><strong>Paciente actual:</strong> <span id="cNombre">Cargando...</span></p>
-            <p><strong>Documento:</strong> <span id="cDocumento">-</span></p>
-            <p><strong>Nivel Triage:</strong> <span id="cTriage">-</span></p>
-            <p><strong>Motivo de consulta:</strong> <span id="cMotivo">-</span></p>
-        
-            <button type="button" onclick="atenderPaciente()" class="boton" style="background-color: #2196F3; color: white; padding: 10px; border: none; cursor: pointer; border-radius: 4px;">
-                Atender / Siguiente Paciente
-            </button>
-            <button type="button" onclick="deshacerAlta()" class="boton" style="background-color: #ff9800; color: white; padding: 10px; border: none; cursor: pointer; border-radius: 4px; margin-left: 10px;">
-                Deshacer Última Alta
-            </button>
+        <div class="contenedor-paneles-consulta">
+            <section class="seccion-izquierda-consulta">
+                <fieldset class="grupo-formulario">
+                    <legend>DATOS PACIENTE</legend>
+                    <div class="filas-labels">
+                        <div class="campo-datos-consulta">
+                            <label id="nombre-consulta"></label>
+                            <label id="tipoDocumento-consulta"></label>
+                            <label id="direccion-consulta"></label>
+                            <label id="documento-consulta"></label>
+                            <label id="genero-consulta"></label>
+                            <label id="correo-consulta"></label>
+                            <label id="telefono-consulta"></label>
+                        </div>
+                    </div>
+                </fieldset> 
+                <fieldset class="grupo-formulario">
+                    <legend>DATOS MEDICOS</legend>
+                    <textarea class="caja-texto-grande"></textarea>
+                </fieldset>
+                <fieldset class="grupo-formulario">
+                    <legend>TRATAMIENTO</legend>
+                    <div class="filas-labels">
+                        <div class="campo-datos-consulta">
+                            <label id="diagnostico"></label>
+                            <label id="tratamiento"></label>
+                        </div>
+                        <div class="campo-full" style="margin-top: 10px;">
+                            <label>Indicaciones: </label>
+                            <textarea class="caja-texto-mediana"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="contenedor-boton-atender">
+                    <button class="btn-terminar">TERMINAR CONSULTA</button>
+                </div>
+            </section>
+            <section class="seccion-derecha-consulta">
+                <button class="btn-deshacer">DESHACER ULTIMA ATENCION</button>
+                <div class="encabezado-siguiente-consulta">Siguiente paciente</div>
+                <div class="cuerpo-siguiente-consulta">
+                    <p><strong id="nombrePaciente-consulta"></strong></p>
+                    <p><strong id="documentoPaciente-consulta"></strong></p>
+                    <p><strong id="sexo-consulta"></strong></p>
+                    <p><strong id="estatura-consulta"></strong></p>
+                    <p><strong id="peso-consulta"></strong></p>
+                </div>
+            </section>
         </div>
     </div>
     <div id="pantalla-altas" class="seccion-panel"><h2>Panel de altas</h2></div>
+    <div id="pantalla-cuartos" class="seccion-panel"><h2>Panel de cuartos</h2></div>
     <div id="pantalla-historial" class="seccion-panel">
         <h2>Pacientes atendidos</h2>
         <ul id="listaAtendidos"></h2>
