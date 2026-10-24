@@ -2,7 +2,6 @@
 using namespace std;
 httplib::Server* servidorGlobal = nullptr;
 
-// Maneja la señal Ctrl+C para cerrar el servidor limpio
 void manejarSignal(int signal) {
     if (servidorGlobal) {
         cout << "Cerrando servidor mediante Ctrl+C" << endl;
@@ -10,7 +9,6 @@ void manejarSignal(int signal) {
     }
 }
 
-// Escapa caracteres especiales para armar un JSON seguro
 string escaparJson(string texto) {
     string limpio = "";
     for (size_t i = 0; i < texto.length(); i++) {

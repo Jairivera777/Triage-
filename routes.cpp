@@ -196,10 +196,10 @@ void inicializarServidor(httplib::Server& svr) {
             string doc = (paciente != nullptr) ? paciente->getDocumento() : "NA";
 
             string json = "{";
-            json += "\"nombre\": \"" + escaparJson(nom) + "\",";
-            json += "\"documento\": \"" + escaparJson(doc) + "\",";
+            json += "\"nombre\": \"" + nom + "\",";
+            json += "\"documento\": \"" + doc + "\",";
             json += "\"triage\": " + to_string(cabeza.getTriage()) + ",";
-            json += "\"motivo\": \"" + escaparJson(cabeza.getMotivo()) + "\"";
+            json += "\"motivo\": \"" + cabeza.getMotivo() + "\"";
             json += "}";
             res.set_content(json, "application/json");
         } else {

@@ -10,8 +10,6 @@ using namespace std;
 
 void manejarSignal(int signal);
 extern httplib::Server* servidorGlobal;
-string escaparJson(string texto);
-
 // Clase que guarda los datos básicos del paciente
 class Paciente {
 private:
@@ -71,7 +69,6 @@ public:
 class Triage {
 private:
     Paciente* paciente;
-    AcudientePaciente* acudiente;
     bool embarazo;
     float temperatura;
     int estatura;
@@ -91,8 +88,9 @@ private:
     time_t horaLlegada;
     time_t tiempoEspera;
     int turnoLlegada;
-    int triage;
-
+    int triageActual;
+    int triageOriginal;
+    bool isPrimero;
     bool buscarPalabras(string texto, string palabras[], int tamano);
     string normalizar(string palabra);
     int calcularTriage();
@@ -106,7 +104,6 @@ public:
            string _cirugias, string _observaciones, int _glasgow, int _turno,
            AcudientePaciente* _acudiente = nullptr);
 
-    AcudientePaciente* getAcudiente();
     int getTriage();
     int getHoraLlegada();
     int getTurnoLlegada();
