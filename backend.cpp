@@ -9,18 +9,6 @@ void manejarSignal(int signal) {
     }
 }
 
-string escaparJson(string texto) {
-    string limpio = "";
-    for (size_t i = 0; i < texto.length(); i++) {
-        char c = texto[i];
-        if (c == '"') limpio += "\\\"";
-        else if (c == '\\') limpio += "\\\\";
-        else if (c == '\n') limpio += "\\n";
-        else if (c == '\r') continue;
-        else limpio += c;
-    }
-    return limpio;
-}
 
 Paciente::Paciente() {}
 
@@ -50,15 +38,33 @@ Paciente::Paciente(string _nombre, string _documento, string _tipoDocumento, int
     direccion = _direccion;
 }
 
-string Paciente::getSexo() { return sexo; }
-int Paciente::getEdad() { return edad; }
-string Paciente::getDocumento() { return documento; }
-string Paciente::getNombre() { return nombre; }
-string Paciente::getTipoDocumento() { return tipoDocumento; }
-string Paciente::getEps() { return eps; }
-string Paciente::getCorreo() { return correo; }
-string Paciente::getTelefono() { return telefono; }
-string Paciente::getDireccion() { return direccion; }
+string Paciente::getSexo() { 
+    return sexo; 
+}
+int Paciente::getEdad() { 
+    return edad; 
+}
+string Paciente::getDocumento() { 
+    return documento; 
+}
+string Paciente::getNombre() { 
+    return nombre; 
+}
+string Paciente::getTipoDocumento() { 
+    return tipoDocumento; 
+}
+string Paciente::getEps() { 
+    return eps; 
+}
+string Paciente::getCorreo() { 
+    return correo; 
+}
+string Paciente::getTelefono() { 
+    return telefono; 
+}
+string Paciente::getDireccion() { 
+    return direccion; 
+}
 
 AcudientePaciente::AcudientePaciente(string _nombre, string _tipoDocumento,
                                      string _documento, string _parentesco,
@@ -73,12 +79,24 @@ AcudientePaciente::AcudientePaciente(string _nombre, string _tipoDocumento,
     paciente = _paciente;
 }
 
-string AcudientePaciente::getNombre() { return nombre; }
-string AcudientePaciente::getTipoDocumento() { return tipoDocumento; }
-string AcudientePaciente::getDocumento() { return documento; }
-string AcudientePaciente::getParentesco() { return parentesco; }
-string AcudientePaciente::getCorreo() { return correo; }
-string AcudientePaciente::getTelefono() { return telefono; }
+string AcudientePaciente::getNombre() { 
+    return nombre; 
+}
+string AcudientePaciente::getTipoDocumento() { 
+    return tipoDocumento; 
+}
+string AcudientePaciente::getDocumento() { 
+    return documento; 
+}
+string AcudientePaciente::getParentesco() { 
+    return parentesco; 
+}
+string AcudientePaciente::getCorreo() { 
+    return correo; 
+}
+string AcudientePaciente::getTelefono() { 
+    return telefono; 
+}
 
 bool Triage::buscarPalabras(string texto, string palabras[], int tamano) {
     for (int i = 0; i < tamano; i++) {
@@ -113,7 +131,7 @@ string Triage::normalizar(string palabra) {
 
 // Calcula el nivel de triage según signos vitales y síntomas
 int Triage::calcularTriage() {
-    tiempoEspera = obtenerMinutosEspera();
+    tiempoEspera = getMinutosEspera();
     string texto = motivo + " " + observaciones;
 
     string palabrasNivel1[] = {"DISNEA DE REPOSO", "HABLA ENTRECORTADA", "USO MARCADO DE MUSCULOS ACCESORIOS", "CIANOSIS DISTAL",
@@ -142,25 +160,23 @@ int Triage::calcularTriage() {
         "GRIPA", "INFECCION URINARIA LEVE", "MOLESTIA AL ORINAR", "DIARREA SIMPLE", "DIARREA SIN DESHIDRATACION", "MOLESTIA DIGESTIVA", "CONTUSION LEVE",
         "GOLPE LEVE", "ESGUINCE MENOR", "HERIDA SUPERFICIAL", "RASPON", "ABSCESO PEQUEÑO", "INFECCION LOCALIZADA"};
     int tamano4 = sizeof(palabrasNivel4) / sizeof(palabrasNivel4[0]);
-
-    int triageNivel = 5;
-    if (frecuenciaCardiaca == 0 || buscarPalabras(texto, palabrasNivel1, tamano1) || saturacion < 80 || glasgow <= 8) triageNivel = 1;
+    if (frecuenciaCardiaca == 0 || buscarPalabras(texto, palabrasNivel1, tamano1) || saturacion < 80 || glasgow <= 8) triageActual = 1;
     else if (presionSistolica >= 180 || presionDiastolica > 110 || presionSistolica <= 90 || frecuenciaCardiaca >= 120 ||
              frecuenciaCardiaca <= 50 || frecuenciaRespiratoria > 24 || frecuenciaRespiratoria < 10 || (saturacion < 90 && !encontroEpoc)
              || (saturacion <= 85 && encontroEpoc) || temperatura >= 39.5 || (temperatura <= 35 && buscarPalabras(texto, debilidad, 2))
-             || buscarPalabras(texto, palabrasNivel2, tamano2) || temperatura <= 34 || escala >= 7) triageNivel = 2;
+             || buscarPalabras(texto, palabrasNivel2, tamano2) || temperatura <= 34 || escala >= 7) triageActual = 2;
     else if (temperatura >= 38 || presionSistolica >= 140 || frecuenciaCardiaca >= 100 || frecuenciaRespiratoria >= 21 ||
              buscarPalabras(texto, palabrasNivel3, tamano3) || escala >= 4 ||
-             (paciente != NULL && paciente->getEdad() >= 65 && buscarPalabras(enfermedades, factoresRiesgo, 5))) triageNivel = 3;
-    else if (buscarPalabras(texto, palabrasNivel4, tamano4)) triageNivel = 4;
-    else triageNivel = 5;
+             (paciente != NULL && paciente->getEdad() >= 65 && buscarPalabras(enfermedades, factoresRiesgo, 5))) triageActual = 3;
+    else if (buscarPalabras(texto, palabrasNivel4, tamano4)) triageActual = 4;
+    else triageActual = 5;
+    if(isPrimero) triageOriginal = triageActual;
+    if (triageActual == 2 && tiempoEspera > 30) triageActual = 1;
+    else if (triageActual == 3 && tiempoEspera > 100) triageActual = 1;
+    else if (triageActual == 4 && tiempoEspera > 420) triageActual = 1;
+    else if (triageActual == 5 && tiempoEspera > 720) triageActual = 1;
 
-    if (triageNivel == 2 && tiempoEspera > 30) triageNivel = 1;
-    else if (triageNivel == 3 && tiempoEspera > 100) triageNivel = 1;
-    else if (triageNivel == 4 && tiempoEspera > 420) triageNivel = 1;
-    else if (triageNivel == 5 && tiempoEspera > 720) triageNivel = 1;
-
-    return triageNivel;
+    return triageActual;
 }
 
 Triage::Triage() {
@@ -178,16 +194,15 @@ Triage::Triage() {
     glasgow = 15;
     horaLlegada = time(0);
     turnoLlegada = 0;
-    triage = 5;
+    triageActual = 5;
 }
 
 Triage::Triage(Paciente* _paciente, bool _embarazo, float _temperatura, int _estatura, float _peso,
                int _presionSistolica, int _presionDiastolica, int _frecuenciaCardiaca,
                int _frecuenciaRespiratoria, int _saturacion, int _escala, string _motivo,
                string _alergias, string _enfermedades, string _cirugias,
-               string _observaciones, int _glasgow, int _turno, AcudientePaciente* _acudiente) {
+               string _observaciones, int _glasgow, int _turno) {
     paciente = _paciente;
-    acudiente = _acudiente;
     if (paciente != nullptr && paciente->getSexo() == "Masculino") embarazo = 0;
     else embarazo = _embarazo;
     temperatura = _temperatura;
@@ -207,14 +222,13 @@ Triage::Triage(Paciente* _paciente, bool _embarazo, float _temperatura, int _est
     observaciones = normalizar(_observaciones);
     auto ahora = chrono::system_clock::now();
     horaLlegada = chrono::system_clock::to_time_t(ahora);
-    triage = calcularTriage();
+    isPrimero = true;
+    triageActual = calcularTriage();
     turnoLlegada = _turno;
 }
-
-AcudientePaciente* Triage::getAcudiente() { return acudiente; }
 int Triage::getTriage() {
-    triage = calcularTriage();
-    return triage;
+    triageActual = calcularTriage();
+    return triageActual;
 }
 int Triage::getHoraLlegada() { return horaLlegada; }
 int Triage::getTurnoLlegada() { return turnoLlegada; }
@@ -236,7 +250,7 @@ string Triage::getEnfermedades() { return enfermedades; }
 string Triage::getCirugias() { return cirugias; }
 string Triage::getObservaciones() { return observaciones; }
 
-int Triage::obtenerMinutosEspera() {
+int Triage::getMinutosEspera() {
     auto ahora = chrono::system_clock::now();
     time_t horaActual = chrono::system_clock::to_time_t(ahora);
     double segundos = difftime(horaActual, horaLlegada);
@@ -311,7 +325,7 @@ PilaAtendidos::PilaAtendidos() {
 
 void PilaAtendidos::agregarPacienteAtendido(Triage t) {
     Nodo* nuevo = new Nodo(t);
-    if (cabeza == NULL) {
+    if (cantidad == 0) {
         cabeza = nuevo;
         nuevo->siguiente = NULL;
         cantidad = 1;
@@ -334,18 +348,23 @@ Triage PilaAtendidos::deshacerAccion() {
     }
     Triage paciente = temp->dato;
     cabeza = cabeza->siguiente;
+    cantidad--;
     delete temp;
     return paciente;
 }
 
-Nodo* PilaAtendidos::getTope() { return cabeza; }
+Nodo* PilaAtendidos::getCabeza() { 
+    return cabeza; 
+}
 
 Cola::Cola() {
     cabeza = NULL;
     ultimo = NULL;
 }
 
-bool Cola::isVacia() { return cabeza == NULL; }
+bool Cola::isVacia() { 
+    return cabeza == NULL; 
+}
 
 void Cola::insertarUltimo(Triage t) {
     Nodo* nuevo = new Nodo(t);
@@ -380,7 +399,9 @@ Triage Cola::atenderPaciente() {
     return paciente;
 }
 
-Nodo* Cola::getCabeza() { return cabeza; }
+Nodo* Cola::getCabeza() { 
+    return cabeza; 
+}
 
 Lista::Lista() {
     cabeza = NULL;
@@ -408,7 +429,9 @@ void Lista::insertarOrdenado(Triage t) {
     if (nuevo->siguiente == NULL) ultimo = nuevo;
 }
 
-Nodo* Lista::getCabeza() { return cabeza; }
+Nodo* Lista::getCabeza() { 
+    return cabeza; 
+}
 
 ColaPrioridad::ColaPrioridad() {}
 
@@ -436,8 +459,6 @@ bool ColaPrioridad::isVacia() {
     return true;
 }
 
-bool ColaPrioridad::esvacia() { return isVacia(); }
-
 int ColaPrioridad::longitud() {
     int total = 0;
     for (int i = 0; i < 5; i++) {
@@ -450,25 +471,16 @@ int ColaPrioridad::longitud() {
     return total;
 }
 
-Triage ColaPrioridad::obtener(int indice) {
-    int actual = 0;
-    for (int i = 0; i < 5; i++) {
-        Nodo* n = colas[i].getCabeza();
-        while (n != NULL) {
-            if (actual == indice) return n->dato;
-            actual++;
-            n = n->siguiente;
-        }
+Cola ColaPrioridad::getCola(int i) {
+    return colas[i];
+}
+Nodo * ColaPrioridad::getPrimero(){
+    for(int i = 0; i<5; i++){
+        if(!colas[i].isVacia()) return colas[i].getCabeza();
     }
     throw -1;
 }
 
-Triage ColaPrioridad::eliminar_primero() {
-    for (int i = 0; i < 5; i++) {
-        if (!colas[i].isVacia()) return colas[i].atenderPaciente();
-    }
-    throw -1;
-}
 
 int contadorTurno = 1;
 ColaPrioridad colaTriage;

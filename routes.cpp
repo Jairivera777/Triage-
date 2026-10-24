@@ -1,16 +1,11 @@
 #include "backend.h"
 
-// Este archivo centraliza todas las rutas HTTP del servidor.
-// Mantenerlas aquí hace que el punto de entrada del programa sea mucho más limpio.
-// Cada endpoint responde a una acción concreta de la interfaz con el backend.
-
-// Registra todas las rutas del backend con la interfaz
+// inicia el server
 void inicializarServidor(httplib::Server& svr) {
     servidorGlobal = &svr;
     std::signal(SIGINT, manejarSignal);
 
-    // Endpoint para crear un nuevo triage desde la interfaz.
-    // La información del paciente, signos vitales y motivo de consulta se envían aquí.
+    //se guerda la info del paciente
     svr.Post("/api/triage", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
@@ -80,48 +75,45 @@ void inicializarServidor(httplib::Server& svr) {
         res.set_content(jsonRespuesta, "application/json");
     });
 
-    // Endpoint para devolver la lista ordenada de pacientes en espera.
-    // Se toma la cola general y se ordena por prioridad antes de formatear el JSON.
+    //Se devuelve un json con todos los pacientes
     svr.Get("/api/pacientes", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
-        Lista listaOrdenada;
-        for (int i = 0; i < colaTriage.longitud(); i++) {
-            listaOrdenada.insertarOrdenado(colaTriage.obtener(i));
-        }
-
-        string json = "[";
-        Nodo* actual = listaOrdenada.getCabeza();
-        bool primero = true;
-        while (actual != NULL) {
-            Triage t = actual->dato;
-            if (!primero) json += ",";
-            string doc = "NA";
-            string nom = "Anonimo";
-
-            if (t.getPaciente() != NULL) {
-                if (!t.getPaciente()->getDocumento().empty()) doc = t.getPaciente()->getDocumento();
-                if (!t.getPaciente()->getNombre().empty()) nom = t.getPaciente()->getNombre();
+        if (!colaTriage.isVacia()) {
+            Cola cola;
+            Nodo * actual;
+            Triage triage;
+            Paciente * paciente;
+            string json = "[";
+            bool isPrimero = true;
+            for (int i = 0; i<5; i++){
+                cola = colaTriage.getCola(i);
+                actual = cola.getCabeza();
+                triage = actual->dato;
+                paciente = triage.getPaciente();
+                while(actual!=NULL){
+                    string nom = (paciente != nullptr) ? paciente->getNombre() : "Sin nombre";
+                    string doc = (paciente != nullptr) ? paciente->getDocumento() : "NA";
+                    if(!isPrimero) json += ",";
+                    string json = "{";
+                    json += "\"nombre\": \"" + nom + "\",";
+                    json += "\"documento\": \"" + doc + "\",";
+                    json += "\"triage\": \"" + to_string(triage.getTriage()) + "\",";
+                    json += "\"minutosEspera\": \"" + to_string(triage.getMinutosEspera()) + "\",";
+                    json += "}";
+                }
             }
-
-            json += "{";
-            json += "\"documento\":\"" + doc + "\",";
-            json += "\"nombre\":\"" + nom + "\",";
-            json += "\"triage\":" + to_string(t.getTriage()) + ",";
-            json += "\"minutosEspera\":" + to_string(t.obtenerMinutosEspera());
-            json += "}";
-            primero = false;
-            actual = actual->siguiente;
+            json += "]";
+            res.set_content(json, "application/json");
+        } else {
+            res.set_content("{\"hayPaciente\": false, \"nombre\": \"No hay pacientes en espera\"}", "application/json");
         }
-        json += "]";
-        res.set_content(json, "application/json");
     });
-
-    // Endpoint para consultar los datos completos del paciente más prioritario.
-    // Sirve para llenar la vista del paciente actual que está en espera.
+    //devuelve al front un json con los datos del paciente
     svr.Get("/api/datosPaciente", [&svr](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
-        if (!colaTriage.esvacia()) {
-            Triage cabeza = colaTriage.obtener(0);
+        if (!colaTriage.isVacia()) {
+            Nodo * nodo = colaTriage.getPrimero();
+            Triage cabeza = nodo->dato;
             Paciente* paciente = cabeza.getPaciente();
             string json = "{";
             json += "\"hayPaciente\": true,";
@@ -158,12 +150,11 @@ void inicializarServidor(httplib::Server& svr) {
         }
     });
 
-    // Endpoint para atender al paciente actual y moverlo a la pila de atendidos.
-    // Este paso significa que ya fue atendido y ya no está en espera.
+    //Atiende al paciente
     svr.Post("/api/atenderPaciente", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
-        if (!colaTriage.esvacia()) {
-            Triage paciente = colaTriage.eliminar_primero();
+        if (!colaTriage.isVacia()) {
+            Triage paciente = colaTriage.atender();
             pilaAlta.agregarPacienteAtendido(paciente);
             res.set_content("{\"status\": \"ok\"}", "application/json");
         } else {
@@ -171,8 +162,7 @@ void inicializarServidor(httplib::Server& svr) {
         }
     });
 
-    // Endpoint para deshacer la última atención realizada.
-    // Se recupera el paciente de la pila de atendidos y vuelve a la cola.
+    //deshace el ultimo alta por si el medico hace miss click
     svr.Post("/api/deshacerAlta", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         try {
@@ -184,31 +174,42 @@ void inicializarServidor(httplib::Server& svr) {
         }
     });
 
-    // Endpoint para devolver el paciente más reciente de la cola como historial básico.
-    // Sirve para mostrar información rápida del paciente activo o priorizado.
-    svr.Get("/api/historialPacientes", [](const httplib::Request& req, httplib::Response& res) {
+    //devuelve al front un Json con los datos mas relevantes para que el medico lo vea.
+    svr.Get("/api/proximoPaciente", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
-        if (!colaTriage.esvacia()) {
-            Triage cabeza = colaTriage.obtener(0);
-            Paciente* paciente = cabeza.getPaciente();
-
-            string nom = (paciente != nullptr) ? paciente->getNombre() : "Sin nombre";
-            string doc = (paciente != nullptr) ? paciente->getDocumento() : "NA";
-
-            string json = "{";
-            json += "\"nombre\": \"" + nom + "\",";
-            json += "\"documento\": \"" + doc + "\",";
-            json += "\"triage\": " + to_string(cabeza.getTriage()) + ",";
-            json += "\"motivo\": \"" + cabeza.getMotivo() + "\"";
-            json += "}";
+        if (!colaTriage.isVacia()) {
+            Cola cola;
+            Nodo * actual;
+            Triage triage;
+            Paciente * paciente;
+            string json = "[";
+            bool isPrimero = true;
+            for (int i = 0; i<5; i++){
+                cola = colaTriage.getCola(i);
+                actual = cola.getCabeza();
+                triage = actual->dato;
+                paciente = triage.getPaciente();
+                while(actual!=NULL){
+                    string nom = (paciente != nullptr) ? paciente->getNombre() : "Sin nombre";
+                    string doc = (paciente != nullptr) ? paciente->getDocumento() : "NA";
+                    if(!isPrimero) json += ",";
+                    string json = "{";
+                    json += "\"nombre\": \"" + nom + "\",";
+                    json += "\"documento\": \"" + doc + "\",";
+                    json += "\"sexo\": \"" + paciente->getSexo() + "\" ,";
+                    json += "\"estatura\": \"" + to_string(triage.getEstatura()) + "\",";
+                    json += "\"peso\": \"" +to_string(triage.getPeso()) + "\",";
+                    json += "}";
+                }
+            }
+            json += "]";
             res.set_content(json, "application/json");
         } else {
             res.set_content("{\"hayPaciente\": false, \"nombre\": \"No hay pacientes en espera\"}", "application/json");
         }
     });
 
-    // Endpoint de apagado del servidor.
-    // Se usa para detener la app de forma controlada desde la interfaz o el navegador.
+    //cierra el server
     svr.Get("/api/stop", [&svr](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("{\"status\":\"servidor deteniendose\"}", "application/json");

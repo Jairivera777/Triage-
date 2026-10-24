@@ -101,9 +101,7 @@ public:
            float _peso, int _presionSistolica, int _presionDiastolica,
            int _frecuenciaCardiaca, int _frecuenciaRespiratoria, int _saturacion,
            int _escala, string _motivo, string _alergias, string _enfermedades,
-           string _cirugias, string _observaciones, int _glasgow, int _turno,
-           AcudientePaciente* _acudiente = nullptr);
-
+           string _cirugias, string _observaciones, int _glasgow, int _turno);
     int getTriage();
     int getHoraLlegada();
     int getTurnoLlegada();
@@ -124,7 +122,7 @@ public:
     string getEnfermedades();
     string getCirugias();
     string getObservaciones();
-    int obtenerMinutosEspera();
+    int getMinutosEspera();
 };
 
 class HistoriaClinica {
@@ -185,7 +183,7 @@ public:
     PilaAtendidos();
     void agregarPacienteAtendido(Triage t);
     Triage deshacerAccion();
-    Nodo* getTope();
+    Nodo* getCabeza();
 };
 
 // Cola simple para pacientes de una misma prioridad
@@ -226,10 +224,9 @@ public:
     void deshacer(Triage t);
     Triage atender();
     bool isVacia();
-    bool esvacia();
     int longitud();
-    Triage obtener(int indice);
-    Triage eliminar_primero();
+    Cola getCola(int i);
+    Nodo * getPrimero();
 };
 
 extern int contadorTurno;
