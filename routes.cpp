@@ -83,30 +83,35 @@ void inicializarServidor(httplib::Server& svr) {
             Nodo * actual;
             Triage triage;
             Paciente * paciente;
+            string nom, doc;
             string json = "[";
-            bool isPrimero = true;
+            bool isPrimero;
             for (int i = 0; i<5; i++){
+                if(colaTriage.getCola(i).isVacia()) continue;
                 cola = colaTriage.getCola(i);
                 actual = cola.getCabeza();
                 triage = actual->dato;
                 paciente = triage.getPaciente();
+                isPrimero = true;
                 while(actual!=NULL){
-                    string nom = (paciente != nullptr) ? paciente->getNombre() : "Sin nombre";
-                    string doc = (paciente != nullptr) ? paciente->getDocumento() : "NA";
+                    triage = actual->dato;
+                    paciente = triage.getPaciente();
+                    nom = (paciente != NULL) ? paciente->getNombre() : "Sin nombre";
+                    doc = (paciente != NULL) ? paciente->getDocumento() : "NA";
                     if(!isPrimero) json += ",";
-                    string json = "{";
+                    json += "{";
                     json += "\"nombre\": \"" + nom + "\",";
                     json += "\"documento\": \"" + doc + "\",";
                     json += "\"triage\": \"" + to_string(triage.getTriage()) + "\",";
-                    json += "\"minutosEspera\": \"" + to_string(triage.getMinutosEspera()) + "\",";
+                    json += "\"minutosEspera\": \"" + to_string(triage.getMinutosEspera()) + "\"";
                     json += "}";
+                    actual = actual->siguiente;
+                    isPrimero = false;
                 }
             }
             json += "]";
             res.set_content(json, "application/json");
-        } else {
-            res.set_content("{\"hayPaciente\": false, \"nombre\": \"No hay pacientes en espera\"}", "application/json");
-        }
+        }else res.set_content("{\"status\": \"false\"}", "application/json");
     });
     //devuelve al front un json con los datos del paciente
     svr.Get("/api/datosPaciente", [&svr](const httplib::Request& req, httplib::Response& res) {
@@ -177,35 +182,25 @@ void inicializarServidor(httplib::Server& svr) {
     //devuelve al front un Json con los datos mas relevantes para que el medico lo vea.
     svr.Get("/api/proximoPaciente", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
-        if (!colaTriage.isVacia()) {
-            Cola cola;
-            Nodo * actual;
-            Triage triage;
-            Paciente * paciente;
-            string json = "[";
-            bool isPrimero = true;
-            for (int i = 0; i<5; i++){
-                cola = colaTriage.getCola(i);
-                actual = cola.getCabeza();
-                triage = actual->dato;
-                paciente = triage.getPaciente();
-                while(actual!=NULL){
-                    string nom = (paciente != nullptr) ? paciente->getNombre() : "Sin nombre";
-                    string doc = (paciente != nullptr) ? paciente->getDocumento() : "NA";
-                    if(!isPrimero) json += ",";
-                    string json = "{";
-                    json += "\"nombre\": \"" + nom + "\",";
-                    json += "\"documento\": \"" + doc + "\",";
-                    json += "\"sexo\": \"" + paciente->getSexo() + "\" ,";
-                    json += "\"estatura\": \"" + to_string(triage.getEstatura()) + "\",";
-                    json += "\"peso\": \"" +to_string(triage.getPeso()) + "\",";
-                    json += "}";
-                }
-            }
-            json += "]";
+        if (!colaTriage.isVacia() && colaTriage.getSegundo()!=NULL) {
+            Nodo * actual = colaTriage.getSegundo();
+            Triage triage = actual->dato;
+            Paciente * paciente = triage.getPaciente();
+            string json = "{";
+            string nom = (paciente != NULL) ? paciente->getNombre() : "Sin nombre";
+            string doc = (paciente != NULL) ? paciente->getDocumento() : "NA";
+            string tipoDoc = (paciente!=NULL) ? paciente->getTipoDocumento() : "SI";
+            json += "\"hayPaciente\": true,";
+            json += "\"nombre\": \"" + nom + "\",";
+            json += "\"documento\": \"" + doc + "\",";
+            json += "\"tipoDocumento\": \"" + tipoDoc +"\",";
+            json += "\"sexo\": \"" + paciente->getSexo() + "\",";
+            json += "\"estatura\": \"" + to_string(triage.getEstatura()) + "\",";
+            json += "\"peso\": \"" + to_string(triage.getPeso()) + "\"";
+            json += "}";
             res.set_content(json, "application/json");
         } else {
-            res.set_content("{\"hayPaciente\": false, \"nombre\": \"No hay pacientes en espera\"}", "application/json");
+            res.set_content("{\"hayPaciente\": false}", "application/json");
         }
     });
 

@@ -227,6 +227,7 @@ public:
     int longitud();
     Cola getCola(int i);
     Nodo * getPrimero();
+    Nodo * getSegundo();
 };
 
 extern int contadorTurno;

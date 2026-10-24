@@ -318,7 +318,8 @@
             fetch('http://localhost:8080/api/pacientes')
                 .then(response => response.json())
                 .then(data=> {
-                    listaGlobalPacientes = data;
+                    if(Array.isArray(data))listaGlobalPacientes = data;
+                    else listaGlobalPacientes = [];
                     renderizarPacientes();
                 })
                 .catch(err => console.error("Error al cargar pacientes", err));
