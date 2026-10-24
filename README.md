@@ -11,7 +11,7 @@ Por ultimo en el panel consultas puedes ver el paciente que tienes que antender,
 PARA PODERLO EJECUTAR:
 
     Tienes que tener c++ descargado en tu computadora.
-    debes colocar en la terminal: "g++ main.cpp -o servidor.exe -lws2_32". Presiona la tecla enter.
+    debes colocar en la terminal: "g++ main.cpp backend.cpp routes.cpp -o servidor.exe -lws2_32". Presiona la tecla enter.
     Para terminar, ahora coloca "./servidor.exe". Presiona la tecla enter y el server en c++ ya estara corriendo.
 
     *Si te pide permisos de fireWall, dile que si*
