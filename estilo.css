@@ -217,11 +217,6 @@
     cursor: pointer;
     font-size: 0.85rem;
 }
-/* ==========================================================================
-   === INICIO CAMBIOS: ORGANIZACIÓN Y DISEÑO DE LA PESTAÑA TRIAGE (Línea 220+) ===
-   ========================================================================== */
-
-/* 1. Distribución en 2 columnas: Formulario (Izquierda 70%) y Cola (Derecha 30%) */
 .contenedor-paneles-triage {
     display: flex;
     align-items: flex-start;
@@ -249,7 +244,6 @@
     top: 0;
 }
 
-/* 2. Tarjetas de cada sección del formulario (<fieldset>) */
 .tarjeta-triage {
     background-color: #ffffff;
     border: 2px solid #d0d9e6;
@@ -269,7 +263,6 @@
     letter-spacing: 0.4px;
 }
 
-/* 3. Cuadrículas (Grids) para organizar los campos limpiamente */
 .grid-triage {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -292,7 +285,6 @@
     gap: 16px;
 }
 
-/* 4. Estilo individual de cada campo (Label arriba + Input abajo uniforme) */
 .campo-triage {
     display: flex;
     flex-direction: column;
@@ -310,7 +302,6 @@
     color: #2b3445;
 }
 
-/* Sobrescribe limpiamente los width fijos en línea sin borrarlos del HTML */
 .campo-triage input[type="text"],
 .campo-triage input[type="number"],
 .campo-triage select,
@@ -339,7 +330,6 @@
     box-shadow: 0 0 0 3px rgba(0, 162, 232, 0.18);
 }
 
-/* 5. Sección condicional de embarazo */
 .opciones-embarazo {
     display: flex;
     align-items: center;
@@ -355,7 +345,6 @@
     cursor: pointer;
 }
 
-/* 6. Botón principal de Guardar y Calcular Triage */
 .panel-izquierdo-triage .boton {
     display: block;
     width: 100%;
@@ -382,7 +371,6 @@
     transform: scale(0.99);
 }
 
-/* 7. Panel Derecho: Filtro y Tarjetas de Pacientes en Espera */
 .titulo-derecha {
     text-align: center;
     font-size: 1.2rem;
@@ -443,13 +431,8 @@
     border-left: 7px solid #00A2E8;
 }
 
-/* Colores hospitalarios automáticos por nivel de Triage */
 #listaPacientes li.triage-1 { border-left-color: #e53935; } /* Rojo: Emergencia */
 #listaPacientes li.triage-2 { border-left-color: #fb8c00; } /* Naranja: Muy Urgente */
 #listaPacientes li.triage-3 { border-left-color: #fdd835; } /* Amarillo: Urgente */
 #listaPacientes li.triage-4 { border-left-color: #43a047; } /* Verde: Menos Urgente */
 #listaPacientes li.triage-5 { border-left-color: #1e88e5; } /* Azul: No Urgente */
-
-/* ==========================================================================
-   === FIN CAMBIOS: ORGANIZACIÓN Y DISEÑO DE LA PESTAÑA TRIAGE ===
-   ========================================================================== */
