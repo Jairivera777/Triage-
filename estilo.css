@@ -436,3 +436,170 @@
 #listaPacientes li.triage-3 { border-left-color: #fdd835; } /* Amarillo: Urgente */
 #listaPacientes li.triage-4 { border-left-color: #43a047; } /* Verde: Menos Urgente */
 #listaPacientes li.triage-5 { border-left-color: #1e88e5; } /* Azul: No Urgente */
+
+#pantalla-consulta .contenedor-paneles-consulta {
+    display: flex !important;
+    align-items: flex-start;
+    width: 100% !important;
+    min-height: calc(100vh - 135px);
+    background-color: #eef2f6 !important;
+}
+
+#pantalla-consulta .seccion-izquierda-consulta {
+    flex: 7;
+    background-color: transparent;
+    padding: 25px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#pantalla-consulta .grupo-formulario.tarjeta-triage {
+    background-color: #ffffff;
+    border: 2px solid #d0d9e6;
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+#pantalla-consulta .grupo-formulario.tarjeta-triage legend {
+    background-color: #00A2E8;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 0.95rem;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 2px solid #3F48CC;
+    letter-spacing: 0.4px;
+}
+
+#pantalla-consulta .campo-datos-consulta {
+    display: block !important;
+    width: 100% !important;
+}
+
+#pantalla-consulta .campo-triage input,
+#pantalla-consulta .campo-triage select,
+#pantalla-consulta .campo-triage textarea {
+    width: 100% !important;
+    height: auto !important;
+    margin-right: 0 !important;
+    padding: 9px 12px !important;
+    border: 1.8px solid #b8c4d6 !important;
+    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+    background-color: #fafbfc !important;
+    color: #1f2937 !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    outline: none;
+}
+
+#pantalla-consulta .campo-triage textarea {
+    min-height: 75px !important;
+    resize: vertical;
+}
+
+#pantalla-consulta .campo-triage input:focus,
+#pantalla-consulta .campo-triage select:focus,
+#pantalla-consulta .campo-triage textarea:focus {
+    border-color: #00A2E8 !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(0, 162, 232, 0.18) !important;
+}
+
+#pantalla-consulta .contenedor-boton-atender {
+    width: 100%;
+    margin-top: 22px;
+}
+
+#pantalla-consulta .boton-atender {
+    display: block;
+    width: 100%;
+    padding: 14px 24px;
+    background-color: #3F48CC;
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border: 2px solid #00A2E8;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(63, 72, 204, 0.25);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#pantalla-consulta .boton-atender:hover {
+    background-color: #00A2E8;
+}
+
+#pantalla-consulta .boton-atender:active {
+    transform: scale(0.99);
+}
+
+#pantalla-consulta .seccion-derecha-consulta {
+    flex: 3;
+    background-color: #3F48CC;
+    color: white;
+    min-height: calc(100vh - 135px);
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    box-shadow: -3px 0 12px rgba(0, 0, 0, 0.12);
+    position: sticky;
+    top: 0;
+}
+
+#pantalla-consulta .btn-deshacer {
+    width: 100%;
+    background-color: #FFC90D;
+    color: #1f2937;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 14px 18px;
+    cursor: pointer;
+    letter-spacing: 0.4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.18);
+    transition: filter 0.2s ease, transform 0.1s ease;
+}
+
+#pantalla-consulta .btn-deshacer:hover {
+    filter: brightness(1.06);
+}
+
+#pantalla-consulta .btn-deshacer:active {
+    transform: scale(0.99);
+}
+
+#pantalla-consulta .tarjeta-siguiente-consulta {
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    border-left: 7px solid #00A2E8;
+}
+
+#pantalla-consulta .encabezado-siguiente-consulta {
+    background-color: #00A2E8;
+    color: #ffffff;
+    text-align: center;
+    padding: 12px 15px;
+    font-weight: bold;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#pantalla-consulta .cuerpo-siguiente-consulta {
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #1f2937;
+    font-size: 0.92rem;
+    min-height: 110px;
+}
