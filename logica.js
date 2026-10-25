@@ -116,34 +116,44 @@ function renderizarPacientes(){
     const contenedorT4 = document.getElementById('totalesT4');
     const contenedorT5 = document.getElementById('totalesT5');
     const contenedorTotales = document.getElementById('pacientesTotales');
+
     if(!contenedorLista) return;
     contenedorLista.innerHTML = '';
+
     const pacientesFiltrados = listaGlobalPacientes.filter(p => {
-        if(filtroValor === 'TODOS') return true;
-         return String(p.triage) === String(filtroValor);
+        if(filtroValor === 'TODOS') return true; 
+        return String(p.triage) === String(filtroValor);
     });
+
     if (pacientesFiltrados.length === 0){
         contenedorLista.innerHTML = `<li>No hay pacientes en esta categoria</li>`;
     } else {
         pacientesFiltrados.forEach(p => {
             const li = document.createElement('li');
+            // === CAMBIO PASO 3: Agrega color según el nivel de Triage ===
+            li.classList.add('triage-' + p.triage);
+            // === FIN CAMBIO PASO 3 ===
             li.innerHTML = `<strong>[T${p.triage}]</strong> ${p.nombre} (${p.documento}) - Espera: ${p.minutosEspera} min`;
             contenedorLista.appendChild(li);
         });
     }
+
     const totales = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
     let pacientesTotales = 0;
+
     listaGlobalPacientes.forEach(p => {
         if(totales[p.triage]!== undefined){
             totales[p.triage]++;
             pacientesTotales++;
         }
     });
+
     contenedorT1.textContent = "";
     contenedorT2.textContent = "";
     contenedorT3.textContent = "";
     contenedorT4.textContent = "";
     contenedorT5.textContent = "";
+
     contenedorT1.textContent = `T1: ${totales[1]}`;
     contenedorT2.textContent = `T2: ${totales[2]}`;
     contenedorT3.textContent = `T3: ${totales[3]}`;
