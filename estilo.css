@@ -217,35 +217,239 @@
     cursor: pointer;
     font-size: 0.85rem;
 }
-.tarjeta-siguiente-paciente {
-    background-color: white;
-    border: 2px solid #000;
-    border-radius: 15px;
-    width: 85%;
-    overflow: hidden;
+/* ==========================================================================
+   === INICIO CAMBIOS: ORGANIZACIÓN Y DISEÑO DE LA PESTAÑA TRIAGE (Línea 220+) ===
+   ========================================================================== */
+
+/* 1. Distribución en 2 columnas: Formulario (Izquierda 70%) y Cola (Derecha 30%) */
+.contenedor-paneles-triage {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    min-height: calc(100vh - 135px);
+    background-color: #eef2f6;
 }
-.encabezado-siguiente-consulta{
-    background-color: #A349A3;
+
+.panel-izquierdo-triage {
+    flex: 7;
+    padding: 25px 30px;
+}
+
+.panel-derecho-triage {
+    flex: 3;
+    background-color: #3F48CC;
     color: white;
-    text-align: center;
-    padding: 15px;
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-.cuerpo-siguiente-consulta{
-    padding: 20px;
-    display: flex;        
+    min-height: calc(100vh - 135px);
+    padding: 25px 20px;
+    display: flex;
     flex-direction: column;
-    gap: 18px;        
-    color: white;
-    text-align: center;
+    gap: 15px;
+    box-shadow: -3px 0 12px rgba(0, 0, 0, 0.12);
+    position: sticky;
+    top: 0;
 }
-.panel-izquierdo-triage textarea{
-    width: 200px;
-    height: 50px;
+
+/* 2. Tarjetas de cada sección del formulario (<fieldset>) */
+.tarjeta-triage {
+    background-color: #ffffff;
+    border: 2px solid #d0d9e6;
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tarjeta-triage legend {
+    background-color: #00A2E8;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 0.95rem;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 2px solid #3F48CC;
+    letter-spacing: 0.4px;
+}
+
+/* 3. Cuadrículas (Grids) para organizar los campos limpiamente */
+.grid-triage {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-bottom: 14px;
+}
+
+.grid-signos-vitales {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 2px dashed #d8e2ef;
+}
+
+.grid-sintomas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+/* 4. Estilo individual de cada campo (Label arriba + Input abajo uniforme) */
+.campo-triage {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campo-triage.campo-completo {
+    grid-column: 1 / -1;
+}
+
+.campo-triage label,
+.femenino span {
+    font-size: 0.83rem;
+    font-weight: bold;
+    color: #2b3445;
+}
+
+/* Sobrescribe limpiamente los width fijos en línea sin borrarlos del HTML */
+.campo-triage input[type="text"],
+.campo-triage input[type="number"],
+.campo-triage select,
+.panel-izquierdo-triage .campo-triage textarea {
+    width: 100% !important;
+    padding: 9px 12px;
+    border: 1.8px solid #b8c4d6;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background-color: #fafbfc;
+    color: #1f2937;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    outline: none;
+}
+
+.panel-izquierdo-triage .campo-triage textarea {
+    height: 75px;
     resize: vertical;
-    box-sizing: border-box;
-    vertical-align: top;
-    white-space: pre wrap;
-    word-wrap: break-word;
 }
+
+.campo-triage input:focus,
+.campo-triage select:focus,
+.panel-izquierdo-triage .campo-triage textarea:focus {
+    border-color: #00A2E8;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(0, 162, 232, 0.18);
+}
+
+/* 5. Sección condicional de embarazo */
+.opciones-embarazo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #f0f7ff;
+    border: 1.5px solid #00A2E8;
+    border-radius: 8px;
+    padding: 8px 14px;
+}
+
+.opciones-embarazo label {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+/* 6. Botón principal de Guardar y Calcular Triage */
+.panel-izquierdo-triage .boton {
+    display: block;
+    width: 100%;
+    margin-top: 22px;
+    padding: 14px 24px;
+    background-color: #3F48CC;
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border: 2px solid #00A2E8;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(63, 72, 204, 0.25);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.panel-izquierdo-triage .boton:hover {
+    background-color: #00A2E8;
+}
+
+.panel-izquierdo-triage .boton:active {
+    transform: scale(0.99);
+}
+
+/* 7. Panel Derecho: Filtro y Tarjetas de Pacientes en Espera */
+.titulo-derecha {
+    text-align: center;
+    font-size: 1.2rem;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.caja-filtro-triage {
+    background-color: rgba(255, 255, 255, 0.12);
+    padding: 12px 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.caja-filtro-triage label {
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.caja-filtro-triage select {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+    color: #1f2937;
+    cursor: pointer;
+    outline: none;
+}
+
+.subtitulo-pacientes-activos {
+    font-size: 1rem;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#listaPacientes {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 65vh;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+#listaPacientes li {
+    background-color: #ffffff;
+    color: #1f2937;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    border-left: 7px solid #00A2E8;
+}
+
+/* Colores hospitalarios automáticos por nivel de Triage */
+#listaPacientes li.triage-1 { border-left-color: #e53935; } /* Rojo: Emergencia */
+#listaPacientes li.triage-2 { border-left-color: #fb8c00; } /* Naranja: Muy Urgente */
+#listaPacientes li.triage-3 { border-left-color: #fdd835; } /* Amarillo: Urgente */
+#listaPacientes li.triage-4 { border-left-color: #43a047; } /* Verde: Menos Urgente */
+#listaPacientes li.triage-5 { border-left-color: #1e88e5; } /* Azul: No Urgente */
+
+/* ==========================================================================
+   === FIN CAMBIOS: ORGANIZACIÓN Y DISEÑO DE LA PESTAÑA TRIAGE ===
+   ========================================================================== */
