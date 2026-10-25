@@ -130,9 +130,7 @@ function renderizarPacientes(){
     } else {
         pacientesFiltrados.forEach(p => {
             const li = document.createElement('li');
-            // === CAMBIO PASO 3: Agrega color según el nivel de Triage ===
             li.classList.add('triage-' + p.triage);
-            // === FIN CAMBIO PASO 3 ===
             li.innerHTML = `<strong>[T${p.triage}]</strong> ${p.nombre} (${p.documento}) - Espera: ${p.minutosEspera} min`;
             contenedorLista.appendChild(li);
         });
