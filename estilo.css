@@ -1,0 +1,226 @@
+.seccion-panel { display: none; }
+.seccion-panel.activa { display: block; }
+* {
+    margin: 0;
+    padding : 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    }
+.pestana { 
+    display: inline-block !important;
+    padding: 10px 25px;
+    align-items: center;
+    justify-content: center;    
+    background-color: #949494;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+    border: 2.5px solid #00A2E8 !important;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    transition: all 0.2s ease;
+}
+.pestana.activa {
+    background-color: white !important;
+    color: #00A2E8 !important;
+    border: 2px solid #00A2E8 !important;
+    border-bottom: none;
+    font-size: 1rem;
+}        
+.notificacionExito {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px, 8px rgb(0,0,0,0,2);
+    z-index: 1000;
+    font-family: sans-serif;
+}
+.encabezado {
+    background-color: #00A2E8;
+    color: white;
+    display: flex;
+    width: 100%;
+}   
+.columna-encabezado{
+    flex: 1;
+    text-align: center;
+    padding: 15px 10px;
+    border-right: 2px solid white;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.columna-encabezado-perfil{
+    background-color: #3F48CC;
+    border-right: none;
+    flex: 1;
+    text-align: center;
+    padding: 15px 10px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.texto-secundario {
+    font-size: 0.85rem;
+    font-weight: normal;
+}
+.barraMovil {
+    background-color: #7F7F7F;
+    color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 8px 0;
+    font-size: 0.85rem;
+    font-weight: bold;
+    position: relative;
+    width: 100%;
+}
+.contenido-marquesina {
+    display: inline-flex;
+    gap: 40px;
+    padding-left: 100%;
+    animation: moverIzquierda 15s linear infinite;
+}    
+@keyframes moverIzquierda {
+    0% {
+    transform: translate(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+.item-barraMovil{
+    color: white;
+    display: inline-block;
+    border-right: 1px solid #8888;
+    padding-right: 20px;
+}
+.contenedor-pestanas{
+    background-color: #C3C3C3 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end;
+    padding-top: 6px;
+    padding-left: 20px;
+    gap: 15px;
+    width: 100% !important;
+    border-bottom: border-box;
+}
+.contenedor-paneles-consulta {
+    display : flex;
+    width: 100%;
+    min-height: calc(100vh -120px);
+}
+.seccion-izquierda-consulta{
+    flex: 7;
+    background-color: #c3c3c3;
+    padding: 15px 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.grupo-formulario {
+    border: 2px solid white;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: white;
+}
+.grupo-formulario legend{
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 0 8px;
+    background-color: white;
+    border-radius: 4px;
+}
+.filas-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+.campo-datos-consulta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+.caja-texto-grande, .caja-texto-mediana{
+    border: 2px solid #3F48CC;
+    border-radius: 12px;
+    padding: 6px 10px;
+    outline: none;
+    width: 100%;
+}
+.caja-texto-grande{
+    height: 90px;
+    resize: none;
+}
+.caja-texto-mediana{
+    height: 60px;
+    resize: none;
+}
+.contenedor-boton-atender {
+    display: flex;
+    justify-content: center;
+}
+.boton-atender{
+    background-color: #3F48CC;
+    color: white;
+    border: 2px solid black;
+    font-weight: bold;
+    padding: 12px 30px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.seccion-derecha-consulta {
+    flex: 3;
+    background-color: #3F48CC;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+.btn-deshacer {
+    background-color: #FFC90D;
+    color: white;
+    border: 2px solid #000;
+    font-weight: bold;
+    padding: 15px 20px;
+    width: 85%;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.tarjeta-siguiente-paciente {
+    background-color: white;
+    border: 2px solid #000;
+    border-radius: 15px;
+    width: 85%;
+    overflow: hidden;
+}
+.encabezado-siguiente-consulta{
+    background-color: #A349A3;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.cuerpo-siguiente-consulta{
+    padding: 20px;
+    display: flex;        
+    flex-direction: column;
+    gap: 18px;        
+    color: white;
+    text-align: center;
+}

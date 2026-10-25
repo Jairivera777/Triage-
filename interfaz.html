@@ -3,152 +3,7 @@
 <head>
     <meta charset="UTF8">
     <title>triage++</title>
-    <style>
-        .seccion-panel { display: none; }
-        .seccion-panel.activa { display: block; }
-        * {
-            margin: 0;
-            padding : 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        .pestana { 
-            display: inline-block !important;
-            padding: 10px 25px;
-            align-items: center;
-            justify-content: center;
-            background-color: #949494;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.95rem;
-            border: 2.5px solid #00A2E8 !important;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-            transition: all 0.2s ease;
-        }
-        .pestana.activa {
-            background-color: white !important;
-            color: #00A2E8 !important;
-            border: 2px solid #00A2E8 !important;
-            border-bottom: none;
-            font-size: 1rem;
-        }
-        .notificacionExito {
-                display: none;
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background-color: #4CAF50;
-                color: white;
-                padding: 15px 25px;
-                border-radius: 8px;
-                box-shadow: 0 4px, 8px rgb(0,0,0,0,2);
-                z-index: 1000;
-                font-family: sans-serif;
-        }
-        .encabezado {
-            background-color: #00A2E8;
-            color: white;
-            display: flex;
-            width: 100%;
-        }   
-        .columna-encabezado{
-            flex: 1;
-            text-align: center;
-            padding: 15px 10px;
-            border-right: 2px solid white;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .columna-encabezado-perfil{
-            background-color: #3F48CC;
-            border-right: none;
-            flex: 1;
-            text-align: center;
-            padding: 15px 10px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .texto-secundario {
-            font-size: 0.85rem;
-            font-weight: normal;
-        }
-        .barraMovil {
-            background-color: #7F7F7F;
-            color: white;
-            overflow: hidden;
-            white-space: nowrap;
-            padding: 8px 0;
-            font-size: 0.85rem;
-            font-weight: bold;
-            position: relative;
-            width: 100%;
-        }
-        .contenido-marquesina {
-            display: inline-flex;
-            gap: 40px;
-            padding-left: 100%;
-            animation: moverIzquierda 15s linear infinite;
-        }
-        @keyframes moverIzquierda {
-            0% {
-                transform: translate(0);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-        .item-barraMovil{
-            color: white;
-            display: inline-block;
-            border-right: 1px solid #8888;
-            padding-right: 20px;
-        }
-        .contenedor-pestanas{
-            background-color: #C3C3C3 !important;
-            display: flex !important;
-            flex-direction: row !important;
-            align-items: flex-end;
-            padding-top: 6px;
-            padding-left: 20px;
-            gap: 15px;
-            width: 100% !important;
-            border-bottom: border-box;
-        }
-        .contenedor-paneles-consulta {
-            display : flex;
-            width: 100%;
-            min-height: calc(100vh -120px);
-        }
-        .seccion-izquierda-consulta{
-            flex: 7;
-            background-color: #c3c3c3;
-            padding: 15px 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .grupo-formulario {
-            border: 2px solid white;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: white;
-        }
-        .grupo-formulario legend{
-            font-weight: bold;
-            font-size: 0.85rem;
-            padding: 0 8px;
-            background-color: white;
-            border-radius: 4px;
-        }
-    </style>
+    <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
     <header class="encabezado">
@@ -170,12 +25,12 @@
     <div class="barraMovil">
         <div class="contenido-marquesina">
             <div class="item-barraMovil">PACIENTES EN ESPERA:</div>
-            <div class="item-barraMovil">T1: 0</div>
-            <div class="item-barraMovil">T2: 0</div>
-            <div class="item-barraMovil">T3: 0</div>
-            <div class="item-barraMovil">T4: 0</div>
-            <div class="item-barraMovil">T5: 0</div>
-            <div class="item-barraMovil">TOTAL PACIENTES: 0</div>
+            <div class="item-barraMovil" id="totalesT1">T1: 0</div>
+            <div class="item-barraMovil" id="totalesT2">T2: 0</div>
+            <div class="item-barraMovil" id="totalesT3">T3: 0</div>
+            <div class="item-barraMovil" id="totalesT4">T4: 0</div>
+            <div class="item-barraMovil" id="totalesT5">T5: 0</div>
+            <div class="item-barraMovil" id="pacientesTotales">TOTAL PACIENTES: 0</div>
         </div>
     </div>
     <nav class="contenedor-pestanas">  <!--Las 4 pestañas que aparecen salen de aqui-->
@@ -338,7 +193,6 @@
 
             <h3>Pacientes Activos</h3>
             <ul id="listaPacientes"></ul>
-            <div id="totalesPorNivel" class="totales-container"></div>
             </section>
         </div>
     </div>
@@ -377,7 +231,7 @@
                     </div>
                 </fieldset>
                 <div class="contenedor-boton-atender">
-                    <button class="btn-terminar">TERMINAR CONSULTA</button>
+                    <button class="boton-atender">TERMINAR CONSULTA</button>
                 </div>
             </section>
             <section class="seccion-derecha-consulta">
@@ -399,214 +253,6 @@
         <h2>Pacientes atendidos</h2>
         <ul id="listaAtendidos"></h2>
     </div>
-    <script>
-        document.getElementById('formTriage').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault(); 
-                return false;
-            }
-        });
-        function actualizarHora(){ // funcion encargada de actualizar la hora de la interfaz cada segundo
-            const ahora = new Date();
-            let horas = ahora.getHours().toString().padStart(2, '0');
-            let minutos = ahora.getMinutes().toString().padStart(2, '0');
-            let segundos = ahora.getSeconds().toString().padStart(2, '0');
-            document.getElementById('Hora').textContent = `${horas}:${minutos}:${segundos}`;
-        }
-        actualizarHora();
-        setInterval(actualizarHora, 1000);
-        function irA(modulo){ // funcion que se encarga de sobreescribir la pagina segun el click que de el usuario
-            document.querySelectorAll('.seccion-panel').forEach(pantalla => {
-                pantalla.classList.remove('activa');
-            });
-            document.querySelectorAll('.pestana').forEach(tab => {
-                tab.classList.remove('activa');
-            });
-            document.getElementById('pantalla-'+modulo).classList.add('activa');
-            document.getElementById('tab-'+modulo).classList.add('activa');
-            if(modulo==='triage') cargarPacientes();
-            if(modulo==='consulta') cargarPaciente();
-            if(modulo==='historial') cargarHistorial();
-        };
-        const selectParentesco = document.getElementById('parentesco');
-        const bloqueAntes = document.getElementById('antes-parentesco')
-        const bloqueDespues = document.getElementById('despues-parentesco');
-        selectParentesco.addEventListener('change', function() { //se encarga de que si no tiene parentesco no aparezcan casillas
-            if(this.value === 'nadie'){
-                bloqueAntes.style.display = 'none';
-                bloqueDespues.style.display = 'none';
-            }else{
-                bloqueAntes.style.display = 'block';
-                bloqueDespues.style.display = 'block';
-            }
-        });
-        const selectSexo = document.getElementById('Sexo');
-        const seccionEmbarazo = document.getElementById('seccion-embarazo');
-        selectSexo.addEventListener('change', function(){ //Si no es mujer no aaprece la funcion de embarazo
-            if(this.value === 'Femenino'){
-                seccionEmbarazo.style.display = 'block';
-            }else{
-                seccionEmbarazo.style.display = 'none'
-            }
-        });
-        const selectDocumento = document.getElementById('tipoDocumentoPaciente');
-        const antesDocumento = document.getElementById('antesDocumento');
-        const despuesDocumento = document.getElementById('despuesDocumento');
-        selectDocumento.addEventListener('change', function(){ //Si esta no identifiado no pide los demas datos
-            if(this.value === 'AS' || this.value === 'MS' || this.value === 'SI'){
-                antesDocumento.style.display = 'none';
-                despuesDocumento.style.display = 'none';
-            } else{
-                antesDocumento.style.display = 'block';
-                despuesDocumento.style.display = 'block';
-            }
-        });
-        document.getElementById('formTriage').addEventListener('submit', function(e) { // se encarga de conectar el front con c++
-            e.preventDefault();
-            const formData = new FormData(document.getElementById('formTriage'));
-            const params = new URLSearchParams(formData);
-
-            fetch('http://localhost:8080/api/triage' , {
-                method: 'POST',
-                body: params
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "ok") {
-                    const notif = document.getElementById('notificacionExito');
-                    document.getElementById('nivelTriageExito').textContent = data.triage;
-                    notif.style.display = 'block';
-
-                    setTimeout(() => {
-                        notif.style.display = 'none';
-                    }, 4000);
-                    document.getElementById('formTriage').reset();
-                    document.getElementById('seccion-embarazo').style.display = 'none';
-                    cargarPacientes();
-                }
-            })
-            .catch(error => {
-                console.error('Error al conectar con C++: ', error);
-                alert("No se logro conectar con C++");
-            });
-        });
-        let listaGlobalPacientes = [];
-        function cargarPacientes(){
-            fetch('http://localhost:8080/api/pacientes')
-                .then(response => response.json())
-                .then(data=> {
-                    if(Array.isArray(data))listaGlobalPacientes = data;
-                    else listaGlobalPacientes = [];
-                    renderizarPacientes();
-                })
-                .catch(err => console.error("Error al cargar pacientes", err));
-        }
-        function renderizarPacientes(){
-            const selector = document.getElementById('filtros');
-            const filtroValor = selector ? selector.value : 'TODOS';
-            const contenedorLista = document.getElementById('listaPacientes');
-            const contenedorTotales = document.getElementById('totalesPorNivel');
-            if(!contenedorLista) return;
-            contenedorLista.innerHTML = '';
-            const pacientesFiltrados = listaGlobalPacientes.filter(p => {
-                if(filtroValor === 'TODOS') return true;
-                return String(p.triage) === String(filtroValor);
-            });
-            if (pacientesFiltrados.length === 0){
-                contenedorLista.innerHTML = `<li>No hay pacientes en esta categoria</li>`;
-            } else {
-                pacientesFiltrados.forEach(p => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<strong>[T${p.triage}]</strong> ${p.nombre} (${p.documento}) - Espera: ${p.minutosEspera} min`;
-                    contenedorLista.appendChild(li);
-                });
-            }
-            const totales = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
-            listaGlobalPacientes.forEach(p => {
-                if(totales[p.triage]!== undefined){
-                    totales[p.triage]++;
-                }
-            });
-            contenedorTotales.innerHTML = `
-                <strong>Totales por nivel:</strong><br>
-                T1: ${totales[1]} | T2: ${totales[2]} | T3: ${totales[3]} | T4: ${totales[4]} | T5: ${totales[5]}`;
-                setInterval(cargarPacientes, 60000);
-        }
-        document.addEventListener("DOMContentLoaded", function() {
-            cargarPacientes();
-        });
-        let siguiente = [];
-        function cargarPaciente(){
-            fetch('http://localhost:8080/api/datosPaciente')
-                .then(response => response.json())
-                .then(data => {
-                    const elNombre = document.getElementById('cNombre');
-                    const elDoc = document.getElementById('cDocumento');
-                    const elTriage = document.getElementById('cTriage');
-                    const elMotivo = document.getElementById('cMotivo');
-                    if (data.hayPaciente) {
-                        if (elNombre) elNombre.textContent = data.nombre || "Sin nombre";
-                        if (elDoc) elDoc.textContent = data.documento || "NA";
-                        if (elTriage) elTriage.textContent = 'T' + data.triage;
-                        if (elMotivo) elMotivo.textContent = data.motivo || "NA";
-                    } else {
-                        if (elNombre) elNombre.textContent = "No hay pacientes en espera";
-                        if (elDoc) elDoc.textContent = "-";
-                    if (elTriage) elTriage.textContent = "-";
-                    if (elMotivo) elMotivo.textContent = "-";
-                }
-                })
-                .catch(err => {
-                    console.error("Error al cargar paciente en consulta:", err);
-                });
-        }
-        function atenderPaciente() {
-            fetch('http://localhost:8080/api/atenderPaciente', { 
-                method: 'POST' 
-            })
-            .then(response => response.json())
-            .then(data => {
-            if (data.status === 'ok') {
-                cargarPaciente();
-                cargarPacientes();
-            }else alert("No hay pacientes para atender en la cola.");
-            })
-            .catch(err => console.error("Error al atender paciente:", err));
-        }
-        function deshacerAlta() {
-            fetch('http://localhost:8080/api/deshacerAlta', { method: 'POST' })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'ok') {
-                    cargarPaciente();
-                    cargarPacientes();
-                    alert("Se reinsertó el último paciente al sistema.");
-                } else alert("El historial de altas está vacío.");
-        })
-        .catch(err => console.error("Error al deshacer alta:", err));
-        }
-        function cargarHistorial(){
-            fetch('http://localhost:8080/api/historialPacientes')
-            .then(response => response.json())
-            .then(data => {
-                listaGlobalPacientes = data;
-                renderizarListasPacientes();
-            })
-            .catch(err => console.error("Error al cargar pacientes", err));
-        }
-        function renderizarListasPacientes(){
-            const contenedorLista = document.getElementById('listaAtendidos');
-            if(!contenedorLista) return;
-            contenedorLista.innerHTML = '';
-            if(listaGlobalPacientes.length === 0) contenedorLista.innerHTML= `<li>No hay pacientes en esta categoria</li>`;
-            else {
-                listaGlobalPacientes.forEach(p => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<strong>[T${p.triage}]</strong> ${p.nombre} (${p.documento}) - Espera: ${p.minutosEspera} min`;
-                    contenedorLista.appendChild(li);
-                });
-            }
-        }
-    </script>
+    <script src="logica.js"></script>
 </body>
 </html>

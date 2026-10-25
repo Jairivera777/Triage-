@@ -102,8 +102,8 @@ void inicializarServidor(httplib::Server& svr) {
                     json += "{";
                     json += "\"nombre\": \"" + nom + "\",";
                     json += "\"documento\": \"" + doc + "\",";
-                    json += "\"triage\": \"" + to_string(triage.getTriage()) + "\",";
-                    json += "\"minutosEspera\": \"" + to_string(triage.getMinutosEspera()) + "\"";
+                    json += "\"triage\": " + to_string(triage.getTriage()) + ",";
+                    json += "\"minutosEspera\": " + to_string(triage.getMinutosEspera()) + "";
                     json += "}";
                     actual = actual->siguiente;
                     isPrimero = false;
