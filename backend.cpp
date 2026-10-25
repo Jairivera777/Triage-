@@ -480,18 +480,6 @@ Nodo * ColaPrioridad::getPrimero(){
     }
     throw -1;
 }
-Nodo * ColaPrioridad::getSegundo(){
-    int j = 0;
-    for(int i = 0; i<5;i++){
-        if(!colas[i].isVacia()) {
-            if(colas[i].getCabeza()->siguiente!=NULL && j == 0) return colas[i].getCabeza()->siguiente;
-            else if (j == 1) return colas[i].getCabeza();
-            else j = 1;
-        }
-    }
-    return NULL;
-}
-
 
 int contadorTurno = 1;
 ColaPrioridad colaTriage;

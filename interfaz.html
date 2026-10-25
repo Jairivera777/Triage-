@@ -204,20 +204,72 @@
                         <legend>DATOS PACIENTE</legend>
                         <div class="filas-labels">
                             <div class="campo-datos-consulta">
-                                <label for="nombre-consulta">Nombre:</label><input type="text" id="nombre-consulta">
-                                <label for="tipoDocumento-consulta"></label><input type="text" id="tipoDocumento-consulta">
-                                <label for="direccion-consulta"></label><input type="text" id="direccion-consulta">
-                                <label for="documento-consulta"></label><input type="text" id="documento-consulta">
-                                <label for="sexo-consulta"></label><input type="text" id="sexo-consulta">
-                                <label for="edad-consulta"></label><input type="number" id="edad-consulta">
-                                <label for="correo-consulta"></label><input type="text" id="correo-consulta">
-                                <label for="telefono-consulta"></label><input type="text" id="telefono-consulta">
+                                <label for="nombre-consulta">Nombre:</label>
+                                <input type="text" id="nombre-consulta" name="nombre-consulta" style="width: 300px;">
+                                <label id="tipoDocumento-consulta" for="documento-consulta"></label>
+                                <input type="text" id="documento-consulta" name="documento-consulta">
+                                <div class="salto-linea"></div>
+                                <label for="direccion-consulta">Direccion:</label>
+                                <input type="text" id="direccion-consulta" name="direccion-consulta">
+                                <label for="sexo-consulta">Sexo:</label>
+                                <select name="sexo-consulta" id="sexo-consulta" required>
+                                    <option value="" disabled selected>Seleccione una opcion...</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Femenino">Femenino</option>
+                                </select> 
+                                <div class="femenino" id="seccion-embarazo-consulta" style="display: none;">
+                                    <span>¿Estas embarazada?:</span>
+                                    <input type="radio" id="verdadero-consulta" name="embarazada-consulta" value="true">
+                                    <label for="verdadero-consulta">Si</label>
+                                    <input type="radio" id="falsa-consulta" name="embarazada-consulta" value="false">
+                                    <label for="falsa-consulta">No</label>                
+                                </div>
+                                <label for="edad-consulta">Edad:</label>
+                                <input type="number" id="edad-consulta" name="edad-consulta">
+                                <div class="salto-linea"></div>
+                                <label for="correo-consulta">Correo:</label>
+                                <input type="text" id="correo-consulta" name="correo-consulta">
+                                <label for="telefono-consulta">Telefono:</label>
+                                <input type="text" id="telefono-consulta" name="telefono-consulta">
                             </div>
                         </div>
                     </fieldset> 
+                    <br>
                     <fieldset class="grupo-formulario">
                         <legend>DATOS MEDICOS</legend>
-                        <textarea class="caja-texto-grande"></textarea>
+                        <div class="campo-datos-consulta">
+                        <label for="temperatura-consulta">Temperatura (°C):</label>
+                        <input type="number" id="temperatura-consulta" name="temperatura" style="width: 50px;">
+                        <label for="altura-consulta">Estatura (cm):</label>
+                        <input type="number" id="altura-consulta" name="estatura-consulta" style="width: 75px;">
+                        <label for="peso-consulta">Peso (kg):</label>
+                        <input type="number" id="peso-consulta" name="peso-consulta" style="width: 50px;">
+                        <label for="frecuencia-consulta">Frecuencia cardiaca:</label>
+                        <input type="text" id="frecuencia-consulta" name="frecuencia-consulta" style="width: 50px;">
+                        <label for="presionSistolica-consulta">Presion Sistolica:</label>
+                        <input type="number" id="presionSistolica-consulta" name="presionSistolica-consulta" style="width: 75px;">
+                        <label for="presionDiastolica-consulta">Presion Diastolica:</label>
+                        <input type="number" id="presionDiastolica-consulta" name="presionDiastolica-consulta" style="width: 75px;">
+                        <label for="frecuenciaRespiratoria-consulta">Frecuencia respiratoria por minuto:</label>
+                        <input type="number" id="frecuenciaRespiratoria-consulta" name="frecuenciaRespiratoria-consulta" style="width: 50px;">
+                        <label for="saturacion-consulta">SpO2%:</label>
+                        <input type="number" id="saturacion-consulta" name="saturacion-consulta" min="0" max="100" style="width: 50px;">
+                        <label for="escalaGlasgow-consulta">Escala de Glasgow:</label>
+                        <input type="number" id="escalaGlasgow-consulta" name="escalaGlasgow-consulta" min="3" max="15" style="width: 50px;">
+                        <label for="escala-consulta">Escala del dolor:</label>
+                        <input type="number" id="escala-consulta" name="escala-consulta" min="0" max="10" style="width: 50px;">
+                        <div clsss="salto-linea"></div>
+                        <label for="motivo-consulta">Motivo de venir a urgencias: </label>
+                        <textarea id="motivo-consulta" name="motivo-consulta"></textarea>
+                        <label for="alergias-consulta">Alergias:</label>
+                        <textarea id="alergias-consulta" name="alergias-consulta"></textarea>
+                        <label for="enfermedades-consulta">Enfermedades:</label>
+                        <textarea id="enfermedades-consulta" name="enfermedades-consulta"></textarea>
+                        <label for="cirugias-consulta">Cirugias recientes: </label>
+                        <textarea id="cirugias-consulta" name="cirugias-consulta"></textarea>
+                        <label for="observaciones-consulta">Observaciones:</label>
+                        <textarea id="observaciones-consulta" name="observaciones-consulta"></textarea>
+                        </div>
                     </fieldset>
                 </form>
                 <form id="datosConsulta">
@@ -235,7 +287,7 @@
                         </div>
                     </fieldset>
                     <div class="contenedor-boton-atender">
-                        <button class="boton-atender">TERMINAR CONSULTA</button>
+                        <button type="submit" class="boton-atender" onClick="atenderPaciente()">TERMINAR CONSULTA</button>
                     </div>
                 </form>    
             </section>

@@ -47,6 +47,15 @@ selectSexo.addEventListener('change', function(){ //Si no es mujer no aaprece la
         seccionEmbarazo.style.display = 'none'
     }
 });
+const selectSexoConsulta = document.getElementById('sexo-consulta');
+const seccionEmbarazoConsulta = document.getElementById('seccion-embarazo-consulta');
+selectSexoConsulta.addEventListener('change', function(){
+    if(this.value === 'Femenino'){
+        seccionEmbarazoConsulta.style.display = 'block';
+    }else{
+        seccionEmbarazoConsulta.style.display = 'none'
+    }
+});
 const selectDocumento = document.getElementById('tipoDocumentoPaciente');
 const antesDocumento = document.getElementById('antesDocumento');
 const despuesDocumento = document.getElementById('despuesDocumento');
@@ -155,20 +164,90 @@ function cargarPaciente(){
             const direccion = document.getElementById('direccion-consulta');
             const documento = document.getElementById('documento-consulta');
             const sexo = document.getElementById('sexo-consulta');
+            const isPrenada = document.getElementById('verdadero-consulta');
+            const noPrenada = document.getElementById('falsa-consulta');
             const edad = document.getElementById('edad-consulta');
             const correo = document.getElementById('correo-consulta');
             const telefono = document.getElementById('telefono-consulta');
-
+            const temperatura = document.getElementById('temperatura-consulta');
+            const estatura = document.getElementById('altura-consulta');
+            const peso = document.getElementById('peso-consulta');
+            const frecuenciaCardiaca = document.getElementById('frecuencia-consulta');
+            const presionSistolica = document.getElementById('presionSistolica-consulta');
+            const presionDiastolica = document.getElementById('presionDiastolica-consulta');
+            const frecuenciaRespiratoria = document.getElementById('frecuenciaRespiratoria-consulta');
+            const saturacion = document.getElementById('saturacion-consulta');
+            const glasgow = document.getElementById('escalaGlasgow-consulta');
+            const escala = document.getElementById('escala-consulta');
+            const motivo = document.getElementById('motivo-consulta');
+            const alergias = document.getElementById('alergias-consulta');
+            const enfermedades = document.getElementById('enfermedades-consulta');
+            const cirugias = document.getElementById('cirugias-consulta');
+            const observaciones = document.getElementById('observaciones-consulta');
             if (data.hayPaciente) {
-                if (elNombre) elNombre.textContent = data.nombre || "Sin nombre";
-                if (elDoc) elDoc.textContent = data.documento || "NA";
-                if (elTriage) elTriage.textContent = 'T' + data.triage;
-                if (elMotivo) elMotivo.textContent = data.motivo || "NA";
+                if (nombre) nombre.value = data.nombre || "Sin nombre";
+                if (tipoDocumento) tipoDocumento.textContent = data.tipoDocumento+":" || "SI";
+                if (documento) documento.value = data.document || "NA";
+                if (direccion) direccion.value = data.direccion || "NA";
+                if (sexo){
+                    if(data.sexo==='Femenino') {
+                        sexo.value = 'Femenino';
+                    }
+                    else sexo.value = 'Masculino';
+                } 
+                const seccionEmbarazo = document.getElementById('seccion-embarazo-consulta');
+                
+                if(sexo && sexo.value === 'Femenino'){
+                    seccionEmbarazo.style.display = 'block';
+                    
+                    const condicion = (data.embarazo === "Si"); 
+                    if(isPrenada) isPrenada.checked = condicion;
+                    if(noPrenada) noPrenada.checked = !condicion;
+                } else {
+                    seccionEmbarazo.style.display = 'none';
+                    if(noPrenada) noPrenada.checked = true;
+                }
+                if (edad) edad.value = data.edad || 0;
+                if (correo) correo.value = data.correo || "NA";
+                if (telefono) telefono.value = data.telefono || "NA";
+                if(temperatura) temperatura.value = data.temperatura || 0;
+                if (estatura) estatura.value = data.estatura || 0;
+                if (peso) peso.value = data.peso || 0;
+                if (frecuenciaCardiaca) frecuenciaCardiaca.value = data.frecuenciaCardiaca || 0;
+                if (presionSistolica) presionSistolica.value = data.presionSistolica || 0;
+                if (presionDiastolica) presionDiastolica.value = data.presionDiastolica || 0;
+                if(frecuenciaRespiratoria) frecuenciaRespiratoria.value = data.frecuenciaRespiratoria || 0;
+                if (saturacion) saturacion.value = data.saturacion || 0;
+                if (glasgow) glasgow.value = data.glasgow || 15;
+                if(escala) escala.value = data.escala || 1;
+                if (motivo) motivo.value = (!data.motivo || data.motivo === "-") ? "NA" : data.motivo;
+                if (alergias) alergias.value = (!data.alergias || data.alergias === "-") ? "NA" : data.alergias;
+                if (enfermedades) enfermedades.value = (!data.enfermedades || data.enfermedades === "-") ? "NA" : data.enfermedades;
+                if (cirugias) cirugias.value = (!data.cirugias || data.cirugias === "-") ? "NA" : data.cirugias; 
+                if (observaciones) observaciones.value = (!data.observaciones || data.observaciones === "-") ? "NA" : data.observaciones;
             } else {
-                if (elNombre) elNombre.textContent = "No hay pacientes en espera";
-                if (elDoc) elDoc.textContent = "-";
-                if (elTriage) elTriage.textContent = "-";
-                if (elMotivo) elMotivo.textContent = "-";
+                if (nombre) nombre.value = data.nombre;
+                if (tipoDocumento) tipoDocumento.textContent = "-";
+                if (documento) documento.value = "-";
+                if (direccion) direccion.value = "-";
+                if (sexo) sexo.selectedIndex = 0;
+                if (edad) edad.value = 0;
+                if (correo) correo.value = "-";
+                if (telefono) telefono.value = "-";
+                if(temperatura) temperatura.value = 0;
+                if (estatura) estatura.value = 0;
+                if (peso) peso.value = 0;
+                if (frecuenciaCardiaca) frecuenciaCardiaca.value = 0;
+                if (presionSistolica) presionDiastolica.value = 0;
+                if(frecuenciaRespiratoria) frecuenciaRespiratoria.value = 0;
+                if (saturacion) saturacion.value = 0;
+                if (glasgow) glasgow.value = 15;
+                if(escala) escala.value = 1;
+                if (motivo) motivo.value = "-";
+                if (alergias) alergias.value = "-";
+                if (enfermedades) enfermedades.value = "-";
+                if (cirugias) enfermedades.value = "-"; 
+                if (observaciones) observaciones.value = "-";
             }
         })
         .catch(err => {
@@ -183,7 +262,6 @@ function atenderPaciente() {
     .then(data => {
        if (data.status === 'ok') {
             cargarPaciente();
-            cargarPacientes();
         }else alert("No hay pacientes para atender en la cola.");
     })
     .catch(err => console.error("Error al atender paciente:", err));

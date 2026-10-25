@@ -1,5 +1,6 @@
 #include "backend.h"
-
+bool hayPacienteConsulta = false;
+Triage pacienteConsulta;
 // inicia el server
 void inicializarServidor(httplib::Server& svr) {
     servidorGlobal = &svr;
@@ -85,14 +86,13 @@ void inicializarServidor(httplib::Server& svr) {
             Paciente * paciente;
             string nom, doc;
             string json = "[";
-            bool isPrimero;
+            bool isPrimero = true;
             for (int i = 0; i<5; i++){
                 if(colaTriage.getCola(i).isVacia()) continue;
                 cola = colaTriage.getCola(i);
                 actual = cola.getCabeza();
                 triage = actual->dato;
                 paciente = triage.getPaciente();
-                isPrimero = true;
                 while(actual!=NULL){
                     triage = actual->dato;
                     paciente = triage.getPaciente();
@@ -116,10 +116,12 @@ void inicializarServidor(httplib::Server& svr) {
     //devuelve al front un json con los datos del paciente
     svr.Get("/api/datosPaciente", [&svr](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
-        if (!colaTriage.isVacia()) {
-            Nodo * nodo = colaTriage.getPrimero();
-            Triage cabeza = nodo->dato;
-            Paciente* paciente = cabeza.getPaciente();
+        if(!hayPacienteConsulta && !colaTriage.isVacia()){
+            pacienteConsulta = colaTriage.atender();
+            hayPacienteConsulta = true;
+        }
+        if (hayPacienteConsulta) {
+            Paciente* paciente = pacienteConsulta.getPaciente();
             string json = "{";
             json += "\"hayPaciente\": true,";
             json += "\"nombre\": \"" + paciente->getNombre() + "\",";
@@ -131,23 +133,23 @@ void inicializarServidor(httplib::Server& svr) {
             json += "\"correo\": \"" + paciente->getCorreo() + "\",";
             json += "\"telefono\": \"" + paciente->getTelefono() + "\",";
             json += "\"embarazo\": ";
-            if (cabeza.getEmbarazo()) json += "\"Si\",";
+            if (pacienteConsulta.getEmbarazo()) json += "\"Si\",";
             else json += "\"No\",";
-            json += "\"temperatura\": " + to_string(cabeza.getTemperatura()) + ",";
-            json += "\"estatura\": " + to_string(cabeza.getEstatura()) + ",";
-            json += "\"peso\": " + to_string(cabeza.getPeso()) + ",";
-            json += "\"frecuenciaCardiaca\": " + to_string(cabeza.getFrecuenciaCardiaca()) + ",";
-            json += "\"presionSistolica\": " + to_string(cabeza.getPresionSistolica()) + ",";
-            json += "\"presionDiastolica\": " + to_string(cabeza.getPresionDiastolica()) + ",";
-            json += "\"frecuenciaRespiratoria\": " + to_string(cabeza.getFrecuenciaRespiratoria()) + ",";
-            json += "\"saturacion\": " + to_string(cabeza.getSaturacion()) + ",";
-            json += "\"glasgow\": " + to_string(cabeza.getGlasgow()) + ",";
-            json += "\"escala\": " + to_string(cabeza.getEscala()) + ",";
-            json += "\"motivo\": \"" + cabeza.getMotivo() + "\",";
-            json += "\"alergias\": \"" + cabeza.getAlergias() + "\",";
-            json += "\"enfermedades\": \"" + cabeza.getEnfermedades() + "\",";
-            json += "\"cirugias\": \"" + cabeza.getCirugias() + "\",";
-            json += "\"observaciones\": \"" + cabeza.getObservaciones() + "\"";
+            json += "\"temperatura\": " + to_string(pacienteConsulta.getTemperatura()) + ",";
+            json += "\"estatura\": " + to_string(pacienteConsulta.getEstatura()) + ",";
+            json += "\"peso\": " + to_string(pacienteConsulta.getPeso()) + ",";
+            json += "\"frecuenciaCardiaca\": " + to_string(pacienteConsulta.getFrecuenciaCardiaca()) + ",";
+            json += "\"presionSistolica\": " + to_string(pacienteConsulta.getPresionSistolica()) + ",";
+            json += "\"presionDiastolica\": " + to_string(pacienteConsulta.getPresionDiastolica()) + ",";
+            json += "\"frecuenciaRespiratoria\": " + to_string(pacienteConsulta.getFrecuenciaRespiratoria()) + ",";
+            json += "\"saturacion\": " + to_string(pacienteConsulta.getSaturacion()) + ",";
+            json += "\"glasgow\": " + to_string(pacienteConsulta.getGlasgow()) + ",";
+            json += "\"escala\": " + to_string(pacienteConsulta.getEscala()) + ",";
+            json += "\"motivo\": \"" + pacienteConsulta.getMotivo() + "\",";
+            json += "\"alergias\": \"" + pacienteConsulta.getAlergias() + "\",";
+            json += "\"enfermedades\": \"" + pacienteConsulta.getEnfermedades() + "\",";
+            json += "\"cirugias\": \"" + pacienteConsulta.getCirugias() + "\",";
+            json += "\"observaciones\": \"" + pacienteConsulta.getObservaciones() + "\"";
             json += "}";
             res.set_content(json, "application/json");
         } else {
@@ -159,8 +161,8 @@ void inicializarServidor(httplib::Server& svr) {
     svr.Post("/api/atenderPaciente", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
         if (!colaTriage.isVacia()) {
-            Triage paciente = colaTriage.atender();
-            pilaAlta.agregarPacienteAtendido(paciente);
+            pilaAlta.agregarPacienteAtendido(pacienteConsulta);
+            hayPacienteConsulta = false;
             res.set_content("{\"status\": \"ok\"}", "application/json");
         } else {
             res.set_content("{\"status\": \"vacio\"}", "application/json");
@@ -182,8 +184,8 @@ void inicializarServidor(httplib::Server& svr) {
     //devuelve al front un Json con los datos mas relevantes para que el medico lo vea.
     svr.Get("/api/proximoPaciente", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
-        if (!colaTriage.isVacia() && colaTriage.getSegundo()!=NULL) {
-            Nodo * actual = colaTriage.getSegundo();
+        if (!colaTriage.isVacia() && colaTriage.getPrimero()!=NULL) {
+            Nodo * actual = colaTriage.getPrimero();
             Triage triage = actual->dato;
             Paciente * paciente = triage.getPaciente();
             string json = "{";
