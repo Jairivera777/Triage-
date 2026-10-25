@@ -441,7 +441,7 @@
                         </div>
                     </fieldset>
                     <div class="contenedor-boton-atender">
-                        <button type="submit" class="boton-atender" onClick="atenderPaciente()">TERMINAR CONSULTA</button>
+                        <button type="button" class="boton-atender" onClick="atenderPaciente()">TERMINAR CONSULTA</button>
                     </div>
                 </form>
             </section>
@@ -450,11 +450,12 @@
                 <div class="tarjeta-siguiente-consulta">
                     <div class="encabezado-siguiente-consulta">Siguiente paciente</div>
                     <div class="cuerpo-siguiente-consulta">
-                        <p><strong id="nombrePaciente-consulta"></strong></p>
-                        <p><strong id="documentoPaciente-consulta"></strong></p>
-                        <p><strong id="sexo-consulta"></strong></p>
-                        <p><strong id="estatura-consulta"></strong></p>
-                        <p><strong id="peso-consulta"></strong></p>
+                        <p><strong>Nombre: </strong><span id="siguientePaciente"></span></p>
+                        <p><strong id="siguienteTipoDocumento"></strong><span id="siguienteDocumento"></span></p>
+                        <p><strong>Edad:</strong><span id="edadSiguiente"></span></p>
+                        <p><strong>Sexo:</strong><span id="sexoSiguiente"></span></p>
+                        <p><strong>Estatura:</strong><span id="estaturaSiguiente"></span></p>
+                        <p><strong>Peso:</strong><span id="pesoSiguiente"></span></p>
                     </div>
                 </div>
             </section>

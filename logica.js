@@ -257,6 +257,7 @@ function cargarPaciente(){
                 if (cirugias) enfermedades.value = "-"; 
                 if (observaciones) observaciones.value = "-";
             }
+            cargarProximoPaciente();
         })
         .catch(err => {
             console.error("Error al cargar paciente en consulta:", err);
@@ -307,4 +308,35 @@ function renderizarListasPacientes(){
             contenedorLista.appendChild(li);
         });
     }
+}
+function cargarProximoPaciente(){
+    fetch('http://localhost:8080/api/proximoPaciente')
+        .then(response => response.json)
+        .then(data => {
+            const nom = document.getElementById('siguientePaciente');
+            const tipo = document.getElementById('siguienteTipoDocumento');
+            const doc = document.getElementById('siguienteDocumento');
+            const edad = document.getElementById('edadSiguiente');
+            const sexo = document.getElementById('sexoSiguiente');
+            const estatura = document.getElementById('estaturaSiguiente');
+            const peso = document.getElementById('pesoSiguiente');
+            if(data.hayPaciente){
+                if (nom) nom.textContent = data.nombre || "NA";
+                if (tipo) tipo.textContent = data.tipoDocumento+":" || "SI:";
+                if (doc) doc.textContent = data.documento || "NA";
+                if (edad) edad.textContent = data.edad || "NA";
+                if (sexo) sexo.textContent = data.sexo;
+                if (estatura) estatura.textContent = data.estatura || "NA";
+                if (peso) peso.textContent = data.peso || "NA";
+            }else{
+                if (nom) nom.textContent = "Sin siguiente paciente";
+                if (tipo) tipo.textContent = "SI:";
+                if (doc) doc.textContent = "-";
+                if (edad) edad.textContent = "-";
+                if (sexo) sexo.textContent = "-";
+                if (estatura) estatura.textContent = "-";
+                if (peso) peso.textContent = "-";
+            }
+        })
+        .catch(err => console.error("Error al cargar el proximo paciente"));
 }

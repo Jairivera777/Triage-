@@ -91,8 +91,6 @@ void inicializarServidor(httplib::Server& svr) {
                 if(colaTriage.getCola(i).isVacia()) continue;
                 cola = colaTriage.getCola(i);
                 actual = cola.getCabeza();
-                triage = actual->dato;
-                paciente = triage.getPaciente();
                 while(actual!=NULL){
                     triage = actual->dato;
                     paciente = triage.getPaciente();
@@ -111,7 +109,7 @@ void inicializarServidor(httplib::Server& svr) {
             }
             json += "]";
             res.set_content(json, "application/json");
-        }else res.set_content("{\"status\": \"false\"}", "application/json");
+        }else res.set_content("[]", "application/json");
     });
     //devuelve al front un json con los datos del paciente
     svr.Get("/api/datosPaciente", [&svr](const httplib::Request& req, httplib::Response& res) {
@@ -194,6 +192,7 @@ void inicializarServidor(httplib::Server& svr) {
             string tipoDoc = (paciente!=NULL) ? paciente->getTipoDocumento() : "SI";
             json += "\"hayPaciente\": true,";
             json += "\"nombre\": \"" + nom + "\",";
+            json += "\"edad\": \"" + to_string(paciente->getEdad()) +"\",";
             json += "\"documento\": \"" + doc + "\",";
             json += "\"tipoDocumento\": \"" + tipoDoc +"\",";
             json += "\"sexo\": \"" + paciente->getSexo() + "\",";
