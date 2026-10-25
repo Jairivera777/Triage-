@@ -114,7 +114,7 @@
     padding-left: 20px;
     gap: 15px;
     width: 100% !important;
-    border-bottom: border-box;
+    border-bottom: 3px solid #00A2E8;
 }
 .contenedor-paneles-consulta {
     display : flex;
@@ -154,7 +154,7 @@
     font-size: 0.8rem;
     font-weight: bold;
 }
-.caja-texto-grande, .caja-texto-mediana{
+.campo-datos-consulta input, .caja-texto-grande, .caja-texto-mediana{
     border: 2px solid #3F48CC;
     border-radius: 12px;
     padding: 6px 10px;
@@ -223,4 +223,13 @@
     gap: 18px;        
     color: white;
     text-align: center;
+}
+.panel-izquierdo-triage textarea{
+    width: 200px;
+    height: 50px;
+    resize: vertical;
+    box-sizing: border-box;
+    vertical-align: top;
+    white-space: pre wrap;
+    word-wrap: break-word;
 }

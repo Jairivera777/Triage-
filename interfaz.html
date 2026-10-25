@@ -48,7 +48,7 @@
                         <legend>Información del paciente</legend>
                         <div id="antesDocumento">
                             <label for="nombrePaciente">Nombre Paciente:</label>
-                            <input type="text" id="nombrePaciente" name="nombrePaciente">
+                            <input type="text" id="nombrePaciente" name="nombrePaciente" style="width: 300px;">
                         </div>
                         <label for="tipoDocumentoPaciente">Tipo de documento:</label>
                         <select id="tipoDocumentoPaciente" name="tipoDocumentoPaciente" required>
@@ -83,15 +83,15 @@
                         </div>
                         <div id="despuesDocumento">
                             <label for="Numero">Numero de documento:</label>
-                            <input type="text" id="Numero" name="documentoPaciente">
+                            <input type="text" id="Numero" name="documentoPaciente" style="width: 100px;">
                             <label for="Edad">Edad:</label>
-                            <input type="number" id="Edad" name="edad" min="0" max="150">   
+                            <input type="number" id="Edad" name="edad" min="0" max="150" style="width: 50px;">   
                             <label for="eps">EPS: </label>
                             <input type="text" id="eps" name="eps">
                             <label for="correoPaciente">Correo:</label>
-                            <input type="text" id="correoPaciente" name="correoPaciente">
+                            <input type="text" id="correoPaciente" name="correoPaciente" style="width: 200px;">
                             <label for="telefonoPaciente">Telefono:</label>
-                            <input type="text" id="telefonoPaciente" name="telefonoPaciente">
+                            <input type="text" id="telefonoPaciente" name="telefonoPaciente" style="width: 100px;">
                             <label for="direccion">Direccion de residencia:</label>
                             <input type="text" id="direccion" name="direccion">
                         </div>
@@ -102,7 +102,7 @@
                             <legend>Informacion acudiente</legend>
                             <div class="antes-parentesco" id="antes-parentesco">
                                 <label for="nombreAcudiente">Nombre acudiente:</label>
-                                <input type="text" id="nombreAcudiente" name="nombreAcudiente">
+                                <input type="text" id="nombreAcudiente" name="nombreAcudiente" style="width: 300px;">
                                 <label for="tipoDocumentoAcudiente">Tipo de documento:</label>
                                 <select id="tipoDocumentoAcudiente" name="tipoDocumentoAcudiente">
                                     <option value="" disabled selected>Seleccione una opcion...</option>
@@ -117,7 +117,7 @@
                                     <option value="DE">DE - Documento extranjero de identificación</option>
                                 </select>
                                 <label for="documento">Numero de documento:</label>
-                                <input type="text" id="documento" name="documentoAcudiente">
+                                <input type="text" id="documento" name="documentoAcudiente" style="width: 100px;">
                             </div>
                             <label for="parentesco">Parentesco:</label>
                             <select id="parentesco" name="parentesco">
@@ -136,9 +136,9 @@
                             </select>
                             <div class="despues-parentesco" id="despues-parentesco">
                                 <label for="correo">Correo:</label>
-                                <input type="text" id="correo" name="correoAcudiente">
+                                <input type="text" id="correo" name="correoAcudiente" style="width: 200px;">
                                 <label for="telefono">Telefono:</label>
-                                <input type="text" id="telefono" name="telefonoAcudiente">
+                                <input type="text" id="telefono" name="telefonoAcudiente" style="width: 100px;">
                             </div>
                         </fieldset>
                     </div>
@@ -146,35 +146,35 @@
                     <fieldset>
                         <legend>Signos vitales y Sintomas</legend>
                         <label for="temperatura">Temperatura (°C):</label>
-                        <input type="number" id="temperatura" name="temperatura">
+                        <input type="number" id="temperatura" name="temperatura" style="width: 50px;">
                         <label for="altura">Estatura (cm):</label>
-                        <input type="number" id="altura" name="estatura">
+                        <input type="number" id="altura" name="estatura" style="width: 50px;">
                         <label for="peso">Peso (kg):</label>
-                        <input type="number" id="peso" name="peso">
+                        <input type="number" id="peso" name="peso" style="width: 50px;">
                         <label for="frecuencia">Frecuencia cardiaca:</label>
-                        <input type="text" id="frecuencia" name="frecuencia">
+                        <input type="text" id="frecuencia" name="frecuencia" style="width: 50px;">
                         <label for="presionSistolica">Presion Sistolica:</label>
-                        <input type="number" id="presionSistolica" name="presionSistolica">
+                        <input type="number" id="presionSistolica" name="presionSistolica" style="width: 50px;">
                         <label for="presionDiastolica">Presion Diastolica:</label>
-                        <input type="number" id="presionDiastolica" name="presionDiastolica">
+                        <input type="number" id="presionDiastolica" name="presionDiastolica" style="width: 50px;">
                         <label for="frecuenciaRespiratoria">Frecuencia respiratoria por minuto:</label>
-                        <input type="number" id="frecuenciaRespiratoria" name="frecuenciaRespiratoria">
+                        <input type="number" id="frecuenciaRespiratoria" name="frecuenciaRespiratoria" style="width: 50px;">
                         <label for="saturacion">SpO2%:</label>
-                        <input type="number" id="saturacion" name="saturacion" min="0" max="100">
+                        <input type="number" id="saturacion" name="saturacion" min="0" max="100" style="width: 50px;">
                         <label for="escalaGlasgow">Escala de Glasgow:</label>
-                        <input type="number" id="escalaGlasgow" name="escalaGlasgow" min="3" max="15">
+                        <input type="number" id="escalaGlasgow" name="escalaGlasgow" min="3" max="15" style="width: 50px;">
                         <label for="escala">Escala del dolor:</label>
-                        <input type="number" id="escala" name="escala" min="0" max="10">
+                        <input type="number" id="escala" name="escala" min="0" max="10" style="width: 50px;">
                         <label for="motivo">Motivo de venir a urgencias: </label>
-                        <input type="text" id="motivo" name="motivo">
+                        <textarea id="motivo" name="motivo"></textarea>
                         <label for="alergias">Alergias:</label>
-                        <input type="text" id="alergias" name="alergias">
+                        <textarea id="alergias" name="alergias"></textarea>
                         <label for="enfermedades">Enfermedades:</label>
-                        <input type="text" id="enfermedades" name="enfermedades">
+                        <textarea id="enfermedades" name="enfermedades"></textarea>
                         <label for="cirugias">Cirugias recientes: </label>
-                        <input type="text" id="cirugias" name="cirugias">
+                        <textarea id="cirugias" name="cirugias"></textarea>
                         <label for="observaciones">Observaciones:</label>
-                        <input type="text" id="observaciones" name="observaciones">
+                        <textarea id="observaciones" name="observaciones"></textarea>
                     </fieldset>
                     <button type="submit" class="boton">Guardar datos y calcular triage</button>
                 </form>
@@ -199,40 +199,45 @@
     <div id="pantalla-consulta" class="seccion-panel">
         <div class="contenedor-paneles-consulta">
             <section class="seccion-izquierda-consulta">
-                <fieldset class="grupo-formulario">
-                    <legend>DATOS PACIENTE</legend>
-                    <div class="filas-labels">
-                        <div class="campo-datos-consulta">
-                            <label id="nombre-consulta"></label>
-                            <label id="tipoDocumento-consulta"></label>
-                            <label id="direccion-consulta"></label>
-                            <label id="documento-consulta"></label>
-                            <label id="genero-consulta"></label>
-                            <label id="correo-consulta"></label>
-                            <label id="telefono-consulta"></label>
+                <form id="actualizarDatos-consulta">
+                    <fieldset class="grupo-formulario">
+                        <legend>DATOS PACIENTE</legend>
+                        <div class="filas-labels">
+                            <div class="campo-datos-consulta">
+                                <label for="nombre-consulta">Nombre:</label><input type="text" id="nombre-consulta">
+                                <label for="tipoDocumento-consulta"></label><input type="text" id="tipoDocumento-consulta">
+                                <label for="direccion-consulta"></label><input type="text" id="direccion-consulta">
+                                <label for="documento-consulta"></label><input type="text" id="documento-consulta">
+                                <label for="sexo-consulta"></label><input type="text" id="sexo-consulta">
+                                <label for="edad-consulta"></label><input type="number" id="edad-consulta">
+                                <label for="correo-consulta"></label><input type="text" id="correo-consulta">
+                                <label for="telefono-consulta"></label><input type="text" id="telefono-consulta">
+                            </div>
                         </div>
+                    </fieldset> 
+                    <fieldset class="grupo-formulario">
+                        <legend>DATOS MEDICOS</legend>
+                        <textarea class="caja-texto-grande"></textarea>
+                    </fieldset>
+                </form>
+                <form id="datosConsulta">
+                    <fieldset class="grupo-formulario">
+                        <legend>TRATAMIENTO</legend>
+                        <div class="filas-labels">
+                            <div class="campo-datos-consulta">
+                                <label id="diagnostico"></label>
+                                <label id="tratamiento"></label>
+                            </div>
+                            <div class="campo-full" style="margin-top: 10px;">
+                                <label>Indicaciones: </label>
+                                <textarea class="caja-texto-mediana"></textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="contenedor-boton-atender">
+                        <button class="boton-atender">TERMINAR CONSULTA</button>
                     </div>
-                </fieldset> 
-                <fieldset class="grupo-formulario">
-                    <legend>DATOS MEDICOS</legend>
-                    <textarea class="caja-texto-grande"></textarea>
-                </fieldset>
-                <fieldset class="grupo-formulario">
-                    <legend>TRATAMIENTO</legend>
-                    <div class="filas-labels">
-                        <div class="campo-datos-consulta">
-                            <label id="diagnostico"></label>
-                            <label id="tratamiento"></label>
-                        </div>
-                        <div class="campo-full" style="margin-top: 10px;">
-                            <label>Indicaciones: </label>
-                            <textarea class="caja-texto-mediana"></textarea>
-                        </div>
-                    </div>
-                </fieldset>
-                <div class="contenedor-boton-atender">
-                    <button class="boton-atender">TERMINAR CONSULTA</button>
-                </div>
+                </form>    
             </section>
             <section class="seccion-derecha-consulta">
                 <button class="btn-deshacer">DESHACER ULTIMA ATENCION</button>
