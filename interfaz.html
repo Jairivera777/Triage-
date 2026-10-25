@@ -290,87 +290,151 @@
         <div class="contenedor-paneles-consulta">
             <section class="seccion-izquierda-consulta">
                 <form id="actualizarDatos-consulta">
-                    <fieldset class="grupo-formulario">
+                    <fieldset class="grupo-formulario tarjeta-triage">
                         <legend>DATOS PACIENTE</legend>
                         <div class="filas-labels">
                             <div class="campo-datos-consulta">
-                                <label for="nombre-consulta">Nombre:</label>
-                                <input type="text" id="nombre-consulta" name="nombre-consulta" style="width: 300px;">
-                                <label id="tipoDocumento-consulta" for="documento-consulta"></label>
-                                <input type="text" id="documento-consulta" name="documento-consulta">
-                                <div class="salto-linea"></div>
-                                <label for="direccion-consulta">Direccion:</label>
-                                <input type="text" id="direccion-consulta" name="direccion-consulta">
-                                <label for="sexo-consulta">Sexo:</label>
-                                <select name="sexo-consulta" id="sexo-consulta" required>
-                                    <option value="" disabled selected>Seleccione una opcion...</option>
-                                    <option value="Masculino">Masculino</option>
-                                    <option value="Femenino">Femenino</option>
-                                </select> 
-                                <div class="femenino" id="seccion-embarazo-consulta" style="display: none;">
-                                    <span>¿Estas embarazada?:</span>
-                                    <input type="radio" id="verdadero-consulta" name="embarazada-consulta" value="true">
-                                    <label for="verdadero-consulta">Si</label>
-                                    <input type="radio" id="falsa-consulta" name="embarazada-consulta" value="false">
-                                    <label for="falsa-consulta">No</label>                
+                                <div class="grid-triage">
+                                    <div class="campo-triage campo-completo">
+                                        <label for="nombre-consulta">Nombre:</label>
+                                        <input type="text" id="nombre-consulta" name="nombre-consulta" style="width: 300px;">
+                                    </div>
+
+                                    <div class="campo-triage">
+                                        <label id="tipoDocumento-consulta" for="documento-consulta">Documento:</label>
+                                        <input type="text" id="documento-consulta" name="documento-consulta">
+                                    </div>
+
+                                    <div class="salto-linea" style="display: none;"></div>
+
+                                    <div class="campo-triage">
+                                        <label for="direccion-consulta">Direccion:</label>
+                                        <input type="text" id="direccion-consulta" name="direccion-consulta">
+                                    </div>
+
+                                    <div class="campo-triage">
+                                        <label for="sexo-consulta">Sexo:</label>
+                                        <select name="sexo-consulta" id="sexo-consulta" required>
+                                            <option value="" disabled selected>Seleccione una opcion...</option>
+                                            <option value="Masculino">Masculino</option>
+                                            <option value="Femenino">Femenino</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="femenino campo-triage" id="seccion-embarazo-consulta" style="display: none;">
+                                        <span>¿Estas embarazada?:</span>
+                                        <div class="opciones-embarazo">
+                                            <input type="radio" id="verdadero-consulta" name="embarazada-consulta" value="true">
+                                            <label for="verdadero-consulta">Si</label>
+                                            <input type="radio" id="falsa-consulta" name="embarazada-consulta" value="false">
+                                            <label for="falsa-consulta">No</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="campo-triage">
+                                        <label for="edad-consulta">Edad:</label>
+                                        <input type="number" id="edad-consulta" name="edad-consulta">
+                                    </div>
+
+                                    <div class="salto-linea" style="display: none;"></div>
+
+                                    <div class="campo-triage">
+                                        <label for="correo-consulta">Correo:</label>
+                                        <input type="text" id="correo-consulta" name="correo-consulta">
+                                    </div>
+
+                                    <div class="campo-triage">
+                                        <label for="telefono-consulta">Telefono:</label>
+                                        <input type="text" id="telefono-consulta" name="telefono-consulta">
+                                    </div>
                                 </div>
-                                <label for="edad-consulta">Edad:</label>
-                                <input type="number" id="edad-consulta" name="edad-consulta">
-                                <div class="salto-linea"></div>
-                                <label for="correo-consulta">Correo:</label>
-                                <input type="text" id="correo-consulta" name="correo-consulta">
-                                <label for="telefono-consulta">Telefono:</label>
-                                <input type="text" id="telefono-consulta" name="telefono-consulta">
                             </div>
                         </div>
                     </fieldset> 
                     <br>
-                    <fieldset class="grupo-formulario">
+                    <fieldset class="grupo-formulario tarjeta-triage">
                         <legend>DATOS MEDICOS</legend>
                         <div class="campo-datos-consulta">
-                        <label for="temperatura-consulta">Temperatura (°C):</label>
-                        <input type="number" id="temperatura-consulta" name="temperatura" style="width: 50px;">
-                        <label for="altura-consulta">Estatura (cm):</label>
-                        <input type="number" id="altura-consulta" name="estatura-consulta" style="width: 75px;">
-                        <label for="peso-consulta">Peso (kg):</label>
-                        <input type="number" id="peso-consulta" name="peso-consulta" style="width: 50px;">
-                        <label for="frecuencia-consulta">Frecuencia cardiaca:</label>
-                        <input type="text" id="frecuencia-consulta" name="frecuencia-consulta" style="width: 50px;">
-                        <label for="presionSistolica-consulta">Presion Sistolica:</label>
-                        <input type="number" id="presionSistolica-consulta" name="presionSistolica-consulta" style="width: 75px;">
-                        <label for="presionDiastolica-consulta">Presion Diastolica:</label>
-                        <input type="number" id="presionDiastolica-consulta" name="presionDiastolica-consulta" style="width: 75px;">
-                        <label for="frecuenciaRespiratoria-consulta">Frecuencia respiratoria por minuto:</label>
-                        <input type="number" id="frecuenciaRespiratoria-consulta" name="frecuenciaRespiratoria-consulta" style="width: 50px;">
-                        <label for="saturacion-consulta">SpO2%:</label>
-                        <input type="number" id="saturacion-consulta" name="saturacion-consulta" min="0" max="100" style="width: 50px;">
-                        <label for="escalaGlasgow-consulta">Escala de Glasgow:</label>
-                        <input type="number" id="escalaGlasgow-consulta" name="escalaGlasgow-consulta" min="3" max="15" style="width: 50px;">
-                        <label for="escala-consulta">Escala del dolor:</label>
-                        <input type="number" id="escala-consulta" name="escala-consulta" min="0" max="10" style="width: 50px;">
-                        <div clsss="salto-linea"></div>
-                        <label for="motivo-consulta">Motivo de venir a urgencias: </label>
-                        <textarea id="motivo-consulta" name="motivo-consulta"></textarea>
-                        <label for="alergias-consulta">Alergias:</label>
-                        <textarea id="alergias-consulta" name="alergias-consulta"></textarea>
-                        <label for="enfermedades-consulta">Enfermedades:</label>
-                        <textarea id="enfermedades-consulta" name="enfermedades-consulta"></textarea>
-                        <label for="cirugias-consulta">Cirugias recientes: </label>
-                        <textarea id="cirugias-consulta" name="cirugias-consulta"></textarea>
-                        <label for="observaciones-consulta">Observaciones:</label>
-                        <textarea id="observaciones-consulta" name="observaciones-consulta"></textarea>
+                            <div class="grid-signos-vitales">
+                                <div class="campo-triage">
+                                    <label for="temperatura-consulta">Temperatura (°C):</label>
+                                    <input type="number" id="temperatura-consulta" name="temperatura" style="width: 50px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="altura-consulta">Estatura (cm):</label>
+                                    <input type="number" id="altura-consulta" name="estatura-consulta" style="width: 75px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="peso-consulta">Peso (kg):</label>
+                                    <input type="number" id="peso-consulta" name="peso-consulta" style="width: 50px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="frecuencia-consulta">Frecuencia cardiaca:</label>
+                                    <input type="text" id="frecuencia-consulta" name="frecuencia-consulta" style="width: 50px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="presionSistolica-consulta">Presion Sistolica:</label>
+                                    <input type="number" id="presionSistolica-consulta" name="presionSistolica-consulta" style="width: 75px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="presionDiastolica-consulta">Presion Diastolica:</label>
+                                    <input type="number" id="presionDiastolica-consulta" name="presionDiastolica-consulta" style="width: 75px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="frecuenciaRespiratoria-consulta">Frecuencia respiratoria por minuto:</label>
+                                    <input type="number" id="frecuenciaRespiratoria-consulta" name="frecuenciaRespiratoria-consulta" style="width: 50px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="saturacion-consulta">SpO2%:</label>
+                                    <input type="number" id="saturacion-consulta" name="saturacion-consulta" min="0" max="100" style="width: 50px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="escalaGlasgow-consulta">Escala de Glasgow:</label>
+                                    <input type="number" id="escalaGlasgow-consulta" name="escalaGlasgow-consulta" min="3" max="15" style="width: 50px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="escala-consulta">Escala del dolor:</label>
+                                    <input type="number" id="escala-consulta" name="escala-consulta" min="0" max="10" style="width: 50px;">
+                                </div>
+                            </div>
+
+                            <div clsss="salto-linea" style="display: none;"></div>
+
+                            <div class="grid-sintomas">
+                                <div class="campo-triage campo-completo">
+                                    <label for="motivo-consulta">Motivo de venir a urgencias: </label>
+                                    <textarea id="motivo-consulta" name="motivo-consulta"></textarea>
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="alergias-consulta">Alergias:</label>
+                                    <textarea id="alergias-consulta" name="alergias-consulta"></textarea>
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="enfermedades-consulta">Enfermedades:</label>
+                                    <textarea id="enfermedades-consulta" name="enfermedades-consulta"></textarea>
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="cirugias-consulta">Cirugias recientes: </label>
+                                    <textarea id="cirugias-consulta" name="cirugias-consulta"></textarea>
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="observaciones-consulta">Observaciones:</label>
+                                    <textarea id="observaciones-consulta" name="observaciones-consulta"></textarea>
+                                </div>
+                            </div>
                         </div>
                     </fieldset>
                 </form>
+
                 <form id="datosConsulta">
-                    <fieldset class="grupo-formulario">
+                    <fieldset class="grupo-formulario tarjeta-triage">
                         <legend>TRATAMIENTO</legend>
                         <div class="filas-labels">
                             <div class="campo-datos-consulta">
                                 <label id="diagnostico"></label>
                                 <label id="tratamiento"></label>
                             </div>
-                            <div class="campo-full" style="margin-top: 10px;">
+                            <div class="campo-full campo-triage campo-completo" style="margin-top: 10px;">
                                 <label>Indicaciones: </label>
                                 <textarea class="caja-texto-mediana"></textarea>
                             </div>
@@ -379,17 +443,19 @@
                     <div class="contenedor-boton-atender">
                         <button type="submit" class="boton-atender" onClick="atenderPaciente()">TERMINAR CONSULTA</button>
                     </div>
-                </form>    
+                </form>
             </section>
             <section class="seccion-derecha-consulta">
-                <button class="btn-deshacer">DESHACER ULTIMA ATENCION</button>
-                <div class="encabezado-siguiente-consulta">Siguiente paciente</div>
-                <div class="cuerpo-siguiente-consulta">
-                    <p><strong id="nombrePaciente-consulta"></strong></p>
-                    <p><strong id="documentoPaciente-consulta"></strong></p>
-                    <p><strong id="sexo-consulta"></strong></p>
-                    <p><strong id="estatura-consulta"></strong></p>
-                    <p><strong id="peso-consulta"></strong></p>
+                <button class="btn-deshacer" onclick="deshacerAlta()">DESHACER ULTIMA ATENCION</button>
+                <div class="tarjeta-siguiente-consulta">
+                    <div class="encabezado-siguiente-consulta">Siguiente paciente</div>
+                    <div class="cuerpo-siguiente-consulta">
+                        <p><strong id="nombrePaciente-consulta"></strong></p>
+                        <p><strong id="documentoPaciente-consulta"></strong></p>
+                        <p><strong id="sexo-consulta"></strong></p>
+                        <p><strong id="estatura-consulta"></strong></p>
+                        <p><strong id="peso-consulta"></strong></p>
+                    </div>
                 </div>
             </section>
         </div>
