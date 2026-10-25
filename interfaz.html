@@ -40,162 +40,267 @@
         <div class="pestana" id="tab-cuartos" onclick="irA('cuartos')">Cuartos</div>
         <div class="pestana" id="tab-historial" onclick="irA('historial')">Historial</div>
     </nav>
+    <!-- === INICIO CAMBIO INTERFAZ TRIAGE (Línea 43 aprox. en interfaz.html) === -->
     <div id="pantalla-triage" class="seccion-panel activa">
         <div class="contenedor-paneles-triage">
             <section class="panel-izquierdo-triage">
                 <form id="formTriage">
-                    <fieldset>
+                    <!-- === MODIFICADO: Se añade clase tarjeta-triage al fieldset === -->
+                    <fieldset class="tarjeta-triage">
                         <legend>Información del paciente</legend>
+
                         <div id="antesDocumento">
-                            <label for="nombrePaciente">Nombre Paciente:</label>
-                            <input type="text" id="nombrePaciente" name="nombrePaciente" style="width: 300px;">
+                            <!-- === MODIFICADO: Contenedor grid interno para no romper logica.js === -->
+                            <div class="grid-triage">
+                                <div class="campo-triage campo-completo">
+                                    <label for="nombrePaciente">Nombre Paciente:</label>
+                                    <input type="text" id="nombrePaciente" name="nombrePaciente" style="width: 300px;">
+                                </div>
+                            </div>
                         </div>
-                        <label for="tipoDocumentoPaciente">Tipo de documento:</label>
-                        <select id="tipoDocumentoPaciente" name="tipoDocumentoPaciente" required>
-                            <option value="" disabled selected>Seleccione una opcion...</option>
-                            <option value="CC">CC - Cedula de Ciudadania</option>
-                            <option value="TI">TI - Tarjeta de identidad</option>
-                            <option value="RC">RC - Registro civil</option>
-                            <option value="CN">CN - Certificado de nacido</option>
-                            <option value="CE">CE - Cedula de Extranjeria</option>
-                            <option value="PA">PA - Pasaporte</option>
-                            <option value="PT">PT - Permiso por Protección Temporal (PPT)</option>
-                            <option value="PE">PE - Permiso Especial de Permanencia (PEP)</option>
-                            <option value="SC">SC - Salvoconducto de permanencia</option>
-                            <option value="CD">CD - Carné diplomático</option>
-                            <option value="DE">DE - Documento extranjero de identificación</option>
-                            <option value="AS">AS - Adulto sin identificar</option>
-                            <option value="MS">MS - Menor sin identificar</option>
-                            <option value="SI">SI - Sin identificar</option>
-                        </select>
-                        <label for="Sexo">Sexo:</label>
-                        <select name="sexo" id="Sexo" required>
-                            <option value="" disabled selected>Seleccione una opcion...</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Femenino">Femenino</option>
-                        </select> 
-                        <div class="femenino" id="seccion-embarazo" style="display: none;">
-                            <span>¿Estas embarazada?:</span>
-                            <input type="radio" id="verdadero" name="embarazada" value="true">
-                            <label for="verdadero">Si</label>
-                            <input type="radio" id="falsa" name="embarazada" value="false">
-                            <label for="falsa">No</label>                
-                        </div>
-                        <div id="despuesDocumento">
-                            <label for="Numero">Numero de documento:</label>
-                            <input type="text" id="Numero" name="documentoPaciente" style="width: 100px;">
-                            <label for="Edad">Edad:</label>
-                            <input type="number" id="Edad" name="edad" min="0" max="150" style="width: 50px;">   
-                            <label for="eps">EPS: </label>
-                            <input type="text" id="eps" name="eps">
-                            <label for="correoPaciente">Correo:</label>
-                            <input type="text" id="correoPaciente" name="correoPaciente" style="width: 200px;">
-                            <label for="telefonoPaciente">Telefono:</label>
-                            <input type="text" id="telefonoPaciente" name="telefonoPaciente" style="width: 100px;">
-                            <label for="direccion">Direccion de residencia:</label>
-                            <input type="text" id="direccion" name="direccion">
-                        </div>
-                    </fieldset>
-                    <br>
-                    <div class="datosAcudiente">
-                        <fieldset>
-                            <legend>Informacion acudiente</legend>
-                            <div class="antes-parentesco" id="antes-parentesco">
-                                <label for="nombreAcudiente">Nombre acudiente:</label>
-                                <input type="text" id="nombreAcudiente" name="nombreAcudiente" style="width: 300px;">
-                                <label for="tipoDocumentoAcudiente">Tipo de documento:</label>
-                                <select id="tipoDocumentoAcudiente" name="tipoDocumentoAcudiente">
+
+                        <!-- === MODIFICADO: Agrupación en cuadrícula para Tipo de documento, Sexo y Embarazo === -->
+                        <div class="grid-triage">
+                            <div class="campo-triage">
+                                <label for="tipoDocumentoPaciente">Tipo de documento:</label>
+                                <select id="tipoDocumentoPaciente" name="tipoDocumentoPaciente" required>
                                     <option value="" disabled selected>Seleccione una opcion...</option>
                                     <option value="CC">CC - Cedula de Ciudadania</option>
                                     <option value="TI">TI - Tarjeta de identidad</option>
+                                    <option value="RC">RC - Registro civil</option>
+                                    <option value="CN">CN - Certificado de nacido</option>
                                     <option value="CE">CE - Cedula de Extranjeria</option>
-                                    <option valie="PA">PA - Pasaporte</option>
+                                    <option value="PA">PA - Pasaporte</option>
                                     <option value="PT">PT - Permiso por Protección Temporal (PPT)</option>
                                     <option value="PE">PE - Permiso Especial de Permanencia (PEP)</option>
                                     <option value="SC">SC - Salvoconducto de permanencia</option>
                                     <option value="CD">CD - Carné diplomático</option>
                                     <option value="DE">DE - Documento extranjero de identificación</option>
+                                    <option value="AS">AS - Adulto sin identificar</option>
+                                    <option value="MS">MS - Menor sin identificar</option>
+                                    <option value="SI">SI - Sin identificar</option>
                                 </select>
-                                <label for="documento">Numero de documento:</label>
-                                <input type="text" id="documento" name="documentoAcudiente" style="width: 100px;">
                             </div>
-                            <label for="parentesco">Parentesco:</label>
-                            <select id="parentesco" name="parentesco">
-                                <option value="" disabled selected>Seleccione una opcion...</option>
-                                <option value="mama">Madre</option>
-                                <option value="papa">Padre</option>
-                                <option value="padrastro">Padrastro/Madrastra</option>
-                                <option value="abuelo">Abuelo/a paterno/materno</option>
-                                <option value="hermano">Hermano/a</option>
-                                <option value="tio">Tio/a</option>
-                                <option value="tutor">Tutor</option>
-                                <option value="defensor">Defensor de familia/Autoridad</option>
-                                <option value="instructor">Profesor/Instructor</option>
-                                <option value="conocido">Vecino/Conocido/Amigo</option>
-                                <option value="nadie">Sin acompañante</option>
-                            </select>
+
+                            <div class="campo-triage">
+                                <label for="Sexo">Sexo:</label>
+                                <select name="sexo" id="Sexo" required>
+                                    <option value="" disabled selected>Seleccione una opcion...</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Femenino">Femenino</option>
+                                </select>
+                            </div>
+
+                            <div class="femenino campo-triage" id="seccion-embarazo" style="display: none;">
+                                <span>¿Estas embarazada?:</span>
+                                <div class="opciones-embarazo">
+                                    <input type="radio" id="verdadero" name="embarazada" value="true">
+                                    <label for="verdadero">Si</label>
+                                    <input type="radio" id="falsa" name="embarazada" value="false">
+                                    <label for="falsa">No</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="despuesDocumento">
+                            <!-- === MODIFICADO: Contenedor grid interno para datos del paciente === -->
+                            <div class="grid-triage">
+                                <div class="campo-triage">
+                                    <label for="Numero">Numero de documento:</label>
+                                    <input type="text" id="Numero" name="documentoPaciente" style="width: 100px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="Edad">Edad:</label>
+                                    <input type="number" id="Edad" name="edad" min="0" max="150" style="width: 50px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="eps">EPS: </label>
+                                    <input type="text" id="eps" name="eps">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="correoPaciente">Correo:</label>
+                                    <input type="text" id="correoPaciente" name="correoPaciente" style="width: 200px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="telefonoPaciente">Telefono:</label>
+                                    <input type="text" id="telefonoPaciente" name="telefonoPaciente" style="width: 100px;">
+                                </div>
+                                <div class="campo-triage">
+                                    <label for="direccion">Direccion de residencia:</label>
+                                    <input type="text" id="direccion" name="direccion">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <br>
+
+                    <div class="datosAcudiente">
+                        <!-- === MODIFICADO: Se añade clase tarjeta-triage al fieldset de acudiente === -->
+                        <fieldset class="tarjeta-triage">
+                            <legend>Informacion acudiente</legend>
+
+                            <div class="antes-parentesco" id="antes-parentesco">
+                                <!-- === MODIFICADO: Grid interno de acudiente (antes de parentesco) === -->
+                                <div class="grid-triage">
+                                    <div class="campo-triage">
+                                        <label for="nombreAcudiente">Nombre acudiente:</label>
+                                        <input type="text" id="nombreAcudiente" name="nombreAcudiente" style="width: 300px;">
+                                    </div>
+                                    <div class="campo-triage">
+                                        <label for="tipoDocumentoAcudiente">Tipo de documento:</label>
+                                        <select id="tipoDocumentoAcudiente" name="tipoDocumentoAcudiente">
+                                            <option value="" disabled selected>Seleccione una opcion...</option>
+                                            <option value="CC">CC - Cedula de Ciudadania</option>
+                                            <option value="TI">TI - Tarjeta de identidad</option>
+                                            <option value="CE">CE - Cedula de Extranjeria</option>
+                                            <option valie="PA">PA - Pasaporte</option>
+                                            <option value="PT">PT - Permiso por Protección Temporal (PPT)</option>
+                                            <option value="PE">PE - Permiso Especial de Permanencia (PEP)</option>
+                                            <option value="SC">SC - Salvoconducto de permanencia</option>
+                                            <option value="CD">CD - Carné diplomático</option>
+                                            <option value="DE">DE - Documento extranjero de identificación</option>
+                                        </select>
+                                    </div>
+                                    <div class="campo-triage">
+                                        <label for="documento">Numero de documento:</label>
+                                        <input type="text" id="documento" name="documentoAcudiente" style="width: 100px;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- === MODIFICADO: Campo parentesco alineado en grid === -->
+                            <div class="grid-triage">
+                                <div class="campo-triage">
+                                    <label for="parentesco">Parentesco:</label>
+                                    <select id="parentesco" name="parentesco">
+                                        <option value="" disabled selected>Seleccione una opcion...</option>
+                                        <option value="mama">Madre</option>
+                                        <option value="papa">Padre</option>
+                                        <option value="padrastro">Padrastro/Madrastra</option>
+                                        <option value="abuelo">Abuelo/a paterno/materno</option>
+                                        <option value="hermano">Hermano/a</option>
+                                        <option value="tio">Tio/a</option>
+                                        <option value="tutor">Tutor</option>
+                                        <option value="defensor">Defensor de familia/Autoridad</option>
+                                        <option value="instructor">Profesor/Instructor</option>
+                                        <option value="conocido">Vecino/Conocido/Amigo</option>
+                                        <option value="nadie">Sin acompañante</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="despues-parentesco" id="despues-parentesco">
-                                <label for="correo">Correo:</label>
-                                <input type="text" id="correo" name="correoAcudiente" style="width: 200px;">
-                                <label for="telefono">Telefono:</label>
-                                <input type="text" id="telefono" name="telefonoAcudiente" style="width: 100px;">
+                                <!-- === MODIFICADO: Grid interno de acudiente (después de parentesco) === -->
+                                <div class="grid-triage">
+                                    <div class="campo-triage">
+                                        <label for="correo">Correo:</label>
+                                        <input type="text" id="correo" name="correoAcudiente" style="width: 200px;">
+                                    </div>
+                                    <div class="campo-triage">
+                                        <label for="telefono">Telefono:</label>
+                                        <input type="text" id="telefono" name="telefonoAcudiente" style="width: 100px;">
+                                    </div>
+                                </div>
                             </div>
                         </fieldset>
                     </div>
                     <br>
-                    <fieldset>
+
+                    <!-- === MODIFICADO: Fieldset de Signos Vitales dividido en cuadrícula numérica y cuadrícula de textos === -->
+                    <fieldset class="tarjeta-triage">
                         <legend>Signos vitales y Sintomas</legend>
-                        <label for="temperatura">Temperatura (°C):</label>
-                        <input type="number" id="temperatura" name="temperatura" style="width: 50px;">
-                        <label for="altura">Estatura (cm):</label>
-                        <input type="number" id="altura" name="estatura" style="width: 50px;">
-                        <label for="peso">Peso (kg):</label>
-                        <input type="number" id="peso" name="peso" style="width: 50px;">
-                        <label for="frecuencia">Frecuencia cardiaca:</label>
-                        <input type="text" id="frecuencia" name="frecuencia" style="width: 50px;">
-                        <label for="presionSistolica">Presion Sistolica:</label>
-                        <input type="number" id="presionSistolica" name="presionSistolica" style="width: 50px;">
-                        <label for="presionDiastolica">Presion Diastolica:</label>
-                        <input type="number" id="presionDiastolica" name="presionDiastolica" style="width: 50px;">
-                        <label for="frecuenciaRespiratoria">Frecuencia respiratoria por minuto:</label>
-                        <input type="number" id="frecuenciaRespiratoria" name="frecuenciaRespiratoria" style="width: 50px;">
-                        <label for="saturacion">SpO2%:</label>
-                        <input type="number" id="saturacion" name="saturacion" min="0" max="100" style="width: 50px;">
-                        <label for="escalaGlasgow">Escala de Glasgow:</label>
-                        <input type="number" id="escalaGlasgow" name="escalaGlasgow" min="3" max="15" style="width: 50px;">
-                        <label for="escala">Escala del dolor:</label>
-                        <input type="number" id="escala" name="escala" min="0" max="10" style="width: 50px;">
-                        <label for="motivo">Motivo de venir a urgencias: </label>
-                        <textarea id="motivo" name="motivo"></textarea>
-                        <label for="alergias">Alergias:</label>
-                        <textarea id="alergias" name="alergias"></textarea>
-                        <label for="enfermedades">Enfermedades:</label>
-                        <textarea id="enfermedades" name="enfermedades"></textarea>
-                        <label for="cirugias">Cirugias recientes: </label>
-                        <textarea id="cirugias" name="cirugias"></textarea>
-                        <label for="observaciones">Observaciones:</label>
-                        <textarea id="observaciones" name="observaciones"></textarea>
+
+                        <div class="grid-signos-vitales">
+                            <div class="campo-triage">
+                                <label for="temperatura">Temperatura (°C):</label>
+                                <input type="number" id="temperatura" name="temperatura" style="width: 50px;">
+                            </div>
+                            <div class="campo-triage">
+                                <label for="altura">Estatura (cm):</label>
+                                <input type="number" id="altura" name="estatura" style="width: 50px;">
+                            </div>
+                            <div class="campo-triage">
+                                <label for="peso">Peso (kg):</label>
+                                <input type="number" id="peso" name="peso" style="width: 50px;">
+                            </div>
+                            <div class="campo-triage">
+                                <label for="frecuencia">Frecuencia cardiaca:</label>
+                                <input type="text" id="frecuencia" name="frecuencia" style="width: 50px;">
+                            </div>
+                            <div class="campo-triage">
+                                <label for="presionSistolica">Presion Sistolica:</label>
+                                <input type="number" id="presionSistolica" name="presionSistolica" style="width: 50px;">
+                            </div>
+                            <div class="campo-triage">
+                                <label for="presionDiastolica">Presion Diastolica:</label>
+                                <input type="number" id="presionDiastolica" name="presionDiastolica" style="width: 50px;">
+                            </div>
+                            <div class="campo-triage">
+                                <label for="frecuenciaRespiratoria">Frecuencia respiratoria por minuto:</label>
+                                <input type="number" id="frecuenciaRespiratoria" name="frecuenciaRespiratoria" style="width: 50px;">
+                            </div>
+                            <div class="campo-triage">
+                                <label for="saturacion">SpO2%:</label>
+                                <input type="number" id="saturacion" name="saturacion" min="0" max="100" style="width: 50px;">
+                            </div>
+                            <div class="campo-triage">
+                                <label for="escalaGlasgow">Escala de Glasgow:</label>
+                                <input type="number" id="escalaGlasgow" name="escalaGlasgow" min="3" max="15" style="width: 50px;">
+                            </div>
+                            <div class="campo-triage">
+                                <label for="escala">Escala del dolor:</label>
+                                <input type="number" id="escala" name="escala" min="0" max="10" style="width: 50px;">
+                            </div>
+                        </div>
+
+                        <div class="grid-sintomas">
+                            <div class="campo-triage campo-completo">
+                                <label for="motivo">Motivo de venir a urgencias: </label>
+                                <textarea id="motivo" name="motivo"></textarea>
+                            </div>
+                            <div class="campo-triage">
+                                <label for="alergias">Alergias:</label>
+                                <textarea id="alergias" name="alergias"></textarea>
+                            </div>
+                            <div class="campo-triage">
+                                <label for="enfermedades">Enfermedades:</label>
+                                <textarea id="enfermedades" name="enfermedades"></textarea>
+                            </div>
+                            <div class="campo-triage">
+                                <label for="cirugias">Cirugias recientes: </label>
+                                <textarea id="cirugias" name="cirugias"></textarea>
+                            </div>
+                            <div class="campo-triage">
+                                <label for="observaciones">Observaciones:</label>
+                                <textarea id="observaciones" name="observaciones"></textarea>
+                            </div>
+                        </div>
                     </fieldset>
+
                     <button type="submit" class="boton">Guardar datos y calcular triage</button>
                 </form>
             </section>
+
             <section class="panel-derecho-triage">
                 <h2 class="titulo-derecha">FILTRO DE PACIENTES</h2>
-                <label for="filtros">FILTROS: </label>
-                <select id="filtros" name="filtro" onchange="renderizarPacientes()">
-                    <option value="TODOS" selected>TODOS</option>
-                    <option value="1">TRIAGE 1</option>
-                    <option value="2">TRIAGE 2</option>
-                    <option value="3">TRIAGE 3</option>
-                    <option value="4">TRIAGE 4</option>
-                    <option value="5">TRIAGE 5</option>
-                </select>
-
-            <h3>Pacientes Activos</h3>
-            <ul id="listaPacientes"></ul>
+                <!-- === MODIFICADO: Contenedor visual para el selector de filtro === -->
+                <div class="caja-filtro-triage">
+                    <label for="filtros">FILTROS: </label>
+                    <select id="filtros" name="filtro" onchange="renderizarPacientes()">
+                        <option value="TODOS" selected>TODOS</option>
+                        <option value="1">TRIAGE 1</option>
+                        <option value="2">TRIAGE 2</option>
+                        <option value="3">TRIAGE 3</option>
+                        <option value="4">TRIAGE 4</option>
+                        <option value="5">TRIAGE 5</option>
+                    </select>
+                </div>
+                <h3 class="subtitulo-pacientes-activos">Pacientes Activos</h3>
+                <ul id="listaPacientes"></ul>
             </section>
         </div>
     </div>
+    <!-- === FIN CAMBIO INTERFAZ TRIAGE (Línea 195 aprox. en interfaz.html) === -->
     <div id="pantalla-consulta" class="seccion-panel">
         <div class="contenedor-paneles-consulta">
             <section class="seccion-izquierda-consulta">
