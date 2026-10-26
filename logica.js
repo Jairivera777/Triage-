@@ -311,7 +311,7 @@ function renderizarListasPacientes(){
 }
 function cargarProximoPaciente(){
     fetch('http://localhost:8080/api/proximoPaciente')
-        .then(response => response.json)
+        .then(response => response.json())
         .then(data => {
             const nom = document.getElementById('siguientePaciente');
             const tipo = document.getElementById('siguienteTipoDocumento');
