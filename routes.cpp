@@ -158,7 +158,7 @@ void inicializarServidor(httplib::Server& svr) {
     //Atiende al paciente
     svr.Post("/api/atenderPaciente", [](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*");
-        if (!colaTriage.isVacia()) {
+        if (hayPacienteConsulta) {
             pilaAlta.agregarPacienteAtendido(pacienteConsulta);
             hayPacienteConsulta = false;
             res.set_content("{\"status\": \"ok\"}", "application/json");
@@ -172,7 +172,9 @@ void inicializarServidor(httplib::Server& svr) {
         res.set_header("Access-Control-Allow-Origin", "*");
         try {
             Triage recuperado = pilaAlta.deshacerAccion();
-            colaTriage.agregar(recuperado);
+            if(hayPacienteConsulta) colaTriage.agregar(pacienteConsulta);
+            pacienteConsulta = recuperado;
+            hayPacienteConsulta = true;
             res.set_content("{\"status\": \"ok\"}", "application/json");
         } catch (...) {
             res.set_content("{\"status\": \"vacio\"}", "application/json");
