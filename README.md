@@ -26,4 +26,4 @@ Estructuras de datos utilizadas:
 
 *PILAS:* Se utilizaron para llevar el registro en donde logramos ver el historial de los pacientes atendidos. Tambien en caso de que algun medico atienda a un paciente y termine la consulta con error, pueda volver a entrar en la fila y como conserva sus datos entraria en primer lugar, para que asi el doctor lo termine de atender.
 
-Video de la explicacion: https://drive.google.com/file/d/1n5tRtFyYfwISSGVO1AOK5GSxBt7eewju/view?usp=drive_link
+Video de la explicacion: https://drive.google.com/file/d/1o6_oeQdbW5LhgzwhhgfG9v7gy1hXm4VP/view?usp=sharing

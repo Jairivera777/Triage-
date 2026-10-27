@@ -226,10 +226,11 @@ Triage::Triage(Paciente* _paciente, bool _embarazo, float _temperatura, int _est
     triageActual = calcularTriage();
     turnoLlegada = _turno;
 }
-int Triage::getTriage() {
+int Triage::getTriageActual() {
     triageActual = calcularTriage();
     return triageActual;
 }
+int Triage::getTriageOriginal(){return triageOriginal; }
 int Triage::getHoraLlegada() { return horaLlegada; }
 int Triage::getTurnoLlegada() { return turnoLlegada; }
 Paciente* Triage::getPaciente() { return paciente; }
@@ -308,7 +309,7 @@ void ListaHistorias::insertarAlFinal(HistoriaClinica h) {
 NodoHistoria* ListaHistorias::getCabeza() { return cabeza; }
 
 bool esMenor(Triage& a, Triage& b) {
-    if (a.getTriage() != b.getTriage()) return a.getTriage() < b.getTriage();
+    if (a.getTriageActual() != b.getTriageActual()) return a.getTriageActual() < b.getTriageActual();
     if (a.getHoraLlegada() != b.getHoraLlegada()) return a.getHoraLlegada() < b.getHoraLlegada();
     return a.getTurnoLlegada() < b.getTurnoLlegada();
 }
@@ -436,12 +437,12 @@ Nodo* Lista::getCabeza() {
 ColaPrioridad::ColaPrioridad() {}
 
 void ColaPrioridad::agregar(Triage t) {
-    int prioridad = t.getTriage();
+    int prioridad = t.getTriageActual();
     colas[prioridad - 1].insertarUltimo(t);
 }
 
 void ColaPrioridad::deshacer(Triage t) {
-    int prioridad = t.getTriage();
+    int prioridad = t.getTriageActual();
     colas[prioridad - 1].insertarPrimero(t);
 }
 

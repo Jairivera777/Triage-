@@ -102,7 +102,8 @@ public:
            int _frecuenciaCardiaca, int _frecuenciaRespiratoria, int _saturacion,
            int _escala, string _motivo, string _alergias, string _enfermedades,
            string _cirugias, string _observaciones, int _glasgow, int _turno);
-    int getTriage();
+    int getTriageActual();
+    int getTriageOriginal();
     int getHoraLlegada();
     int getTurnoLlegada();
     Paciente* getPaciente();

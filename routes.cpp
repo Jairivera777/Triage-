@@ -68,7 +68,7 @@ void inicializarServidor(httplib::Server& svr) {
                       observaciones, escalaGlasgow, contadorTurno++);
         colaTriage.agregar(triage);
 
-        int nivelCalculado = triage.getTriage();
+        int nivelCalculado = triage.getTriageOriginal();
         cout << "Triage calculado exitosamente: NIVEL " << nivelCalculado << endl;
         cout << "=======================================" << endl;
 
@@ -100,7 +100,7 @@ void inicializarServidor(httplib::Server& svr) {
                     json += "{";
                     json += "\"nombre\": \"" + nom + "\",";
                     json += "\"documento\": \"" + doc + "\",";
-                    json += "\"triage\": " + to_string(triage.getTriage()) + ",";
+                    json += "\"triage\": " + to_string(triage.getTriageOriginal()) + ",";
                     json += "\"minutosEspera\": " + to_string(triage.getMinutosEspera()) + "";
                     json += "}";
                     actual = actual->siguiente;
